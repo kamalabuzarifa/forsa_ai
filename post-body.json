@@ -1,0 +1,9 @@
+{
+    "title": "Test Opportunity",
+    "slug": "test-opportunity-api-5",
+    "description": "Test opportunity created through the Admin API.",
+    "country_id": 2,
+    "opportunity_type_id": 1,
+    "application_url": "https://example.com/apply",
+    "status": "published"
+}
