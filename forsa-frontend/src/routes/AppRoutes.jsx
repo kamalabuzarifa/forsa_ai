@@ -31,24 +31,26 @@ import Countries from "../pages/admin/Countries";
 import AdminLayout from "../components/layout/admin/AdminLayout";
 import StudentLayout from "../components/layout/student/StudentLayout";
 
+// Protected Route
 import ProtectedRoute from "./ProtectedRoute";
+
+// Landing Page
+import Landing from "../pages/Landing";
+
 
 function AppRoutes() {
     return (
         <BrowserRouter>
+
             <Routes>
 
-                {/* Root */}
+                {/* Landing Page */}
 
                 <Route
                     path="/"
-                    element={
-                        <Navigate
-                            to="/student"
-                            replace
-                        />
-                    }
+                    element={<Landing />}
                 />
+
 
                 {/* Authentication */}
 
@@ -56,6 +58,7 @@ function AppRoutes() {
                     path="/login"
                     element={<Login />}
                 />
+
 
                 {/* Student Routes */}
 
@@ -66,14 +69,17 @@ function AppRoutes() {
                         </ProtectedRoute>
                     }
                 >
+
                     <Route
                         path="/student"
                         element={<Dashboard />}
                     />
+
                     <Route
                         path="/student/profile"
                         element={<Profile />}
                     />
+
                     <Route
                         path="/student/opportunities"
                         element={<Opportunities />}
@@ -93,12 +99,14 @@ function AppRoutes() {
                         path="/student/recommended"
                         element={<Recommended />}
                     />
-                    
+
                     <Route
                         path="/student/applications/:id"
                         element={<ApplicationDetails />}
                     />
+
                 </Route>
+
 
                 {/* Admin Routes */}
 
@@ -109,6 +117,7 @@ function AppRoutes() {
                         </ProtectedRoute>
                     }
                 >
+
                     <Route
                         path="/admin"
                         element={<AdminDashboard />}
@@ -153,7 +162,9 @@ function AppRoutes() {
                         path="/admin/countries"
                         element={<Countries />}
                     />
+
                 </Route>
+
 
                 {/* Unknown Routes */}
 
@@ -161,13 +172,14 @@ function AppRoutes() {
                     path="*"
                     element={
                         <Navigate
-                            to="/student"
+                            to="/"
                             replace
                         />
                     }
                 />
 
             </Routes>
+
         </BrowserRouter>
     );
 }
