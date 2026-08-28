@@ -342,7 +342,11 @@ function OpportunityDetails() {
             const response =
                 await checkEligibility(id);
 
-            setEligibility(getApiData(response));
+            const result = getApiData(response);
+
+            setEligibility(result);
+
+            return result;
         } catch (err) {
             console.error(
                 "Failed to check eligibility:",
@@ -353,6 +357,8 @@ function OpportunityDetails() {
                 err?.response?.data?.message ||
                 "Failed to check eligibility."
             );
+
+            return null;
         } finally {
             setEligibilityLoading(false);
         }
@@ -366,7 +372,11 @@ function OpportunityDetails() {
             const response =
                 await matchOpportunity(id);
 
-            setMatch(getApiData(response));
+            const result = getApiData(response);
+
+            setMatch(result);
+
+            return result;
         } catch (err) {
             console.error(
                 "Failed to calculate match score:",
@@ -377,23 +387,66 @@ function OpportunityDetails() {
                 err?.response?.data?.message ||
                 "Failed to calculate match score."
             );
+
+            return null;
         } finally {
             setMatchLoading(false);
         }
     };
 
     const handleApply = async () => {
-        if (eligibility?.eligible !== true) {
-            setApplicationError(
-                "You must be eligible before submitting an application."
-            );
-
+        if (existingApplication) {
             return;
         }
 
         try {
             setApplicationLoading(true);
             setApplicationError("");
+            setActionError("");
+
+            /*
+             * Step 1
+             * Check eligibility automatically
+             */
+
+            let eligibilityResult = eligibility;
+
+            if (!eligibilityResult) {
+                eligibilityResult =
+                    await handleCheckEligibility();
+            }
+
+            if (!eligibilityResult) {
+                return;
+            }
+
+            if (eligibilityResult.eligible !== true) {
+                setApplicationError(
+                    "You are not eligible for this opportunity."
+                );
+
+                return;
+            }
+
+            /*
+             * Step 2
+             * Calculate match automatically
+             */
+
+            let matchResult = match;
+
+            if (!matchResult) {
+                matchResult = await handleMatch();
+            }
+
+            if (!matchResult) {
+                return;
+            }
+
+            /*
+             * Step 3
+             * Submit application
+             */
 
             const response = await createApplication(
                 id,
@@ -459,7 +512,7 @@ function OpportunityDetails() {
 
                             <Button
                                 asChild
-                                className="mt-6"
+                                className="mt-6 cursor-pointer"
                             >
                                 <Link to="/student/opportunities">
                                     Back to Opportunities
@@ -484,7 +537,7 @@ function OpportunityDetails() {
 
                             <Button
                                 asChild
-                                className="mt-6"
+                                className="mt-6 cursor-pointer"
                             >
                                 <Link to="/student/opportunities">
                                     Back to Opportunities
@@ -504,7 +557,7 @@ function OpportunityDetails() {
 
                     <Link
                         to="/student/opportunities"
-                        className="inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
+                        className="inline-flex cursor-pointer items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
                     >
                         <ArrowLeft className="size-4" />
                         Back to Opportunities
@@ -567,6 +620,7 @@ function OpportunityDetails() {
                             </CardHeader>
 
                             <CardContent className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+
                                 <div className="rounded-xl border p-4">
                                     <div className="mb-3 flex size-9 items-center justify-center rounded-lg bg-muted">
                                         <Building2 className="size-4 text-muted-foreground" />
@@ -662,11 +716,13 @@ function OpportunityDetails() {
                                         )}
                                     </p>
                                 </div>
+
                             </CardContent>
                         </Card>
                     </section>
 
                     <section className="grid gap-6 lg:grid-cols-2">
+
                         <Card>
                             <CardHeader>
                                 <CardTitle>
@@ -675,21 +731,16 @@ function OpportunityDetails() {
                             </CardHeader>
 
                             <CardContent>
-                                {opportunity.fields?.length >
-                                    0 ? (
+                                {opportunity.fields?.length > 0 ? (
                                     <div className="flex flex-wrap gap-2">
                                         {opportunity.fields.map(
                                             (field) => (
                                                 <Badge
-                                                    key={
-                                                        field.id
-                                                    }
+                                                    key={field.id}
                                                     variant="outline"
                                                     className="px-3 py-1.5"
                                                 >
-                                                    {
-                                                        field.name
-                                                    }
+                                                    {field.name}
                                                 </Badge>
                                             )
                                         )}
@@ -710,21 +761,16 @@ function OpportunityDetails() {
                             </CardHeader>
 
                             <CardContent>
-                                {opportunity.degrees?.length >
-                                    0 ? (
+                                {opportunity.degrees?.length > 0 ? (
                                     <div className="flex flex-wrap gap-2">
                                         {opportunity.degrees.map(
                                             (degree) => (
                                                 <Badge
-                                                    key={
-                                                        degree.id
-                                                    }
+                                                    key={degree.id}
                                                     variant="outline"
                                                     className="px-3 py-1.5"
                                                 >
-                                                    {
-                                                        degree.name
-                                                    }
+                                                    {degree.name}
 
                                                     {degree.code
                                                         ? ` (${degree.code})`
@@ -740,9 +786,11 @@ function OpportunityDetails() {
                                 )}
                             </CardContent>
                         </Card>
+
                     </section>
 
                     <section className="grid gap-6 lg:grid-cols-2">
+
                         <Card>
                             <CardHeader>
                                 <CardTitle>
@@ -756,21 +804,16 @@ function OpportunityDetails() {
                             </CardHeader>
 
                             <CardContent>
-                                {opportunity.skills?.length >
-                                    0 ? (
+                                {opportunity.skills?.length > 0 ? (
                                     <div className="space-y-3">
                                         {opportunity.skills.map(
                                             (skill) => (
                                                 <div
-                                                    key={
-                                                        skill.id
-                                                    }
+                                                    key={skill.id}
                                                     className="flex items-center justify-between gap-4 rounded-xl border p-4"
                                                 >
                                                     <span className="font-medium">
-                                                        {
-                                                            skill.name
-                                                        }
+                                                        {skill.name}
                                                     </span>
 
                                                     <Badge
@@ -808,8 +851,7 @@ function OpportunityDetails() {
                             </CardHeader>
 
                             <CardContent>
-                                {opportunity.nationalities?.length >
-                                    0 ? (
+                                {opportunity.nationalities?.length > 0 ? (
                                     <div className="space-y-3">
                                         {opportunity.nationalities.map(
                                             (
@@ -829,9 +871,7 @@ function OpportunityDetails() {
                                                         }
                                                     </span>
 
-                                                    <Badge
-                                                        variant="outline"
-                                                    >
+                                                    <Badge variant="outline">
                                                         {
                                                             nationality.eligibility_type
                                                         }
@@ -847,6 +887,7 @@ function OpportunityDetails() {
                                 )}
                             </CardContent>
                         </Card>
+
                     </section>
 
                     <Card>
@@ -862,15 +903,12 @@ function OpportunityDetails() {
                         </CardHeader>
 
                         <CardContent>
-                            {opportunity.requirements?.length >
-                                0 ? (
+                            {opportunity.requirements?.length > 0 ? (
                                 <div className="space-y-3">
                                     {opportunity.requirements.map(
                                         (requirement) => (
                                             <div
-                                                key={
-                                                    requirement.id
-                                                }
+                                                key={requirement.id}
                                                 className="flex gap-3 rounded-xl border p-4"
                                             >
                                                 <FileCheck2 className="mt-0.5 size-5 shrink-0 text-primary" />
@@ -905,46 +943,59 @@ function OpportunityDetails() {
                         </CardHeader>
 
                         <CardContent className="space-y-6">
+
                             {actionError && (
                                 <div className="rounded-xl border border-destructive/30 bg-destructive/5 px-4 py-3 text-sm text-destructive">
                                     {actionError}
                                 </div>
                             )}
 
-                            <div className="flex flex-col gap-3 sm:flex-row">
-                                <Button
-                                    type="button"
-                                    onClick={
-                                        handleCheckEligibility
-                                    }
-                                    disabled={
-                                        eligibilityLoading
-                                    }
-                                >
-                                    <CheckCircle2 className="size-4" />
+                            {!existingApplication && (
+                                <div className="flex flex-col gap-3 sm:flex-row">
 
-                                    {eligibilityLoading
-                                        ? "Checking..."
-                                        : "Check Eligibility"}
-                                </Button>
+                                    <Button
+                                        type="button"
+                                        className="cursor-pointer"
+                                        onClick={
+                                            handleCheckEligibility
+                                        }
+                                        disabled={
+                                            eligibilityLoading ||
+                                            applicationLoading
+                                        }
+                                    >
+                                        <CheckCircle2 className="size-4" />
 
-                                <Button
-                                    type="button"
-                                    variant="outline"
-                                    onClick={handleMatch}
-                                    disabled={matchLoading}
-                                >
-                                    <Sparkles className="size-4" />
+                                        {eligibilityLoading
+                                            ? "Checking..."
+                                            : "Check Eligibility"}
+                                    </Button>
 
-                                    {matchLoading
-                                        ? "Calculating..."
-                                        : "Calculate Match"}
-                                </Button>
-                            </div>
+                                    <Button
+                                        type="button"
+                                        variant="outline"
+                                        className="cursor-pointer"
+                                        onClick={handleMatch}
+                                        disabled={
+                                            matchLoading ||
+                                            applicationLoading
+                                        }
+                                    >
+                                        <Sparkles className="size-4" />
+
+                                        {matchLoading
+                                            ? "Calculating..."
+                                            : "Calculate Match"}
+                                    </Button>
+
+                                </div>
+                            )}
 
                             {eligibility && (
                                 <div className="rounded-2xl border bg-muted/20 p-5">
+
                                     <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+
                                         <div>
                                             <p className="text-sm text-muted-foreground">
                                                 Eligibility Result
@@ -970,96 +1021,99 @@ function OpportunityDetails() {
                                                     ? "eligible"
                                                     : "not eligible")}
                                         </Badge>
+
                                     </div>
 
-                                    {eligibility.checks?.length >
-                                        0 && (
-                                            <div className="mt-6">
-                                                <h4 className="mb-3 text-sm font-semibold">
-                                                    Checks
-                                                </h4>
+                                    {eligibility.checks?.length > 0 && (
+                                        <div className="mt-6">
 
-                                                <div className="space-y-2">
-                                                    {eligibility.checks.map(
-                                                        (
-                                                            check,
-                                                            index
-                                                        ) => (
-                                                            <div
-                                                                key={
-                                                                    index
-                                                                }
-                                                                className="flex gap-3 rounded-lg border bg-background p-3"
-                                                            >
-                                                                <Check className="mt-0.5 size-4 shrink-0 text-emerald-600" />
+                                            <h4 className="mb-3 text-sm font-semibold">
+                                                Checks
+                                            </h4>
 
-                                                                <div className="min-w-0">
-                                                                    <p className="text-sm font-medium capitalize">
-                                                                        {
-                                                                            check.type
-                                                                        }
-                                                                    </p>
+                                            <div className="space-y-2">
 
-                                                                    <p className="mt-1 text-sm text-muted-foreground">
-                                                                        {
-                                                                            check.message
-                                                                        }
-                                                                    </p>
-                                                                </div>
-                                                            </div>
-                                                        )
-                                                    )}
-                                                </div>
-                                            </div>
-                                        )}
+                                                {eligibility.checks.map(
+                                                    (
+                                                        check,
+                                                        index
+                                                    ) => (
+                                                        <div
+                                                            key={index}
+                                                            className="flex gap-3 rounded-lg border bg-background p-3"
+                                                        >
+                                                            <Check className="mt-0.5 size-4 shrink-0 text-emerald-600" />
 
-                                    {eligibility.failed_checks
-                                        ?.length > 0 && (
-                                            <div className="mt-6">
-                                                <h4 className="mb-3 text-sm font-semibold text-destructive">
-                                                    Failed Checks
-                                                </h4>
+                                                            <div className="min-w-0">
+                                                                <p className="text-sm font-medium capitalize">
+                                                                    {
+                                                                        check.type
+                                                                    }
+                                                                </p>
 
-                                                <div className="space-y-2">
-                                                    {eligibility.failed_checks.map(
-                                                        (
-                                                            check,
-                                                            index
-                                                        ) => (
-                                                            <div
-                                                                key={
-                                                                    index
-                                                                }
-                                                                className="flex gap-3 rounded-lg border border-destructive/20 bg-destructive/5 p-3"
-                                                            >
-                                                                <X className="mt-0.5 size-4 shrink-0 text-destructive" />
-
-                                                                <p className="text-sm text-destructive">
+                                                                <p className="mt-1 text-sm text-muted-foreground">
                                                                     {
                                                                         check.message
                                                                     }
                                                                 </p>
                                                             </div>
-                                                        )
-                                                    )}
-                                                </div>
+                                                        </div>
+                                                    )
+                                                )}
+
                                             </div>
-                                        )}
+                                        </div>
+                                    )}
+
+                                    {eligibility.failed_checks?.length > 0 && (
+                                        <div className="mt-6">
+
+                                            <h4 className="mb-3 text-sm font-semibold text-destructive">
+                                                Failed Checks
+                                            </h4>
+
+                                            <div className="space-y-2">
+
+                                                {eligibility.failed_checks.map(
+                                                    (
+                                                        check,
+                                                        index
+                                                    ) => (
+                                                        <div
+                                                            key={index}
+                                                            className="flex gap-3 rounded-lg border border-destructive/20 bg-destructive/5 p-3"
+                                                        >
+                                                            <X className="mt-0.5 size-4 shrink-0 text-destructive" />
+
+                                                            <p className="text-sm text-destructive">
+                                                                {
+                                                                    check.message
+                                                                }
+                                                            </p>
+                                                        </div>
+                                                    )
+                                                )}
+
+                                            </div>
+                                        </div>
+                                    )}
+
                                 </div>
                             )}
 
                             {match && (
                                 <div className="rounded-2xl border bg-background p-5">
+
                                     <div className="flex flex-col gap-5 md:flex-row">
+
                                         <div className="flex min-w-40 flex-col items-center justify-center rounded-2xl bg-primary p-6 text-primary-foreground">
+
                                             <p className="text-sm opacity-80">
                                                 Match Score
                                             </p>
 
                                             <p className="mt-1 text-4xl font-bold">
-                                                {
-                                                    match.match_score
-                                                }
+                                                {match.match_score}
                                             </p>
 
                                             <p className="mt-1 text-sm capitalize opacity-80">
@@ -1067,10 +1121,13 @@ function OpportunityDetails() {
                                                     match.level
                                                 )}
                                             </p>
+
                                         </div>
 
                                         <div className="min-w-0 flex-1">
+
                                             <div className="flex items-center justify-between gap-4">
+
                                                 <div>
                                                     <h3 className="font-semibold">
                                                         Match Result
@@ -1095,41 +1152,33 @@ function OpportunityDetails() {
                                                         ? "Eligible"
                                                         : "Not Eligible"}
                                                 </Badge>
+
                                             </div>
 
                                             <Separator className="my-4" />
 
                                             <div className="grid gap-3 sm:grid-cols-2">
+
                                                 {[
                                                     [
                                                         "Academic Field",
-                                                        match
-                                                            .breakdown
-                                                            ?.academic_field,
+                                                        match.breakdown?.academic_field,
                                                     ],
                                                     [
                                                         "Skills",
-                                                        match
-                                                            .breakdown
-                                                            ?.skills,
+                                                        match.breakdown?.skills,
                                                     ],
                                                     [
                                                         "GPA",
-                                                        match
-                                                            .breakdown
-                                                            ?.gpa,
+                                                        match.breakdown?.gpa,
                                                     ],
                                                     [
                                                         "Language",
-                                                        match
-                                                            .breakdown
-                                                            ?.language,
+                                                        match.breakdown?.language,
                                                     ],
                                                     [
                                                         "Experience",
-                                                        match
-                                                            .breakdown
-                                                            ?.experience,
+                                                        match.breakdown?.experience,
                                                     ],
                                                 ].map(
                                                     ([
@@ -1137,15 +1186,11 @@ function OpportunityDetails() {
                                                         section,
                                                     ]) => (
                                                         <div
-                                                            key={
-                                                                label
-                                                            }
+                                                            key={label}
                                                             className="rounded-xl border p-3"
                                                         >
                                                             <p className="text-xs text-muted-foreground">
-                                                                {
-                                                                    label
-                                                                }
+                                                                {label}
                                                             </p>
 
                                                             <p className="mt-1 text-sm font-semibold">
@@ -1160,11 +1205,14 @@ function OpportunityDetails() {
                                                         </div>
                                                     )
                                                 )}
+
                                             </div>
                                         </div>
+
                                     </div>
                                 </div>
                             )}
+
                         </CardContent>
                     </Card>
 
@@ -1181,6 +1229,7 @@ function OpportunityDetails() {
                         </CardHeader>
 
                         <CardContent>
+
                             {applicationError && (
                                 <div className="mb-5 rounded-xl border border-destructive/30 bg-destructive/5 px-4 py-3 text-sm text-destructive">
                                     {applicationError}
@@ -1188,8 +1237,11 @@ function OpportunityDetails() {
                             )}
 
                             {existingApplication ? (
+
                                 <div className="space-y-5">
+
                                     <div className="flex flex-col gap-4 rounded-2xl border bg-muted/20 p-5 sm:flex-row sm:items-center sm:justify-between">
+
                                         <div>
                                             <p className="text-sm text-muted-foreground">
                                                 Application Status
@@ -1210,9 +1262,11 @@ function OpportunityDetails() {
                                                 existingApplication.status
                                             )}
                                         </Badge>
+
                                     </div>
 
                                     <div className="grid gap-4 sm:grid-cols-2">
+
                                         <div className="rounded-xl border p-4">
                                             <p className="text-xs text-muted-foreground">
                                                 Application ID
@@ -1238,6 +1292,7 @@ function OpportunityDetails() {
                                                 )}
                                             </p>
                                         </div>
+
                                     </div>
 
                                     {existingApplication.notes && (
@@ -1254,16 +1309,23 @@ function OpportunityDetails() {
                                         </div>
                                     )}
 
-                                    <Button asChild>
+                                    <Button
+                                        asChild
+                                        className="cursor-pointer"
+                                    >
                                         <Link
                                             to={`/student/applications/${existingApplication.id}`}
                                         >
                                             View Application Details
                                         </Link>
                                     </Button>
+
                                 </div>
+
                             ) : (
+
                                 <div className="space-y-4">
+
                                     <div>
                                         <label
                                             htmlFor="application-notes"
@@ -1288,53 +1350,61 @@ function OpportunityDetails() {
                                             }
                                             rows={6}
                                             maxLength={5000}
+                                            disabled={
+                                                applicationLoading
+                                            }
                                             placeholder="Add notes for your application..."
                                             className="w-full resize-y rounded-xl border bg-background px-3 py-3 text-sm outline-none transition-shadow placeholder:text-muted-foreground focus:ring-2 focus:ring-ring"
                                         />
                                     </div>
 
                                     <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+
                                         <p className="text-xs text-muted-foreground">
                                             {notes.length}/5000
                                         </p>
 
                                         <Button
                                             type="button"
-                                            onClick={
-                                                handleApply
-                                            }
+                                            onClick={handleApply}
+                                            className="cursor-pointer"
                                             disabled={
-                                                applicationLoading ||
-                                                eligibility?.eligible !==
-                                                true
+                                                applicationLoading
                                             }
                                         >
                                             {applicationLoading
-                                                ? "Submitting..."
+                                                ? "Processing..."
                                                 : "Submit Application"}
                                         </Button>
+
                                     </div>
 
-                                    {eligibility?.eligible !==
-                                        true && (
+                                    {!eligibility &&
+                                        !applicationLoading && (
                                             <div className="rounded-xl border bg-muted/40 px-4 py-3 text-sm text-muted-foreground">
-                                                Check your eligibility
-                                                before submitting an
-                                                application.
+                                                Clicking Submit Application
+                                                will automatically check
+                                                your eligibility and
+                                                calculate your match score.
                                             </div>
                                         )}
+
                                 </div>
+
                             )}
+
                         </CardContent>
                     </Card>
 
                     {(opportunity.application_url ||
                         opportunity.source_url) && (
+
                             <section className="flex flex-col gap-3 pb-6 sm:flex-row">
+
                                 {opportunity.application_url && (
                                     <Button
                                         asChild
-                                        className="sm:flex-1"
+                                        className="cursor-pointer sm:flex-1"
                                     >
                                         <a
                                             href={
@@ -1353,7 +1423,7 @@ function OpportunityDetails() {
                                     <Button
                                         asChild
                                         variant="outline"
-                                        className="sm:flex-1"
+                                        className="cursor-pointer sm:flex-1"
                                     >
                                         <a
                                             href={
@@ -1367,8 +1437,10 @@ function OpportunityDetails() {
                                         </a>
                                     </Button>
                                 )}
+
                             </section>
                         )}
+
                 </div>
             </div>
         </div>

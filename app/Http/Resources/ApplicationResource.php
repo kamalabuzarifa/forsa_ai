@@ -40,6 +40,69 @@ class ApplicationResource extends JsonResource
                     'id' => $this->opportunity->id,
                     'title' => $this->opportunity->title,
                     'slug' => $this->opportunity->slug,
+
+                    'description' => $this->opportunity->description,
+
+                    'university' => $this->when(
+                        $this->opportunity->relationLoaded('university'),
+                        fn() => $this->opportunity->university
+                            ? [
+                                'id' => $this->opportunity->university->id,
+                                'name' => $this->opportunity->university->name,
+                            ]
+                            : null
+                    ),
+
+                    'country' => $this->when(
+                        $this->opportunity->relationLoaded('country'),
+                        fn() => $this->opportunity->country
+                            ? [
+                                'id' => $this->opportunity->country->id,
+                                'name' => $this->opportunity->country->name,
+                            ]
+                            : null
+                    ),
+
+                    'type' => $this->when(
+                        $this->opportunity->relationLoaded('type'),
+                        fn() => $this->opportunity->type
+                            ? [
+                                'id' => $this->opportunity->type->id,
+                                'name' => $this->opportunity->type->name,
+                            ]
+                            : null
+                    ),
+
+                    'funding_type' => $this->when(
+                        $this->opportunity->relationLoaded('fundingType'),
+                        fn() => $this->opportunity->fundingType
+                            ? [
+                                'id' => $this->opportunity->fundingType->id,
+                                'name' => $this->opportunity->fundingType->name,
+                            ]
+                            : null
+                    ),
+
+                    'application_url' =>
+                    $this->opportunity->application_url,
+
+                    'source_url' =>
+                    $this->opportunity->source_url,
+
+                    'deadline' =>
+                    $this->opportunity->deadline,
+
+                    'start_date' =>
+                    $this->opportunity->start_date,
+
+                    'end_date' =>
+                    $this->opportunity->end_date,
+
+                    'status' =>
+                    $this->opportunity->status,
+
+                    'is_verified' =>
+                    $this->opportunity->is_verified,
                 ]
             ),
 

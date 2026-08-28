@@ -10,10 +10,17 @@ use App\Models\ApplicationStatus;
 use App\Models\Opportunity;
 use App\Services\Eligibility\EligibilityEngine;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class ApplicationController extends Controller
 {
+    /*
+    |--------------------------------------------------------------------------
+    | Store Application
+    |--------------------------------------------------------------------------
+    */
+
     public function store(
         StoreApplicationRequest $request,
         Opportunity $opportunity,
@@ -121,22 +128,40 @@ class ApplicationController extends Controller
 
         $application->load([
             'status',
-            'opportunity',
+            'opportunity.university',
+            'opportunity.country',
+            'opportunity.type',
+            'opportunity.fundingType',
         ]);
+
+        /*
+        |--------------------------------------------------------------------------
+        | Return response
+        |--------------------------------------------------------------------------
+        */
 
         return (new ApplicationResource($application))
             ->response()
             ->setStatusCode(201);
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | My Applications
+    |--------------------------------------------------------------------------
+    */
+
     public function index(
-        \Illuminate\Http\Request $request
+        Request $request
     ): AnonymousResourceCollection {
         $applications = Application::query()
             ->where('user_id', $request->user()->id)
             ->with([
                 'status',
-                'opportunity',
+                'opportunity.university',
+                'opportunity.country',
+                'opportunity.type',
+                'opportunity.fundingType',
             ])
             ->latest('created_at')
             ->paginate(15);
@@ -146,20 +171,47 @@ class ApplicationController extends Controller
         );
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | Show Application
+    |--------------------------------------------------------------------------
+    */
+
     public function show(
-        \Illuminate\Http\Request $request,
+        Request $request,
         Application $application
     ): ApplicationResource|JsonResponse {
+        /*
+        |--------------------------------------------------------------------------
+        | Check ownership
+        |--------------------------------------------------------------------------
+        */
+
         if ($application->user_id !== $request->user()->id) {
             return response()->json([
                 'message' => 'You are not allowed to view this application.',
             ], 403);
         }
 
+        /*
+        |--------------------------------------------------------------------------
+        | Load relations
+        |--------------------------------------------------------------------------
+        */
+
         $application->load([
             'status',
-            'opportunity',
+            'opportunity.university',
+            'opportunity.country',
+            'opportunity.type',
+            'opportunity.fundingType',
         ]);
+
+        /*
+        |--------------------------------------------------------------------------
+        | Return response
+        |--------------------------------------------------------------------------
+        */
 
         return new ApplicationResource(
             $application

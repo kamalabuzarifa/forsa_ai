@@ -62,16 +62,6 @@ export function AuthProvider({ children }) {
                     response?.user ??
                     null;
 
-                console.log(
-                    "Current authenticated user:",
-                    currentUser
-                );
-
-                console.log(
-                    "Current user role:",
-                    currentUser?.role
-                );
-
                 if (!currentUser) {
                     throw new Error(
                         "Authenticated user was not returned by the API."
@@ -113,16 +103,6 @@ export function AuthProvider({ children }) {
 
             return;
         }
-
-        console.log(
-            "Logged in user:",
-            loginUser
-        );
-
-        console.log(
-            "Logged in user role:",
-            loginUser?.role
-        );
 
         localStorage.setItem(
             "token",

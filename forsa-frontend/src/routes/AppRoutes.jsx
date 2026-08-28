@@ -7,12 +7,16 @@ import {
 
 import Login from "../pages/auth/Login";
 
+// Student Pages
 import Dashboard from "../pages/student/Dashboard";
 import Opportunities from "../pages/student/Opportunities";
 import OpportunityDetails from "../pages/student/OpportunityDetails";
 import Applications from "../pages/student/Applications";
 import ApplicationDetails from "../pages/student/ApplicationDetails";
+import Profile from "../pages/student/profile";
+import Recommended from "../pages/student/Recommended";
 
+// Admin Pages
 import AdminDashboard from "../pages/admin/Dashboard";
 import AdminOpportunities from "../pages/admin/Opportunities";
 import AdminApplications from "../pages/admin/Applications";
@@ -23,7 +27,9 @@ import AdminApplicationDetails from "../pages/admin/ApplicationDetails";
 import Universities from "../pages/admin/Universities";
 import Countries from "../pages/admin/Countries";
 
+// Layouts
 import AdminLayout from "../components/layout/admin/AdminLayout";
+import StudentLayout from "../components/layout/student/StudentLayout";
 
 import ProtectedRoute from "./ProtectedRoute";
 
@@ -31,6 +37,8 @@ function AppRoutes() {
     return (
         <BrowserRouter>
             <Routes>
+
+                {/* Root */}
 
                 <Route
                     path="/"
@@ -42,6 +50,8 @@ function AppRoutes() {
                     }
                 />
 
+                {/* Authentication */}
+
                 <Route
                     path="/login"
                     element={<Login />}
@@ -50,49 +60,45 @@ function AppRoutes() {
                 {/* Student Routes */}
 
                 <Route
-                    path="/student"
                     element={
                         <ProtectedRoute role="student">
-                            <Dashboard />
+                            <StudentLayout />
                         </ProtectedRoute>
                     }
-                />
+                >
+                    <Route
+                        path="/student"
+                        element={<Dashboard />}
+                    />
+                    <Route
+                        path="/student/profile"
+                        element={<Profile />}
+                    />
+                    <Route
+                        path="/student/opportunities"
+                        element={<Opportunities />}
+                    />
 
-                <Route
-                    path="/student/opportunities"
-                    element={
-                        <ProtectedRoute role="student">
-                            <Opportunities />
-                        </ProtectedRoute>
-                    }
-                />
+                    <Route
+                        path="/student/opportunities/:id"
+                        element={<OpportunityDetails />}
+                    />
 
-                <Route
-                    path="/student/opportunities/:id"
-                    element={
-                        <ProtectedRoute role="student">
-                            <OpportunityDetails />
-                        </ProtectedRoute>
-                    }
-                />
+                    <Route
+                        path="/student/applications"
+                        element={<Applications />}
+                    />
 
-                <Route
-                    path="/student/applications"
-                    element={
-                        <ProtectedRoute role="student">
-                            <Applications />
-                        </ProtectedRoute>
-                    }
-                />
-
-                <Route
-                    path="/student/applications/:id"
-                    element={
-                        <ProtectedRoute role="student">
-                            <ApplicationDetails />
-                        </ProtectedRoute>
-                    }
-                />
+                    <Route
+                        path="/student/recommended"
+                        element={<Recommended />}
+                    />
+                    
+                    <Route
+                        path="/student/applications/:id"
+                        element={<ApplicationDetails />}
+                    />
+                </Route>
 
                 {/* Admin Routes */}
 
@@ -132,12 +138,12 @@ function AppRoutes() {
                         path="/admin/applications"
                         element={<AdminApplications />}
                     />
+
                     <Route
                         path="/admin/applications/:id"
-                        element={
-                            <AdminApplicationDetails />
-                        }
+                        element={<AdminApplicationDetails />}
                     />
+
                     <Route
                         path="/admin/universities"
                         element={<Universities />}

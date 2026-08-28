@@ -1,6 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import {
+    getRecommendedOpportunities,
+    getOpportunities,
+} from "../../api/opportunities";
 import { getMyApplications } from "../../api/applications";
 
 import {
@@ -15,7 +19,13 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 
-const getApplications = (response) => {
+/*
+|--------------------------------------------------------------------------
+| Helpers
+|--------------------------------------------------------------------------
+*/
+
+const getData = (response) => {
     if (Array.isArray(response)) {
         return response;
     }
@@ -39,6 +49,7 @@ const getStatusValue = (status) => {
     if (typeof status === "object") {
         return String(
             status.value ??
+            status.code ??
             status.name ??
             status.label ??
             status.status ??
@@ -54,10 +65,8 @@ const getStatusLabel = (status) => {
 
     switch (value) {
         case "accepted":
-            return "Accepted";
-
         case "approved":
-            return "Approved";
+            return "Accepted";
 
         case "rejected":
             return "Rejected";
@@ -73,57 +82,121 @@ const getStatusLabel = (status) => {
 const getStatusVariant = (status) => {
     const value = getStatusValue(status);
 
-    switch (value) {
-        case "accepted":
-        case "approved":
-            return "default";
-
-        case "rejected":
-            return "destructive";
-
-        default:
-            return "secondary";
+    if (
+        value === "accepted" ||
+        value === "approved"
+    ) {
+        return "default";
     }
+
+    if (value === "rejected") {
+        return "destructive";
+    }
+
+    return "secondary";
 };
 
-const getOpportunityTitle = (application) => {
-    const opportunity = application?.opportunity;
+/*
+|--------------------------------------------------------------------------
+| Opportunity Helpers
+|--------------------------------------------------------------------------
+*/
 
-    if (!opportunity) {
-        return "Untitled Opportunity";
-    }
-
+const getOpportunityId = (opportunity) => {
     return (
-        opportunity.title ??
-        opportunity.name ??
-        opportunity.opportunity_title ??
+        opportunity?.id ??
+        opportunity?.opportunity_id ??
+        opportunity?.opportunity?.id ??
+        opportunity?.opportunity?.opportunity_id ??
+        null
+    );
+};
+
+const getOpportunityTitle = (opportunity) => {
+    return (
+        opportunity?.title ??
+        opportunity?.name ??
+        opportunity?.opportunity_title ??
+        opportunity?.opportunity?.title ??
+        opportunity?.opportunity?.name ??
         "Untitled Opportunity"
     );
 };
 
-const getUniversityName = (application) => {
-    const opportunity = application?.opportunity;
-
-    if (!opportunity) {
-        return "Unknown University";
-    }
+const getUniversityName = (opportunity) => {
+    const university =
+        opportunity?.university ??
+        opportunity?.opportunity?.university;
 
     if (
-        opportunity.university &&
-        typeof opportunity.university === "object"
+        university &&
+        typeof university === "object"
     ) {
         return (
-            opportunity.university.name ??
-            opportunity.university.title ??
+            university.name ??
+            university.title ??
             "Unknown University"
         );
     }
 
     return (
-        opportunity.university_name ??
-        opportunity.university ??
+        opportunity?.university_name ??
+        opportunity?.opportunity?.university_name ??
+        university ??
         "Unknown University"
     );
+};
+
+const getCountryName = (opportunity) => {
+    const country =
+        opportunity?.country ??
+        opportunity?.opportunity?.country;
+
+    if (
+        country &&
+        typeof country === "object"
+    ) {
+        return (
+            country.name ??
+            country.title ??
+            "Unknown Country"
+        );
+    }
+
+    return (
+        opportunity?.country_name ??
+        opportunity?.opportunity?.country_name ??
+        country ??
+        "Unknown Country"
+    );
+};
+
+const getMatchScore = (opportunity) => {
+    const score =
+        opportunity?.match_score ??
+        opportunity?.matching_score ??
+        opportunity?.match_percentage ??
+        opportunity?.score ??
+        opportunity?.match?.score ??
+        opportunity?.opportunity?.match_score ??
+        opportunity?.opportunity?.matching_score ??
+        opportunity?.opportunity?.match_percentage ??
+        opportunity?.opportunity?.score;
+
+    if (
+        score === null ||
+        score === undefined
+    ) {
+        return null;
+    }
+
+    const number = Number(score);
+
+    if (Number.isNaN(number)) {
+        return null;
+    }
+
+    return Math.round(number);
 };
 
 const formatDate = (date) => {
@@ -144,12 +217,58 @@ const formatDate = (date) => {
     });
 };
 
+const getDaysRemaining = (date) => {
+    if (!date) {
+        return null;
+    }
+
+    const deadline = new Date(date);
+
+    if (Number.isNaN(deadline.getTime())) {
+        return null;
+    }
+
+    const now = new Date();
+
+    const difference =
+        deadline.getTime() -
+        now.getTime();
+
+    return Math.ceil(
+        difference /
+        (1000 * 60 * 60 * 24)
+    );
+};
+
+/*
+|--------------------------------------------------------------------------
+| Component
+|--------------------------------------------------------------------------
+*/
+
 function Dashboard() {
     const { user } = useAuth();
 
-    const [applications, setApplications] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState("");
+    const [recommendations, setRecommendations] =
+        useState([]);
+
+    const [applications, setApplications] =
+        useState([]);
+
+    const [opportunities, setOpportunities] =
+        useState([]);
+
+    const [loading, setLoading] =
+        useState(true);
+
+    const [error, setError] =
+        useState("");
+
+    /*
+    |--------------------------------------------------------------------------
+    | Load Dashboard
+    |--------------------------------------------------------------------------
+    */
 
     useEffect(() => {
         const loadDashboard = async () => {
@@ -157,14 +276,38 @@ function Dashboard() {
                 setLoading(true);
                 setError("");
 
-                const response = await getMyApplications();
+                const [
+                    recommendationsResponse,
+                    applicationsResponse,
+                    opportunitiesResponse,
+                ] = await Promise.all([
+                    getRecommendedOpportunities(6),
+                    getMyApplications(),
+                    getOpportunities({
+                        per_page: 10,
+                    }),
+                ]);
+
+                setRecommendations(
+                    getData(
+                        recommendationsResponse
+                    )
+                );
 
                 setApplications(
-                    getApplications(response)
+                    getData(
+                        applicationsResponse
+                    )
+                );
+
+                setOpportunities(
+                    getData(
+                        opportunitiesResponse
+                    )
                 );
             } catch (err) {
                 console.error(
-                    "Failed to load dashboard:",
+                    "Failed to load student dashboard:",
                     err
                 );
 
@@ -180,78 +323,100 @@ function Dashboard() {
         loadDashboard();
     }, []);
 
+    /*
+    |--------------------------------------------------------------------------
+    | Statistics
+    |--------------------------------------------------------------------------
+    */
+
     const statistics = useMemo(() => {
-        const result = {
-            total: applications.length,
-            pending: 0,
-            accepted: 0,
-            rejected: 0,
+        let pending = 0;
+        let accepted = 0;
+        let rejected = 0;
+
+        applications.forEach(
+            (application) => {
+                const status =
+                    getStatusValue(
+                        application?.status
+                    );
+
+                if (
+                    status === "pending"
+                ) {
+                    pending += 1;
+                }
+
+                if (
+                    status === "accepted" ||
+                    status === "approved"
+                ) {
+                    accepted += 1;
+                }
+
+                if (
+                    status === "rejected"
+                ) {
+                    rejected += 1;
+                }
+            }
+        );
+
+        return {
+            applications:
+                applications.length,
+
+            pending,
+
+            accepted,
+
+            rejected,
+
+            opportunities:
+                opportunities.length,
+
+            recommendations:
+                recommendations.length,
         };
+    }, [
+        applications,
+        opportunities,
+        recommendations,
+    ]);
 
-        applications.forEach((application) => {
-            const status = getStatusValue(
-                application?.status
-            );
-
-            if (status === "pending") {
-                result.pending += 1;
-            }
-
-            if (
-                status === "accepted" ||
-                status === "approved"
-            ) {
-                result.accepted += 1;
-            }
-
-            if (status === "rejected") {
-                result.rejected += 1;
-            }
-        });
-
-        return result;
-    }, [applications]);
-
-    const recentApplications = useMemo(() => {
-        return [...applications]
-            .sort((first, second) => {
-                const firstDate = new Date(
-                    first?.created_at ?? 0
-                ).getTime();
-
-                const secondDate = new Date(
-                    second?.created_at ?? 0
-                ).getTime();
-
-                return secondDate - firstDate;
-            })
-            .slice(0, 4);
-    }, [applications]);
+    /*
+    |--------------------------------------------------------------------------
+    | Upcoming Deadlines
+    |--------------------------------------------------------------------------
+    */
 
     const upcomingDeadlines = useMemo(() => {
         const now = new Date();
 
-        return applications
+        return opportunities
             .filter(
-                (application) =>
-                    application?.opportunity?.deadline
+                (opportunity) =>
+                    opportunity?.deadline
             )
-            .map((application) => {
-                const deadline = new Date(
-                    application.opportunity.deadline
-                );
+            .map(
+                (opportunity) => {
+                    const deadline =
+                        new Date(
+                            opportunity.deadline
+                        );
 
-                return {
-                    ...application,
-                    deadline,
-                };
-            })
+                    return {
+                        ...opportunity,
+                        deadline,
+                    };
+                }
+            )
             .filter(
-                (application) =>
+                (opportunity) =>
                     !Number.isNaN(
-                        application.deadline.getTime()
+                        opportunity.deadline.getTime()
                     ) &&
-                    application.deadline >= now
+                    opportunity.deadline >= now
             )
             .sort(
                 (first, second) =>
@@ -259,20 +424,58 @@ function Dashboard() {
                     second.deadline.getTime()
             )
             .slice(0, 4);
+    }, [opportunities]);
+
+    /*
+    |--------------------------------------------------------------------------
+    | Recent Applications
+    |--------------------------------------------------------------------------
+    */
+
+    const recentApplications = useMemo(() => {
+        return [...applications]
+            .sort((first, second) => {
+                const firstDate =
+                    new Date(
+                        first?.created_at ?? 0
+                    ).getTime();
+
+                const secondDate =
+                    new Date(
+                        second?.created_at ?? 0
+                    ).getTime();
+
+                return (
+                    secondDate -
+                    firstDate
+                );
+            })
+            .slice(0, 4);
     }, [applications]);
+
+    /*
+    |--------------------------------------------------------------------------
+    | Render
+    |--------------------------------------------------------------------------
+    */
 
     return (
         <div className="w-full">
             <div className="mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
                 <div className="space-y-6">
+
+                    {/* Hero */}
+
                     <section className="rounded-2xl border bg-card p-6 shadow-sm sm:p-8">
                         <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+
                             <div className="space-y-3">
+
                                 <Badge
                                     variant="secondary"
                                     className="w-fit"
                                 >
-                                    Student Dashboard
+                                    Student Portal
                                 </Badge>
 
                                 <div>
@@ -283,32 +486,43 @@ function Dashboard() {
                                     </h1>
 
                                     <p className="mt-2 max-w-2xl text-sm leading-6 text-muted-foreground sm:text-base">
-                                        Manage your applications
-                                        and discover opportunities
-                                        that match your academic
-                                        profile.
+                                        Discover academic
+                                        opportunities that
+                                        match your profile
+                                        and track your
+                                        applications.
                                     </p>
                                 </div>
+
                             </div>
 
                             <div className="flex flex-wrap gap-2">
-                                <Button asChild>
+
+                                <Button
+                                    asChild
+                                    className="cursor-pointer"
+                                >
                                     <Link to="/student/opportunities">
-                                        Browse Opportunities
+                                        Explore Opportunities
                                     </Link>
                                 </Button>
 
                                 <Button
                                     asChild
                                     variant="outline"
+                                    className="cursor-pointer"
                                 >
                                     <Link to="/student/applications">
                                         My Applications
                                     </Link>
                                 </Button>
+
                             </div>
+
                         </div>
                     </section>
+
+                    {/* Error */}
 
                     {error && (
                         <div className="rounded-xl border border-destructive/30 bg-destructive/5 px-4 py-3 text-sm text-destructive">
@@ -316,23 +530,27 @@ function Dashboard() {
                         </div>
                     )}
 
+                    {/* Statistics */}
+
                     <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+
                         <Card>
                             <CardHeader className="pb-2">
                                 <CardDescription>
-                                    Total Applications
+                                    Recommended
                                 </CardDescription>
 
                                 <CardTitle className="text-3xl">
                                     {loading
                                         ? "—"
-                                        : statistics.total}
+                                        : statistics.recommendations}
                                 </CardTitle>
                             </CardHeader>
 
                             <CardContent>
                                 <p className="text-xs text-muted-foreground">
-                                    All submitted applications
+                                    Opportunities matched
+                                    to your profile
                                 </p>
                             </CardContent>
                         </Card>
@@ -340,19 +558,39 @@ function Dashboard() {
                         <Card>
                             <CardHeader className="pb-2">
                                 <CardDescription>
-                                    Pending
+                                    Available Opportunities
                                 </CardDescription>
 
                                 <CardTitle className="text-3xl">
                                     {loading
                                         ? "—"
-                                        : statistics.pending}
+                                        : statistics.opportunities}
                                 </CardTitle>
                             </CardHeader>
 
                             <CardContent>
                                 <p className="text-xs text-muted-foreground">
-                                    Waiting for a decision
+                                    Published opportunities
+                                </p>
+                            </CardContent>
+                        </Card>
+
+                        <Card>
+                            <CardHeader className="pb-2">
+                                <CardDescription>
+                                    My Applications
+                                </CardDescription>
+
+                                <CardTitle className="text-3xl">
+                                    {loading
+                                        ? "—"
+                                        : statistics.applications}
+                                </CardTitle>
+                            </CardHeader>
+
+                            <CardContent>
+                                <p className="text-xs text-muted-foreground">
+                                    Applications submitted
                                 </p>
                             </CardContent>
                         </Card>
@@ -372,45 +610,372 @@ function Dashboard() {
 
                             <CardContent>
                                 <p className="text-xs text-muted-foreground">
-                                    Accepted or approved
+                                    Accepted applications
                                 </p>
                             </CardContent>
                         </Card>
 
+                    </section>
+
+                    {/* Recommended Opportunities */}
+
+                    <Card>
+                        <CardHeader>
+                            <div className="flex items-center justify-between gap-4">
+
+                                <div>
+                                    <CardTitle>
+                                        Recommended for You
+                                    </CardTitle>
+
+                                    <CardDescription className="mt-1">
+                                        Opportunities selected
+                                        based on your profile
+                                    </CardDescription>
+                                </div>
+
+                                <Button
+                                    asChild
+                                    variant="ghost"
+                                    size="sm"
+                                    className="cursor-pointer"
+                                >
+                                    <Link to="/student/opportunities">
+                                        View All
+                                    </Link>
+                                </Button>
+
+                            </div>
+                        </CardHeader>
+
+                        <CardContent>
+
+                            {loading ? (
+
+                                <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+
+                                    {[1, 2, 3].map(
+                                        (item) => (
+                                            <div
+                                                key={item}
+                                                className="h-48 animate-pulse rounded-xl bg-muted"
+                                            />
+                                        )
+                                    )}
+
+                                </div>
+
+                            ) : recommendations.length === 0 ? (
+
+                                <div className="rounded-xl border border-dashed p-8 text-center">
+
+                                    <p className="font-medium">
+                                        No recommendations yet
+                                    </p>
+
+                                    <p className="mt-1 text-sm text-muted-foreground">
+                                        Complete your profile
+                                        to receive better
+                                        opportunity matches.
+                                    </p>
+
+                                    <Button
+                                        asChild
+                                        className="mt-4 cursor-pointer"
+                                    >
+                                        <Link to="/student/opportunities">
+                                            Explore Opportunities
+                                        </Link>
+                                    </Button>
+
+                                </div>
+
+                            ) : (
+
+                                <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+
+                                    {recommendations.map(
+                                        (opportunity, index) => {
+
+                                            const matchScore =
+                                                getMatchScore(
+                                                    opportunity
+                                                );
+
+                                            const opportunityId =
+                                                getOpportunityId(
+                                                    opportunity
+                                                );
+
+                                            return (
+                                                <Card
+                                                    key={
+                                                        opportunityId ??
+                                                        `recommendation-${index}`
+                                                    }
+                                                    className="overflow-hidden"
+                                                >
+
+                                                    <CardHeader>
+
+                                                        <div className="flex items-start justify-between gap-3">
+
+                                                            <div className="min-w-0">
+
+                                                                <CardTitle className="line-clamp-2 text-base">
+                                                                    {getOpportunityTitle(
+                                                                        opportunity
+                                                                    )}
+                                                                </CardTitle>
+
+                                                                <CardDescription className="mt-1">
+                                                                    {getUniversityName(
+                                                                        opportunity
+                                                                    )}
+                                                                </CardDescription>
+
+                                                            </div>
+
+                                                            {matchScore !== null && (
+                                                                <Badge variant="secondary">
+                                                                    {matchScore}% Match
+                                                                </Badge>
+                                                            )}
+
+                                                        </div>
+
+                                                    </CardHeader>
+
+                                                    <CardContent>
+
+                                                        <div className="space-y-3">
+
+                                                            <div className="flex flex-wrap gap-2">
+
+                                                                <Badge variant="outline">
+                                                                    {getCountryName(
+                                                                        opportunity
+                                                                    )}
+                                                                </Badge>
+
+                                                                {opportunity?.type?.name && (
+                                                                    <Badge variant="outline">
+                                                                        {
+                                                                            opportunity
+                                                                                .type
+                                                                                .name
+                                                                        }
+                                                                    </Badge>
+                                                                )}
+
+                                                            </div>
+
+                                                            <div className="text-sm text-muted-foreground">
+
+                                                                {opportunity?.deadline
+                                                                    ? `Deadline ${formatDate(
+                                                                        opportunity.deadline
+                                                                    )}`
+                                                                    : "No deadline specified"}
+
+                                                            </div>
+
+                                                            <Button
+                                                                asChild={
+                                                                    Boolean(
+                                                                        opportunityId
+                                                                    )
+                                                                }
+                                                                className="w-full cursor-pointer"
+                                                                variant="outline"
+                                                                disabled={
+                                                                    !opportunityId
+                                                                }
+                                                            >
+                                                                {opportunityId ? (
+                                                                    <Link
+                                                                        to={`/student/opportunities/${opportunityId}`}
+                                                                    >
+                                                                        View Opportunity
+                                                                    </Link>
+                                                                ) : (
+                                                                    <span>
+                                                                        View Opportunity
+                                                                    </span>
+                                                                )}
+                                                            </Button>
+
+                                                        </div>
+
+                                                    </CardContent>
+
+                                                </Card>
+                                            );
+                                        }
+                                    )}
+
+                                </div>
+
+                            )}
+
+                        </CardContent>
+                    </Card>
+
+                    {/* Deadlines + Applications */}
+
+                    <section className="grid gap-6 lg:grid-cols-2">
+
+                        {/* Deadlines */}
+
                         <Card>
-                            <CardHeader className="pb-2">
+                            <CardHeader>
+
+                                <CardTitle>
+                                    Upcoming Deadlines
+                                </CardTitle>
+
                                 <CardDescription>
-                                    Rejected
+                                    Published opportunities
+                                    with upcoming deadlines
                                 </CardDescription>
 
-                                <CardTitle className="text-3xl">
-                                    {loading
-                                        ? "—"
-                                        : statistics.rejected}
-                                </CardTitle>
                             </CardHeader>
 
                             <CardContent>
-                                <p className="text-xs text-muted-foreground">
-                                    Not accepted
-                                </p>
+
+                                {loading ? (
+
+                                    <div className="space-y-3">
+
+                                        {[1, 2, 3].map(
+                                            (item) => (
+                                                <div
+                                                    key={item}
+                                                    className="h-16 animate-pulse rounded-xl bg-muted"
+                                                />
+                                            )
+                                        )}
+
+                                    </div>
+
+                                ) : upcomingDeadlines.length === 0 ? (
+
+                                    <div className="rounded-xl border border-dashed p-6 text-center">
+
+                                        <p className="font-medium">
+                                            No upcoming deadlines
+                                        </p>
+
+                                        <p className="mt-1 text-sm text-muted-foreground">
+                                            Browse opportunities
+                                            to find upcoming
+                                            applications.
+                                        </p>
+
+                                    </div>
+
+                                ) : (
+
+                                    <div className="space-y-3">
+
+                                        {upcomingDeadlines.map(
+                                            (opportunity) => {
+
+                                                const days =
+                                                    getDaysRemaining(
+                                                        opportunity.deadline
+                                                    );
+
+                                                const opportunityId =
+                                                    getOpportunityId(
+                                                        opportunity
+                                                    );
+
+                                                if (!opportunityId) {
+                                                    return null;
+                                                }
+
+                                                return (
+                                                    <Link
+                                                        key={
+                                                            opportunityId
+                                                        }
+                                                        to={`/student/opportunities/${opportunityId}`}
+                                                        className="block cursor-pointer rounded-xl border p-4 transition-colors hover:bg-muted/50"
+                                                    >
+
+                                                        <div className="flex items-center justify-between gap-4">
+
+                                                            <div className="min-w-0">
+
+                                                                <p className="truncate font-medium">
+                                                                    {getOpportunityTitle(
+                                                                        opportunity
+                                                                    )}
+                                                                </p>
+
+                                                                <p className="mt-1 text-sm text-muted-foreground">
+                                                                    {getUniversityName(
+                                                                        opportunity
+                                                                    )}
+                                                                </p>
+
+                                                            </div>
+
+                                                            <Badge
+                                                                variant={
+                                                                    days !== null &&
+                                                                        days <= 7
+                                                                        ? "destructive"
+                                                                        : "secondary"
+                                                                }
+                                                            >
+                                                                {days === 0
+                                                                    ? "Today"
+                                                                    : days === 1
+                                                                        ? "1 day"
+                                                                        : `${days} days`}
+                                                            </Badge>
+
+                                                        </div>
+
+                                                        <p className="mt-2 text-xs text-muted-foreground">
+                                                            Deadline{" "}
+                                                            {formatDate(
+                                                                opportunity.deadline
+                                                            )}
+                                                        </p>
+
+                                                    </Link>
+                                                );
+                                            }
+                                        )}
+
+                                    </div>
+
+                                )}
+
                             </CardContent>
                         </Card>
-                    </section>
 
-                    <section className="grid gap-6 lg:grid-cols-[minmax(0,1.5fr)_minmax(280px,1fr)]">
+                        {/* Applications */}
+
                         <Card>
                             <CardHeader>
+
                                 <div className="flex items-center justify-between gap-4">
+
                                     <div>
+
                                         <CardTitle>
-                                            Recent Applications
+                                            My Applications
                                         </CardTitle>
 
-                                        <CardDescription className="mt-1">
-                                            Your latest submitted
+                                        <CardDescription>
+                                            Track your recent
                                             applications
                                         </CardDescription>
+
                                     </div>
 
                                     {applications.length > 0 && (
@@ -418,50 +983,64 @@ function Dashboard() {
                                             asChild
                                             variant="ghost"
                                             size="sm"
+                                            className="cursor-pointer"
                                         >
                                             <Link to="/student/applications">
                                                 View All
                                             </Link>
                                         </Button>
                                     )}
+
                                 </div>
+
                             </CardHeader>
 
                             <CardContent>
+
                                 {loading ? (
+
                                     <div className="space-y-3">
+
                                         {[1, 2, 3].map(
                                             (item) => (
                                                 <div
                                                     key={item}
-                                                    className="h-20 animate-pulse rounded-xl bg-muted"
+                                                    className="h-16 animate-pulse rounded-xl bg-muted"
                                                 />
                                             )
                                         )}
+
                                     </div>
+
                                 ) : recentApplications.length === 0 ? (
-                                    <div className="rounded-xl border border-dashed p-8 text-center">
+
+                                    <div className="rounded-xl border border-dashed p-6 text-center">
+
                                         <p className="font-medium">
                                             No applications yet
                                         </p>
 
                                         <p className="mt-1 text-sm text-muted-foreground">
-                                            Explore opportunities
-                                            and submit your first
-                                            application.
+                                            Find an opportunity
+                                            that matches your
+                                            profile.
                                         </p>
 
                                         <Button
                                             asChild
-                                            className="mt-4"
+                                            className="mt-4 cursor-pointer"
                                         >
                                             <Link to="/student/opportunities">
                                                 Explore Opportunities
                                             </Link>
                                         </Button>
+
                                     </div>
+
                                 ) : (
+
                                     <div className="space-y-3">
+
                                         {recentApplications.map(
                                             (application) => (
                                                 <Link
@@ -469,19 +1048,16 @@ function Dashboard() {
                                                         application.id
                                                     }
                                                     to={`/student/applications/${application.id}`}
-                                                    className="block rounded-xl border p-4 transition-colors hover:bg-muted/50"
+                                                    className="block cursor-pointer rounded-xl border p-4 transition-colors hover:bg-muted/50"
                                                 >
-                                                    <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+
+                                                    <div className="flex items-center justify-between gap-4">
+
                                                         <div className="min-w-0">
+
                                                             <p className="truncate font-medium">
                                                                 {getOpportunityTitle(
-                                                                    application
-                                                                )}
-                                                            </p>
-
-                                                            <p className="mt-1 text-sm text-muted-foreground">
-                                                                {getUniversityName(
-                                                                    application
+                                                                    application?.opportunity
                                                                 )}
                                                             </p>
 
@@ -491,165 +1067,135 @@ function Dashboard() {
                                                                     application.created_at
                                                                 )}
                                                             </p>
+
                                                         </div>
 
                                                         <Badge
                                                             variant={getStatusVariant(
                                                                 application.status
                                                             )}
-                                                            className="w-fit"
                                                         >
                                                             {getStatusLabel(
                                                                 application.status
                                                             )}
                                                         </Badge>
+
                                                     </div>
+
                                                 </Link>
                                             )
                                         )}
+
                                     </div>
+
                                 )}
+
                             </CardContent>
                         </Card>
 
-                        <Card>
-                            <CardHeader>
-                                <CardTitle>
-                                    Upcoming Deadlines
-                                </CardTitle>
-
-                                <CardDescription>
-                                    Deadlines from your applications
-                                </CardDescription>
-                            </CardHeader>
-
-                            <CardContent>
-                                {loading ? (
-                                    <div className="space-y-3">
-                                        {[1, 2, 3].map(
-                                            (item) => (
-                                                <div
-                                                    key={item}
-                                                    className="h-16 animate-pulse rounded-xl bg-muted"
-                                                />
-                                            )
-                                        )}
-                                    </div>
-                                ) : upcomingDeadlines.length === 0 ? (
-                                    <div className="rounded-xl border border-dashed p-6 text-center">
-                                        <p className="font-medium">
-                                            No upcoming deadlines
-                                        </p>
-
-                                        <p className="mt-1 text-sm text-muted-foreground">
-                                            Explore more opportunities
-                                            to find your next application.
-                                        </p>
-
-                                        <Button
-                                            asChild
-                                            variant="outline"
-                                            className="mt-4"
-                                        >
-                                            <Link to="/student/opportunities">
-                                                Browse Opportunities
-                                            </Link>
-                                        </Button>
-                                    </div>
-                                ) : (
-                                    <div className="space-y-3">
-                                        {upcomingDeadlines.map(
-                                            (application) => (
-                                                <Link
-                                                    key={
-                                                        application.id
-                                                    }
-                                                    to={`/student/opportunities/${application.opportunity_id}`}
-                                                    className="block rounded-xl border p-4 transition-colors hover:bg-muted/50"
-                                                >
-                                                    <p className="font-medium">
-                                                        {getOpportunityTitle(
-                                                            application
-                                                        )}
-                                                    </p>
-
-                                                    <p className="mt-1 text-sm text-muted-foreground">
-                                                        Deadline{" "}
-                                                        {formatDate(
-                                                            application.deadline
-                                                        )}
-                                                    </p>
-                                                </Link>
-                                            )
-                                        )}
-                                    </div>
-                                )}
-                            </CardContent>
-                        </Card>
                     </section>
 
-                    <section>
-                        <Card>
-                            <CardHeader>
-                                <CardTitle>
-                                    Quick Actions
-                                </CardTitle>
+                    {/* Quick Actions */}
 
-                                <CardDescription>
-                                    Common actions
-                                </CardDescription>
-                            </CardHeader>
+                    <Card>
+                        <CardHeader>
 
-                            <CardContent>
-                                <div className="grid gap-3 sm:grid-cols-2">
-                                    <Button
-                                        asChild
-                                        variant="outline"
-                                        className="h-auto justify-start p-4"
-                                    >
-                                        <Link to="/student/opportunities">
-                                            <div className="text-start">
-                                                <p className="font-medium">
-                                                    Explore Opportunities
-                                                </p>
+                            <CardTitle>
+                                Quick Actions
+                            </CardTitle>
 
-                                                <p className="mt-1 text-xs text-muted-foreground">
-                                                    Find scholarships
-                                                    and other
-                                                    opportunities.
-                                                </p>
-                                            </div>
-                                        </Link>
-                                    </Button>
+                            <CardDescription>
+                                Access the main student features
+                            </CardDescription>
 
-                                    <Button
-                                        asChild
-                                        variant="outline"
-                                        className="h-auto justify-start p-4"
-                                    >
-                                        <Link to="/student/applications">
-                                            <div className="text-start">
-                                                <p className="font-medium">
-                                                    Track Applications
-                                                </p>
+                        </CardHeader>
 
-                                                <p className="mt-1 text-xs text-muted-foreground">
-                                                    Review your
-                                                    application status.
-                                                </p>
-                                            </div>
-                                        </Link>
-                                    </Button>
-                                </div>
-                            </CardContent>
-                        </Card>
-                    </section>
+                        <CardContent>
+
+                            <div className="grid gap-3 sm:grid-cols-3">
+
+                                <Button
+                                    asChild
+                                    variant="outline"
+                                    className="h-auto cursor-pointer justify-start p-4"
+                                >
+                                    <Link to="/student/opportunities">
+
+                                        <div className="text-start">
+
+                                            <p className="font-medium">
+                                                Explore Opportunities
+                                            </p>
+
+                                            <p className="mt-1 text-xs text-muted-foreground">
+                                                Browse available
+                                                scholarships and
+                                                academic opportunities.
+                                            </p>
+
+                                        </div>
+
+                                    </Link>
+                                </Button>
+
+                                <Button
+                                    asChild
+                                    variant="outline"
+                                    className="h-auto cursor-pointer justify-start p-4"
+                                >
+                                    <Link to="/student/applications">
+
+                                        <div className="text-start">
+
+                                            <p className="font-medium">
+                                                Track Applications
+                                            </p>
+
+                                            <p className="mt-1 text-xs text-muted-foreground">
+                                                Review your submitted
+                                                applications and
+                                                their status.
+                                            </p>
+
+                                        </div>
+
+                                    </Link>
+                                </Button>
+
+                                <Button
+                                    asChild
+                                    variant="outline"
+                                    className="h-auto cursor-pointer justify-start p-4"
+                                >
+                                    <Link to="/student/recommended">
+
+                                        <div className="text-start">
+
+                                            <p className="font-medium">
+                                                AI Recommendations
+                                            </p>
+
+                                            <p className="mt-1 text-xs text-muted-foreground">
+                                                Discover opportunities
+                                                selected for your profile.
+                                            </p>
+
+                                        </div>
+
+                                    </Link>
+                                </Button>
+
+                            </div>
+
+                        </CardContent>
+                    </Card>
 
                     <Separator />
 
                     <footer className="pb-4 text-center text-xs text-muted-foreground">
                         Forsa AI Student Portal
                     </footer>
+
                 </div>
             </div>
         </div>

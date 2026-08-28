@@ -11,7 +11,7 @@ use App\Http\Controllers\Api\EligibilityController;
 use App\Http\Controllers\Api\MatchingController;
 use App\Http\Controllers\Api\OpportunityController;
 use App\Http\Controllers\Api\RecommendationController;
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\StudentProfileController;
 
 /*
 |--------------------------------------------------------------------------
@@ -84,6 +84,20 @@ Route::middleware('auth:sanctum')->group(function () {
         [OpportunityController::class, 'show']
     )->name('opportunities.show');
 
+    Route::get(
+        '/profile',
+        [StudentProfileController::class, 'show']
+    )->name('student.profile.show');
+
+    Route::get(
+        '/profile/lookups',
+        [StudentProfileController::class, 'lookups']
+    )->name('student.profile.lookups');
+    
+    Route::put(
+        '/profile',
+        [StudentProfileController::class, 'update']
+    )->name('student.profile.update');
     /*
     |--------------------------------------------------------------------------
     | Student - Applications
