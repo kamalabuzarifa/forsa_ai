@@ -6,6 +6,7 @@ import {
 } from "react-router-dom";
 
 import Login from "../pages/auth/Login";
+import Register from "../pages/auth/Register";
 
 // Student Pages
 import Dashboard from "../pages/student/Dashboard";
@@ -36,7 +37,9 @@ import ProtectedRoute from "./ProtectedRoute";
 
 // Landing Page
 import Landing from "../pages/Landing";
-
+import PrivacyPolicy from "../pages/PrivacyPolicy";
+import TermsOfUse from "../pages/TermsOfUse";
+import Security from "../pages/Security";
 
 function AppRoutes() {
     return (
@@ -50,7 +53,20 @@ function AppRoutes() {
                     path="/"
                     element={<Landing />}
                 />
+                <Route
+                    path="/privacy-policy"
+                    element={<PrivacyPolicy />}
+                />
 
+                <Route
+                    path="/terms-of-use"
+                    element={<TermsOfUse />}
+                />
+
+                <Route
+                    path="/security"
+                    element={<Security />}
+                />
 
                 {/* Authentication */}
 
@@ -59,6 +75,10 @@ function AppRoutes() {
                     element={<Login />}
                 />
 
+                <Route
+                    path="/register"
+                    element={<Register />}
+                />
 
                 {/* Student Routes */}
 

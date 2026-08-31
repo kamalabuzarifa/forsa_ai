@@ -595,7 +595,7 @@ function OpportunityDetails() {
 
                                 <div>
                                     <p className="text-xs text-muted-foreground">
-                                        Forsa AI
+                                        Powered by EduMatch AI
                                     </p>
 
                                     <p className="text-sm font-medium">

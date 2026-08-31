@@ -929,7 +929,7 @@ function OpportunityCreate() {
                         </h1>
 
                         <p className="mt-2 max-w-2xl text-sm leading-6 text-muted-foreground sm:text-base">
-                            Add a new opportunity to the Forsa AI platform.
+                            Add a new opportunity to the EduMatch platform.
                         </p>
                     </section>
 

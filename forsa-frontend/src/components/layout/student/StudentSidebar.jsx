@@ -82,7 +82,7 @@ function StudentSidebar({ mobileOpen, onClose }) {
 
                         <div className="min-w-0">
                             <p className="truncate font-semibold">
-                                Forsa AI
+                                EduMatch
                             </p>
 
                             <p className="truncate text-xs text-muted-foreground">

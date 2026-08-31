@@ -9,6 +9,22 @@ export const login = async (email, password) => {
     return response.data;
 };
 
+export const register = async (
+    name,
+    email,
+    password,
+    password_confirmation
+) => {
+    const response = await api.post("/auth/register", {
+        name,
+        email,
+        password,
+        password_confirmation,
+    });
+
+    return response.data;
+};
+
 export const getMe = async () => {
     const response = await api.get("/auth/me");
 

@@ -1193,7 +1193,7 @@ function Dashboard() {
                     <Separator />
 
                     <footer className="pb-4 text-center text-xs text-muted-foreground">
-                        Forsa AI Student Portal
+                         Student Portal
                     </footer>
 
                 </div>

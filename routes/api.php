@@ -45,6 +45,7 @@ Route::prefix('auth')->group(function () {
     });
 });
 
+
 /*
 |--------------------------------------------------------------------------
 | Protected API Routes
@@ -52,6 +53,7 @@ Route::prefix('auth')->group(function () {
 */
 
 Route::middleware('auth:sanctum')->group(function () {
+
 
     /*
     |--------------------------------------------------------------------------
@@ -84,6 +86,13 @@ Route::middleware('auth:sanctum')->group(function () {
         [OpportunityController::class, 'show']
     )->name('opportunities.show');
 
+
+    /*
+    |--------------------------------------------------------------------------
+    | Student - Profile
+    |--------------------------------------------------------------------------
+    */
+
     Route::get(
         '/profile',
         [StudentProfileController::class, 'show']
@@ -93,11 +102,101 @@ Route::middleware('auth:sanctum')->group(function () {
         '/profile/lookups',
         [StudentProfileController::class, 'lookups']
     )->name('student.profile.lookups');
-    
+
     Route::put(
         '/profile',
         [StudentProfileController::class, 'update']
     )->name('student.profile.update');
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Student - Academic Records
+    |--------------------------------------------------------------------------
+    */
+
+    Route::post(
+        '/profile/academic-records',
+        [StudentProfileController::class, 'storeAcademicRecord']
+    )->name('student.profile.academic-records.store');
+
+    Route::put(
+        '/profile/academic-records/{id}',
+        [StudentProfileController::class, 'updateAcademicRecord']
+    )->name('student.profile.academic-records.update');
+
+    Route::delete(
+        '/profile/academic-records/{id}',
+        [StudentProfileController::class, 'destroyAcademicRecord']
+    )->name('student.profile.academic-records.destroy');
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Student - Languages
+    |--------------------------------------------------------------------------
+    */
+
+    Route::post(
+        '/profile/languages',
+        [StudentProfileController::class, 'storeLanguage']
+    )->name('student.profile.languages.store');
+
+    Route::put(
+        '/profile/languages/{id}',
+        [StudentProfileController::class, 'updateLanguage']
+    )->name('student.profile.languages.update');
+
+    Route::delete(
+        '/profile/languages/{id}',
+        [StudentProfileController::class, 'destroyLanguage']
+    )->name('student.profile.languages.destroy');
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Student - Skills
+    |--------------------------------------------------------------------------
+    */
+
+    Route::post(
+        '/profile/skills',
+        [StudentProfileController::class, 'storeSkill']
+    )->name('student.profile.skills.store');
+
+    Route::put(
+        '/profile/skills/{id}',
+        [StudentProfileController::class, 'updateSkill']
+    )->name('student.profile.skills.update');
+
+    Route::delete(
+        '/profile/skills/{id}',
+        [StudentProfileController::class, 'destroySkill']
+    )->name('student.profile.skills.destroy');
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Student - Work Experiences
+    |--------------------------------------------------------------------------
+    */
+
+    Route::post(
+        '/profile/work-experiences',
+        [StudentProfileController::class, 'storeWorkExperience']
+    )->name('student.profile.work-experiences.store');
+
+    Route::put(
+        '/profile/work-experiences/{id}',
+        [StudentProfileController::class, 'updateWorkExperience']
+    )->name('student.profile.work-experiences.update');
+
+    Route::delete(
+        '/profile/work-experiences/{id}',
+        [StudentProfileController::class, 'destroyWorkExperience']
+    )->name('student.profile.work-experiences.destroy');
+
+
     /*
     |--------------------------------------------------------------------------
     | Student - Applications
@@ -119,6 +218,7 @@ Route::middleware('auth:sanctum')->group(function () {
         [ApplicationController::class, 'show']
     )->name('applications.show');
 
+
     /*
     |--------------------------------------------------------------------------
     | Admin
@@ -128,6 +228,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('admin')
         ->middleware('admin')
         ->group(function () {
+
 
             /*
             |--------------------------------------------------------------------------
@@ -139,6 +240,7 @@ Route::middleware('auth:sanctum')->group(function () {
                 '/lookups',
                 [AdminLookupController::class, 'index']
             )->name('admin.lookups.index');
+
 
             /*
             |--------------------------------------------------------------------------
@@ -156,6 +258,7 @@ Route::middleware('auth:sanctum')->group(function () {
                 [AdminCountryController::class, 'store']
             )->name('admin.countries.store');
 
+
             /*
             |--------------------------------------------------------------------------
             | Admin - Universities
@@ -171,6 +274,7 @@ Route::middleware('auth:sanctum')->group(function () {
                 '/universities',
                 [AdminUniversityController::class, 'store']
             )->name('admin.universities.store');
+
 
             /*
             |--------------------------------------------------------------------------
@@ -202,6 +306,7 @@ Route::middleware('auth:sanctum')->group(function () {
                 '/opportunities/{opportunity}',
                 [AdminOpportunityController::class, 'destroy']
             )->name('admin.opportunities.destroy');
+
 
             /*
             |--------------------------------------------------------------------------

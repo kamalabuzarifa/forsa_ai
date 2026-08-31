@@ -318,7 +318,7 @@ class DatabaseSeeder extends Seeder
         $admin = User::firstOrCreate(
             ['email' => 'admin.test@example.com'],
             [
-                'name' => 'Forsa Admin',
+                'name' => 'EduMatch Admin',
                 'password' => Hash::make('password'),
                 'role' => 'admin',
                 'status' => 'active',
