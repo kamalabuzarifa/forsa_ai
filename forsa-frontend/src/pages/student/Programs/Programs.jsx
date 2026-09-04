@@ -27,12 +27,10 @@ import "./Programs.css";
 
 /* =========================================================
    HELPERS
-========================================================= */
+   ========================================================= */
 
 const getProgramTitle = (program) => {
-    if (!program) {
-        return "";
-    }
+    if (!program) return "";
 
     return (
         program.title ||
@@ -44,9 +42,7 @@ const getProgramTitle = (program) => {
 
 
 const getProgramFields = (program) => {
-    if (!program) {
-        return [];
-    }
+    if (!program) return [];
 
     if (Array.isArray(program.fields)) {
         return program.fields;
@@ -61,9 +57,7 @@ const getProgramFields = (program) => {
 
 
 const getFieldName = (field) => {
-    if (!field) {
-        return "";
-    }
+    if (!field) return "";
 
     if (typeof field === "string") {
         return field;
@@ -79,24 +73,18 @@ const getFieldName = (field) => {
 
 
 const getPrimaryField = (program) => {
-    const fields = getProgramFields(program);
-
-    if (!fields.length) {
-        return "";
-    }
-
-    return getFieldName(fields[0]);
+    return getProgramFields(program)
+        .map(getFieldName)
+        .find(Boolean) || "";
 };
 
 
 /* =========================================================
    DEGREES
-========================================================= */
+   ========================================================= */
 
 const getProgramDegrees = (program) => {
-    if (!program) {
-        return [];
-    }
+    if (!program) return [];
 
     if (Array.isArray(program.degrees)) {
         return program.degrees;
@@ -111,9 +99,7 @@ const getProgramDegrees = (program) => {
 
 
 const getDegreeName = (degree) => {
-    if (!degree) {
-        return "";
-    }
+    if (!degree) return "";
 
     if (typeof degree === "string") {
         return degree;
@@ -137,12 +123,10 @@ const getDegrees = (program) => {
 
 /* =========================================================
    PROGRAM TYPE
-========================================================= */
+   ========================================================= */
 
 const getProgramTypeName = (program) => {
-    if (!program) {
-        return "";
-    }
+    if (!program) return "";
 
     if (typeof program.type === "string") {
         return program.type;
@@ -159,12 +143,10 @@ const getProgramTypeName = (program) => {
 
 /* =========================================================
    FUNDING
-========================================================= */
+   ========================================================= */
 
 const getProgramFundingName = (program) => {
-    if (!program) {
-        return "";
-    }
+    if (!program) return "";
 
     if (typeof program.funding_type === "string") {
         return program.funding_type;
@@ -181,29 +163,23 @@ const getProgramFundingName = (program) => {
 
 /* =========================================================
    STUDY MODE
-========================================================= */
+   ========================================================= */
 
 const getProgramStudyMode = (program) => {
-    if (!program?.study_mode) {
-        return "";
-    }
+    if (!program?.study_mode) return "";
 
     return String(program.study_mode)
         .replaceAll("_", " ")
-        .replace(/\b\w/g, (letter) =>
-            letter.toUpperCase()
-        );
+        .replace(/\b\w/g, (letter) => letter.toUpperCase());
 };
 
 
 /* =========================================================
    DEADLINE
-========================================================= */
+   ========================================================= */
 
 const getProgramDeadline = (program) => {
-    if (!program) {
-        return null;
-    }
+    if (!program) return null;
 
     return (
         program.deadline ||
@@ -214,14 +190,8 @@ const getProgramDeadline = (program) => {
 };
 
 
-/* =========================================================
-   DATE
-========================================================= */
-
 const formatDate = (date) => {
-    if (!date) {
-        return "";
-    }
+    if (!date) return "";
 
     const parsedDate = new Date(date);
 
@@ -229,25 +199,20 @@ const formatDate = (date) => {
         return "";
     }
 
-    return parsedDate.toLocaleDateString(
-        "en-US",
-        {
-            year: "numeric",
-            month: "short",
-            day: "numeric",
-        }
-    );
+    return parsedDate.toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+    });
 };
 
 
 /* =========================================================
    COUNTRY
-========================================================= */
+   ========================================================= */
 
 const getCountryName = (program) => {
-    if (!program) {
-        return "";
-    }
+    if (!program) return "";
 
     if (typeof program.country === "string") {
         return program.country;
@@ -263,9 +228,7 @@ const getCountryName = (program) => {
 
 
 const getCountryId = (program) => {
-    if (!program) {
-        return "";
-    }
+    if (!program) return "";
 
     if (
         typeof program.country === "object" &&
@@ -276,7 +239,7 @@ const getCountryId = (program) => {
 
     if (
         typeof program.university?.country === "object" &&
-        program.university?.country?.id
+        program.university.country?.id
     ) {
         return program.university.country.id;
     }
@@ -291,12 +254,10 @@ const getCountryId = (program) => {
 
 /* =========================================================
    UNIVERSITY
-========================================================= */
+   ========================================================= */
 
 const getUniversityName = (program) => {
-    if (!program) {
-        return "";
-    }
+    if (!program) return "";
 
     if (typeof program.university === "string") {
         return program.university;
@@ -312,12 +273,10 @@ const getUniversityName = (program) => {
 
 /* =========================================================
    STATUS
-========================================================= */
+   ========================================================= */
 
 const getStatusValue = (value) => {
-    if (!value) {
-        return "";
-    }
+    if (!value) return "";
 
     if (typeof value === "string") {
         return value.toLowerCase();
@@ -337,13 +296,11 @@ const getStatusValue = (value) => {
 
 
 /* =========================================================
-   NORMALIZE UNIVERSITIES
-========================================================= */
+   RESPONSE NORMALIZATION
+   ========================================================= */
 
 const normalizeUniversitiesResponse = (response) => {
-    if (!response) {
-        return [];
-    }
+    if (!response) return [];
 
     if (Array.isArray(response.universities)) {
         return response.universities;
@@ -369,14 +326,8 @@ const normalizeUniversitiesResponse = (response) => {
 };
 
 
-/* =========================================================
-   NORMALIZE PROGRAMS
-========================================================= */
-
 const normalizeProgramsResponse = (response) => {
-    if (!response) {
-        return [];
-    }
+    if (!response) return [];
 
     if (Array.isArray(response.programs)) {
         return response.programs;
@@ -408,10 +359,9 @@ const normalizeProgramsResponse = (response) => {
 
 /* =========================================================
    COMPONENT
-========================================================= */
+   ========================================================= */
 
 function Programs() {
-
     const [programs, setPrograms] = useState([]);
 
     const [loading, setLoading] = useState(true);
@@ -430,77 +380,49 @@ function Programs() {
 
 
     /* =========================================================
-       LOAD REAL STUDENT PROGRAMS
-    ========================================================= */
+       LOAD PROGRAMS
+       ========================================================= */
 
     useEffect(() => {
-        loadPrograms();
-    }, []);
+        let mounted = true;
 
+        const fetchPrograms = async () => {
+            try {
+                setLoading(true);
+                setError("");
 
-    async function loadPrograms() {
+                const universitiesResponse =
+                    await getUniversities({
+                        per_page: 100,
+                    });
 
-        try {
-
-            setLoading(true);
-
-            setError("");
-
-
-            /*
-             * Get real universities from Laravel.
-             */
-            const universitiesResponse =
-                await getUniversities({
-                    per_page: 100,
-                });
-
-
-            const universities =
-                normalizeUniversitiesResponse(
-                    universitiesResponse
-                );
-
-
-            /*
-             * Only active universities.
-             *
-             * If the API does not return status,
-             * the university is kept.
-             */
-            const activeUniversities =
-                universities.filter((university) => {
-
-                    const status =
-                        getStatusValue(
-                            university?.status
-                        );
-
-                    if (!status) {
-                        return true;
-                    }
-
-                    return (
-                        status === "active" ||
-                        status === "published"
+                const universities =
+                    normalizeUniversitiesResponse(
+                        universitiesResponse
                     );
-                });
 
+                const activeUniversities =
+                    universities.filter((university) => {
+                        const status =
+                            getStatusValue(
+                                university?.status
+                            );
 
-            /*
-             * Load programs from every real university.
-             */
-            const responses =
-                await Promise.all(
+                        return (
+                            !status ||
+                            status === "active" ||
+                            status === "published"
+                        );
+                    });
+
+                const responses = await Promise.all(
                     activeUniversities.map(
                         async (university) => {
-
                             if (!university?.id) {
                                 return [];
                             }
 
                             try {
-
                                 const response =
                                     await getUniversityPrograms(
                                         university.id,
@@ -509,35 +431,19 @@ function Programs() {
                                         }
                                     );
 
-
-                                const universityPrograms =
-                                    normalizeProgramsResponse(
-                                        response
-                                    );
-
-
-                                /*
-                                 * Attach university only
-                                 * when it is missing.
-                                 */
-                                return universityPrograms.map(
-                                    (program) => {
-
-                                        if (
-                                            program?.university
-                                        ) {
-                                            return program;
-                                        }
-
-                                        return {
-                                            ...program,
-                                            university,
-                                        };
+                                return normalizeProgramsResponse(
+                                    response
+                                ).map((program) => {
+                                    if (program?.university) {
+                                        return program;
                                     }
-                                );
 
+                                    return {
+                                        ...program,
+                                        university,
+                                    };
+                                });
                             } catch (programError) {
-
                                 console.error(
                                     `Failed to load programs for university ${university.id}:`,
                                     programError
@@ -549,389 +455,284 @@ function Programs() {
                     )
                 );
 
-
-            /*
-             * Flatten all real programs.
-             */
-            const allPrograms =
-                responses.flat();
-
-
-            /*
-             * Only valid database records.
-             */
-            const validPrograms =
-                allPrograms.filter(
-                    (program) =>
-                        program?.id &&
-                        getProgramTitle(program)
-                );
-
-
-            /*
-             * Student should see only published/active
-             * programs when status exists.
-             */
-            const studentPrograms =
-                validPrograms.filter(
-                    (program) => {
+                const validPrograms = responses
+                    .flat()
+                    .filter((program) => {
+                        if (
+                            !program?.id ||
+                            !getProgramTitle(program)
+                        ) {
+                            return false;
+                        }
 
                         const status =
                             getStatusValue(
-                                program?.status
+                                program.status
                             );
 
-                        if (!status) {
-                            return true;
-                        }
-
                         return (
+                            !status ||
                             status === "active" ||
                             status === "published"
                         );
-                    }
-                );
+                    });
 
-
-            /*
-             * Remove duplicates by REAL DATABASE ID.
-             *
-             * If the same program is returned more than once,
-             * only the first database record remains.
-             */
-            const uniquePrograms =
-                Array.from(
+                const uniquePrograms = Array.from(
                     new Map(
-                        studentPrograms.map(
-                            (program) => [
-                                String(program.id),
-                                program,
-                            ]
-                        )
+                        validPrograms.map((program) => [
+                            String(program.id),
+                            program,
+                        ])
                     ).values()
                 );
 
+                if (mounted) {
+                    setPrograms(uniquePrograms);
+                }
+            } catch (err) {
+                console.error(
+                    "Failed to load programs:",
+                    err
+                );
 
-            setPrograms(uniquePrograms);
+                if (mounted) {
+                    setError(
+                        err?.response?.data?.message ||
+                        "Unable to load programmes."
+                    );
+                }
+            } finally {
+                if (mounted) {
+                    setLoading(false);
+                }
+            }
+        };
 
-        } catch (err) {
+        fetchPrograms();
 
-            console.error(
-                "Failed to load programs:",
-                err
-            );
-
-            setError(
-                err?.response?.data?.message ||
-                "Unable to load programmes."
-            );
-
-        } finally {
-
-            setLoading(false);
-        }
-    }
+        return () => {
+            mounted = false;
+        };
+    }, []);
 
 
     /* =========================================================
        COUNTRIES
-    ========================================================= */
+       ========================================================= */
 
     const countries = useMemo(() => {
-
         const countryMap = new Map();
 
-        programs.forEach(
-            (program) => {
+        programs.forEach((program) => {
+            const id = getCountryId(program);
+            const name = getCountryName(program);
 
-                const id =
-                    getCountryId(program);
-
-                const name =
-                    getCountryName(program);
-
-
-                if (id && name) {
-
-                    countryMap.set(
-                        String(id),
-                        {
-                            id,
-                            name,
-                        }
-                    );
-                }
+            if (id && name) {
+                countryMap.set(String(id), {
+                    id,
+                    name,
+                });
             }
-        );
+        });
 
-
-        return Array.from(
-            countryMap.values()
-        ).sort(
+        return Array.from(countryMap.values()).sort(
             (a, b) =>
                 String(a.name).localeCompare(
                     String(b.name)
                 )
         );
-
     }, [programs]);
 
 
     /* =========================================================
        DEGREES
-    ========================================================= */
+       ========================================================= */
 
     const degrees = useMemo(() => {
-
         const degreeMap = new Map();
 
-        programs.forEach(
-            (program) => {
+        programs.forEach((program) => {
+            getProgramDegrees(program).forEach(
+                (degree) => {
+                    const name =
+                        getDegreeName(degree);
 
-                getProgramDegrees(
-                    program
-                ).forEach(
-                    (degree) => {
+                    const id =
+                        typeof degree === "object"
+                            ? degree?.id
+                            : name;
 
-                        const name =
-                            getDegreeName(
-                                degree
-                            );
-
-                        const id =
-                            typeof degree === "object"
-                                ? degree?.id
-                                : name;
-
-
-                        if (id && name) {
-
-                            degreeMap.set(
-                                String(id),
-                                {
-                                    id,
-                                    name,
-                                }
-                            );
-                        }
+                    if (id && name) {
+                        degreeMap.set(
+                            String(id),
+                            {
+                                id,
+                                name,
+                            }
+                        );
                     }
-                );
-            }
-        );
+                }
+            );
+        });
 
-
-        return Array.from(
-            degreeMap.values()
-        ).sort(
+        return Array.from(degreeMap.values()).sort(
             (a, b) =>
                 String(a.name).localeCompare(
                     String(b.name)
                 )
         );
-
     }, [programs]);
 
 
     /* =========================================================
        FIELDS
-    ========================================================= */
+       ========================================================= */
 
     const fields = useMemo(() => {
-
         const fieldMap = new Map();
 
-        programs.forEach(
-            (program) => {
+        programs.forEach((program) => {
+            getProgramFields(program).forEach(
+                (field) => {
+                    const name =
+                        getFieldName(field);
 
-                getProgramFields(
-                    program
-                ).forEach(
-                    (field) => {
+                    const id =
+                        typeof field === "object"
+                            ? field?.id
+                            : name;
 
-                        const name =
-                            getFieldName(
-                                field
-                            );
-
-                        const id =
-                            typeof field === "object"
-                                ? field?.id
-                                : name;
-
-
-                        if (id && name) {
-
-                            fieldMap.set(
-                                String(id),
-                                {
-                                    id,
-                                    name,
-                                }
-                            );
-                        }
+                    if (id && name) {
+                        fieldMap.set(
+                            String(id),
+                            {
+                                id,
+                                name,
+                            }
+                        );
                     }
-                );
-            }
-        );
+                }
+            );
+        });
 
-
-        return Array.from(
-            fieldMap.values()
-        ).sort(
+        return Array.from(fieldMap.values()).sort(
             (a, b) =>
                 String(a.name).localeCompare(
                     String(b.name)
                 )
         );
-
     }, [programs]);
 
 
     /* =========================================================
-       FILTER
-    ========================================================= */
+       FILTERED PROGRAMS
+       ========================================================= */
 
     const filteredPrograms = useMemo(() => {
-
         const searchValue =
-            search
-                .trim()
-                .toLowerCase();
+            search.trim().toLowerCase();
 
+        return programs.filter((program) => {
+            const title =
+                getProgramTitle(program).toLowerCase();
 
-        return programs.filter(
-            (program) => {
+            const university =
+                getUniversityName(program).toLowerCase();
 
-                const title =
-                    getProgramTitle(
-                        program
-                    ).toLowerCase();
+            const country =
+                getCountryName(program).toLowerCase();
 
-                const university =
-                    getUniversityName(
-                        program
-                    ).toLowerCase();
+            const description =
+                String(
+                    program.description || ""
+                ).toLowerCase();
 
-                const country =
-                    getCountryName(
-                        program
-                    ).toLowerCase();
+            const fieldsText =
+                getProgramFields(program)
+                    .map(getFieldName)
+                    .join(" ")
+                    .toLowerCase();
 
-                const description =
-                    String(
-                        program.description ||
-                        ""
-                    ).toLowerCase();
+            const degreesText =
+                getProgramDegrees(program)
+                    .map(getDegreeName)
+                    .join(" ")
+                    .toLowerCase();
 
-                const fieldsText =
-                    getProgramFields(
-                        program
-                    )
-                        .map(getFieldName)
-                        .join(" ")
-                        .toLowerCase();
+            const type =
+                getProgramTypeName(
+                    program
+                ).toLowerCase();
 
-                const degreesText =
-                    getProgramDegrees(
-                        program
-                    )
-                        .map(getDegreeName)
-                        .join(" ")
-                        .toLowerCase();
+            const funding =
+                getProgramFundingName(
+                    program
+                ).toLowerCase();
 
-                const type =
-                    getProgramTypeName(
-                        program
-                    ).toLowerCase();
+            const studyMode =
+                getProgramStudyMode(
+                    program
+                ).toLowerCase();
 
-                const funding =
-                    getProgramFundingName(
-                        program
-                    ).toLowerCase();
+            const matchesSearch =
+                !searchValue ||
+                title.includes(searchValue) ||
+                university.includes(searchValue) ||
+                country.includes(searchValue) ||
+                description.includes(searchValue) ||
+                fieldsText.includes(searchValue) ||
+                degreesText.includes(searchValue) ||
+                type.includes(searchValue) ||
+                funding.includes(searchValue) ||
+                studyMode.includes(searchValue);
 
-                const studyMode =
-                    getProgramStudyMode(
-                        program
-                    ).toLowerCase();
-
-
-                const matchesSearch =
-                    !searchValue ||
-                    title.includes(searchValue) ||
-                    university.includes(searchValue) ||
-                    country.includes(searchValue) ||
-                    description.includes(searchValue) ||
-                    fieldsText.includes(searchValue) ||
-                    degreesText.includes(searchValue) ||
-                    type.includes(searchValue) ||
-                    funding.includes(searchValue) ||
-                    studyMode.includes(searchValue);
-
-
-                const matchesCountry =
-                    !filters.country ||
-                    String(
-                        getCountryId(program)
-                    ) === String(
-                        filters.country
-                    );
-
-
-                const matchesDegree =
-                    !filters.degree ||
-                    getProgramDegrees(
-                        program
-                    ).some(
-                        (degree) => {
-
-                            const degreeId =
-                                typeof degree === "object"
-                                    ? degree?.id
-                                    : degree;
-
-                            return (
-                                String(
-                                    degreeId
-                                ) === String(
-                                    filters.degree
-                                )
-                            );
-                        }
-                    );
-
-
-                const matchesField =
-                    !filters.field ||
-                    getProgramFields(
-                        program
-                    ).some(
-                        (field) => {
-
-                            const fieldId =
-                                typeof field === "object"
-                                    ? field?.id
-                                    : field;
-
-                            return (
-                                String(
-                                    fieldId
-                                ) === String(
-                                    filters.field
-                                )
-                            );
-                        }
-                    );
-
-
-                return (
-                    matchesSearch &&
-                    matchesCountry &&
-                    matchesDegree &&
-                    matchesField
+            const matchesCountry =
+                !filters.country ||
+                String(
+                    getCountryId(program)
+                ) === String(
+                    filters.country
                 );
-            }
-        );
 
+            const matchesDegree =
+                !filters.degree ||
+                getProgramDegrees(program).some(
+                    (degree) => {
+                        const degreeId =
+                            typeof degree === "object"
+                                ? degree?.id
+                                : degree;
+
+                        return (
+                            String(degreeId) ===
+                            String(filters.degree)
+                        );
+                    }
+                );
+
+            const matchesField =
+                !filters.field ||
+                getProgramFields(program).some(
+                    (field) => {
+                        const fieldId =
+                            typeof field === "object"
+                                ? field?.id
+                                : field;
+
+                        return (
+                            String(fieldId) ===
+                            String(filters.field)
+                        );
+                    }
+                );
+
+            return (
+                matchesSearch &&
+                matchesCountry &&
+                matchesDegree &&
+                matchesField
+            );
+        });
     }, [
         programs,
         search,
@@ -941,10 +742,9 @@ function Programs() {
 
     /* =========================================================
        RESET
-    ========================================================= */
+       ========================================================= */
 
-    function resetFilters() {
-
+    const resetFilters = () => {
         setSearch("");
 
         setFilters({
@@ -952,38 +752,32 @@ function Programs() {
             degree: "",
             field: "",
         });
-    }
+    };
 
 
     /* =========================================================
        RENDER
-    ========================================================= */
+       ========================================================= */
 
     return (
-
         <div className="programs-page">
 
             {/* =====================================================
                 HEADER
-            ===================================================== */}
+            ====================================================== */}
 
             <section className="programs-header">
 
                 <div>
 
                     <div className="programs-eyebrow">
-
                         <Sparkles size={14} />
-
-                        EXPLORE PROGRAMS
-
+                        EXPLORE PROGRAMMES
                     </div>
 
-
                     <h1>
-                        Find your next degree
+                        Find your next programme
                     </h1>
-
 
                     <p>
                         Explore published study
@@ -993,55 +787,50 @@ function Programs() {
 
                 </div>
 
-            </section>
+
+                {/* SEARCH */}
+
+                <section className="programs-search-section">
+
+                    <div className="programs-search">
+
+                        <Search size={18} />
+
+                        <input
+                            type="text"
+                            placeholder="Search programmes, universities or countries..."
+                            value={search}
+                            onChange={(event) =>
+                                setSearch(
+                                    event.target.value
+                                )
+                            }
+                        />
+
+                    </div>
 
 
-            {/* =====================================================
-                SEARCH
-            ===================================================== */}
-
-            <section className="programs-search-section">
-
-                <div className="programs-search">
-
-                    <Search size={18} />
-
-                    <input
-                        type="text"
-                        placeholder="Search programmes, universities or countries..."
-                        value={search}
-                        onChange={(event) =>
-                            setSearch(
-                                event.target.value
+                    <button
+                        type="button"
+                        className="programs-filter-button"
+                        onClick={() =>
+                            setShowFilters(
+                                (current) => !current
                             )
                         }
-                    />
+                    >
+                        <SlidersHorizontal size={16} />
+                        Filters
+                    </button>
 
-                </div>
-
-
-                <button
-                    type="button"
-                    className="programs-filter-button"
-                    onClick={() =>
-                        setShowFilters(
-                            !showFilters
-                        )
-                    }
-                >
-
-                    <SlidersHorizontal size={16} />
-
-                    Filters
-
-                </button>
+                </section>
 
             </section>
 
 
             {/* =====================================================
                 FILTERS
-            ===================================================== */}
+            ====================================================== */}
 
             <section
                 className={`programs-filters ${showFilters
@@ -1053,30 +842,25 @@ function Programs() {
                 <select
                     value={filters.country}
                     onChange={(event) =>
-                        setFilters({
-                            ...filters,
+                        setFilters((current) => ({
+                            ...current,
                             country:
                                 event.target.value,
-                        })
+                        }))
                     }
                 >
-
                     <option value="">
                         All countries
                     </option>
 
-                    {countries.map(
-                        (country) => (
-
-                            <option
-                                key={country.id}
-                                value={country.id}
-                            >
-                                {country.name}
-                            </option>
-
-                        )
-                    )}
+                    {countries.map((country) => (
+                        <option
+                            key={country.id}
+                            value={country.id}
+                        >
+                            {country.name}
+                        </option>
+                    ))}
 
                 </select>
 
@@ -1084,30 +868,25 @@ function Programs() {
                 <select
                     value={filters.degree}
                     onChange={(event) =>
-                        setFilters({
-                            ...filters,
+                        setFilters((current) => ({
+                            ...current,
                             degree:
                                 event.target.value,
-                        })
+                        }))
                     }
                 >
-
                     <option value="">
                         All degrees
                     </option>
 
-                    {degrees.map(
-                        (degree) => (
-
-                            <option
-                                key={degree.id}
-                                value={degree.id}
-                            >
-                                {degree.name}
-                            </option>
-
-                        )
-                    )}
+                    {degrees.map((degree) => (
+                        <option
+                            key={degree.id}
+                            value={degree.id}
+                        >
+                            {degree.name}
+                        </option>
+                    ))}
 
                 </select>
 
@@ -1115,164 +894,239 @@ function Programs() {
                 <select
                     value={filters.field}
                     onChange={(event) =>
-                        setFilters({
-                            ...filters,
+                        setFilters((current) => ({
+                            ...current,
                             field:
                                 event.target.value,
-                        })
+                        }))
                     }
                 >
-
                     <option value="">
                         All fields
                     </option>
 
-                    {fields.map(
-                        (field) => (
-
-                            <option
-                                key={field.id}
-                                value={field.id}
-                            >
-                                {field.name}
-                            </option>
-
-                        )
-                    )}
+                    {fields.map((field) => (
+                        <option
+                            key={field.id}
+                            value={field.id}
+                        >
+                            {field.name}
+                        </option>
+                    ))}
 
                 </select>
 
 
                 {(
+                    search ||
                     filters.country ||
                     filters.degree ||
-                    filters.field ||
-                    search
+                    filters.field
                 ) && (
-
                         <button
                             type="button"
                             className="programs-reset-button"
                             onClick={resetFilters}
                         >
-
                             <RotateCcw size={14} />
-
                             Reset
-
                         </button>
-
                     )}
 
             </section>
 
 
             {/* =====================================================
-                RESULTS
-            ===================================================== */}
+                RESULTS TOOLBAR
+            ====================================================== */}
 
-            <div className="programs-results-header">
+            <div className="programs-toolbar">
 
                 <div>
 
-                    <strong>
-                        {loading
-                            ? 0
-                            : filteredPrograms.length}
-                    </strong>
-
-                    <span>
-                        {filteredPrograms.length === 1
-                            ? " programme found"
-                            : " programmes found"}
+                    <span className="programs-result-label">
+                        Programmes
                     </span>
 
+                    <h2>
+                        Explore study programmes
+                    </h2>
+
                 </div>
+
+
+                {!loading && !error && (
+                    <div className="programs-results-top">
+
+                        <p>
+                            <strong>
+                                {filteredPrograms.length}
+                            </strong>{" "}
+
+                            {filteredPrograms.length === 1
+                                ? "programme"
+                                : "programmes"}{" "}
+
+                            found
+                        </p>
+
+                    </div>
+                )}
 
             </div>
 
 
             {/* =====================================================
-                LOADING
-            ===================================================== */}
+                RESULTS
+            ====================================================== */}
 
-            {loading && (
+            <div className="programs-results">
 
-                <div className="programs-state">
+                {/* =================================================
+                    LOADING SKELETON
+                ================================================== */}
 
-                    <div className="programs-loader" />
+                {loading && (
+                    <div className="programs-grid">
 
-                    <p>
-                        Loading programmes...
-                    </p>
+                        {Array.from({ length: 6 }).map(
+                            (_, index) => (
+                                <article
+                                    className="program-card program-card-skeleton"
+                                    key={index}
+                                >
 
-                </div>
+                                    {/* Card Top */}
 
-            )}
+                                    <div className="program-card-top">
 
+                                        <div className="program-card-top-main">
 
-            {/* =====================================================
-                ERROR
-            ===================================================== */}
+                                            <div className="skeleton-logo" />
 
-            {!loading && error && (
+                                            <div className="skeleton-top-content">
 
-                <div className="programs-state programs-error">
+                                                <div className="skeleton-line small" />
 
-                    <p>
-                        {error}
-                    </p>
+                                                <div className="skeleton-line title" />
 
-                    <button
-                        type="button"
-                        onClick={loadPrograms}
-                    >
-                        Try again
-                    </button>
+                                            </div>
 
-                </div>
+                                        </div>
 
-            )}
+                                    </div>
 
 
-            {/* =====================================================
-                EMPTY
-            ===================================================== */}
+                                    {/* Card Body */}
 
-            {!loading &&
-                !error &&
-                filteredPrograms.length === 0 && (
+                                    <div className="program-card-body">
 
-                    <div className="programs-state">
+                                        <div className="skeleton-line field" />
 
-                        <GraduationCap size={40} />
+                                        <div className="skeleton-line body-title" />
 
-                        <h3>
-                            No programmes found
-                        </h3>
+                                        <div className="skeleton-line description" />
 
-                        <p>
-                            No published programmes
-                            match your search or filters.
-                        </p>
+                                        <div className="skeleton-line description short" />
+
+                                    </div>
+
+
+                                    {/* Meta */}
+
+                                    <div className="program-card-meta">
+
+                                        <div className="skeleton-meta" />
+
+                                        <div className="skeleton-meta second" />
+
+                                    </div>
+
+
+                                    {/* Footer */}
+
+                                    <div className="program-card-footer">
+
+                                        <div className="skeleton-footer-line" />
+
+                                        <div className="skeleton-arrow" />
+
+                                    </div>
+
+                                </article>
+                            )
+                        )}
 
                     </div>
-
                 )}
 
 
-            {/* =====================================================
-                PROGRAMS
-            ===================================================== */}
+                {/* =================================================
+                    ERROR
+                ================================================== */}
 
-            {!loading &&
-                !error &&
-                filteredPrograms.length > 0 && (
+                {!loading && error && (
+                    <div className="programs-state programs-error">
 
-                    <div className="programs-grid">
+                        <p>
+                            {error}
+                        </p>
 
-                        {filteredPrograms.map(
-                            (program) => {
+                        <button
+                            type="button"
+                            onClick={() =>
+                                window.location.reload()
+                            }
+                        >
+                            Try again
+                        </button>
+
+                    </div>
+                )}
+
+
+                {/* =================================================
+                    EMPTY
+                ================================================== */}
+
+                {!loading &&
+                    !error &&
+                    filteredPrograms.length === 0 && (
+                        <div className="programs-state">
+
+                            <GraduationCap size={40} />
+
+                            <h3>
+                                No programmes found
+                            </h3>
+
+                            <p>
+                                No published programmes
+                                match your search or filters.
+                            </p>
+
+                        </div>
+                    )}
+
+
+                {/* =================================================
+                    PROGRAMS
+                ================================================== */}
+
+                {!loading &&
+                    !error &&
+                    filteredPrograms.length > 0 && (
+
+                        <div className="programs-grid">
+
+                            {filteredPrograms.map((program) => {
+
+                                if (
+                                    !program?.id ||
+                                    !getProgramTitle(program)
+                                ) {
+                                    return null;
+                                }
 
                                 const programTitle =
                                     getProgramTitle(
@@ -1317,56 +1171,36 @@ function Programs() {
                                         program
                                     );
 
-
-                                if (
-                                    !program?.id ||
-                                    !programTitle
-                                ) {
-                                    return null;
-                                }
-
-
                                 return (
-
                                     <article
                                         className="program-card"
                                         key={program.id}
                                     >
 
-                                        {/* =====================
-                                            TOP
-                                        ===================== */}
+                                        {/* Card Header */}
 
                                         <div className="program-card-top">
 
                                             <div className="program-card-top-main">
 
                                                 <div className="program-card-logo">
-
                                                     <GraduationCap
                                                         size={21}
                                                     />
-
                                                 </div>
-
 
                                                 <div className="program-card-degree-header">
 
                                                     {primaryDegree && (
-
                                                         <strong>
                                                             {primaryDegree}
                                                         </strong>
-
                                                     )}
 
-
                                                     {universityName && (
-
                                                         <span>
                                                             {universityName}
                                                         </span>
-
                                                     )}
 
                                                 </div>
@@ -1376,91 +1210,68 @@ function Programs() {
                                         </div>
 
 
-                                        {/* =====================
-                                            BODY
-                                        ===================== */}
+                                        {/* Card Body */}
 
                                         <div className="program-card-body">
 
                                             {fieldName && (
-
                                                 <span className="program-card-field">
                                                     {fieldName}
                                                 </span>
-
                                             )}
-
 
                                             <h2>
                                                 {programTitle}
                                             </h2>
 
-
                                             {program.description && (
-
                                                 <p className="program-card-description">
                                                     {program.description}
                                                 </p>
-
                                             )}
 
                                         </div>
 
 
-                                        {/* =====================
-                                            META
-                                        ===================== */}
+                                        {/* Card Meta */}
 
                                         {(programType ||
                                             fundingName ||
                                             studyMode) && (
-
                                                 <div className="program-card-meta">
 
                                                     {programType && (
-
                                                         <span>
                                                             {programType}
                                                         </span>
-
                                                     )}
 
-
                                                     {fundingName && (
-
                                                         <span>
                                                             {fundingName}
                                                         </span>
-
                                                     )}
 
-
                                                     {studyMode && (
-
                                                         <span>
                                                             {studyMode}
                                                         </span>
-
                                                     )}
 
                                                 </div>
-
                                             )}
 
 
-                                        {/* =====================
-                                            FOOTER
-                                        ===================== */}
+                                        {/* Card Footer */}
 
                                         <div className="program-card-footer">
 
                                             <div className="program-card-deadline">
 
                                                 {deadline ? (
-
                                                     <>
                                                         <span>
-                                                            Deadline
+                                                            Application deadline
                                                         </span>
 
                                                         <strong>
@@ -1469,13 +1280,10 @@ function Programs() {
                                                             )}
                                                         </strong>
                                                     </>
-
                                                 ) : (
-
                                                     <span>
-                                                        Application deadline
+                                                        No deadline specified
                                                     </span>
-
                                                 )}
 
                                             </div>
@@ -1486,24 +1294,21 @@ function Programs() {
                                                 className="program-card-arrow"
                                                 aria-label={`View ${programTitle}`}
                                             >
-
                                                 <ArrowRight
                                                     size={18}
                                                 />
-
                                             </Link>
 
                                         </div>
 
                                     </article>
-
                                 );
-                            }
-                        )}
+                            })}
 
-                    </div>
+                        </div>
+                    )}
 
-                )}
+            </div>
 
         </div>
     );
