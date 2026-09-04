@@ -1,0 +1,2105 @@
+/* =========================================================
+   EXPLORE PAGE
+========================================================= */
+
+.explore-page {
+    width: 100%;
+    min-height: 100vh;
+
+    background: #ffffff;
+
+    color: #0f172a;
+
+    overflow-x: hidden;
+}
+
+
+/* =========================================================
+   HERO
+========================================================= */
+
+.explore-hero {
+    min-height: 570px;
+
+    display: grid;
+
+    grid-template-columns:
+        1.05fr 0.95fr;
+
+    align-items: center;
+
+    gap: 70px;
+
+    padding: 75px 8% 85px;
+
+    background:
+        linear-gradient(135deg,
+            #f3faf8 0%,
+            #ffffff 58%,
+            #f5faf9 100%);
+
+    overflow: hidden;
+}
+
+
+.explore-hero-content {
+    max-width: 650px;
+}
+
+
+.explore-eyebrow {
+    display: inline-flex;
+    align-items: center;
+
+    gap: 7px;
+
+    color: #0f9f8f;
+
+    font-size: 10px;
+
+    font-weight: 800;
+
+    letter-spacing: 0.4px;
+}
+
+
+.explore-eyebrow svg {
+    flex-shrink: 0;
+}
+
+
+.explore-hero h1 {
+    max-width: 650px;
+
+    margin: 17px 0 20px;
+
+    color: #26302e;
+
+    font-size: 53px;
+
+    font-weight: 800;
+
+    line-height: 1.04;
+
+    letter-spacing: -2.4px;
+}
+
+
+.explore-hero h1 span {
+    display: block;
+
+    color: #0f9f8f;
+}
+
+
+.explore-hero-content>p {
+    max-width: 560px;
+
+    margin: 0;
+
+    color: #687572;
+
+    font-size: 13px;
+
+    line-height: 1.85;
+}
+
+
+/* =========================================================
+   SEARCH
+========================================================= */
+
+.explore-search {
+    max-width: 610px;
+
+    height: 60px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+
+    margin-top: 30px;
+
+    padding: 6px 6px 6px 18px;
+
+    border: 1px solid #dce8e4;
+
+    border-radius: 11px;
+
+    background: #ffffff;
+
+    box-shadow:
+        0 15px 35px rgba(20, 60, 55, 0.08);
+}
+
+
+.explore-search-icon {
+    flex-shrink: 0;
+
+    color: #8a9692;
+}
+
+
+.explore-search input {
+    min-width: 0;
+
+    flex: 1;
+
+    height: 100%;
+
+    padding: 0;
+
+    border: 0;
+
+    outline: 0;
+
+    color: #303936;
+
+    background: transparent;
+
+    font-family: inherit;
+
+    font-size: 11px;
+}
+
+
+.explore-search input::placeholder {
+    color: #9aa4a1;
+}
+
+
+.explore-search button {
+    height: 48px;
+
+    padding: 0 24px;
+
+    border: 0;
+
+    border-radius: 8px;
+
+    color: #ffffff;
+
+    background: #0f9f8f;
+
+    font-family: inherit;
+
+    font-size: 10px;
+
+    font-weight: 800;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        transform 0.2s ease;
+}
+
+
+.explore-search button:hover {
+    background: #0c887a;
+
+    transform: translateY(-1px);
+}
+
+
+/* =========================================================
+   QUICK SEARCH
+========================================================= */
+
+.explore-quick-search {
+    display: flex;
+    align-items: center;
+
+    flex-wrap: wrap;
+
+    gap: 8px;
+
+    margin-top: 14px;
+}
+
+
+.explore-quick-search>span {
+    margin-right: 4px;
+
+    color: #8a9491;
+
+    font-size: 8px;
+}
+
+
+.explore-quick-search button {
+    padding: 6px 9px;
+
+    border: 1px solid #dce7e4;
+
+    border-radius: 6px;
+
+    color: #66726f;
+
+    background: #ffffff;
+
+    font-family: inherit;
+
+    font-size: 8px;
+
+    cursor: pointer;
+
+    transition:
+        color 0.2s ease,
+        border-color 0.2s ease,
+        background 0.2s ease;
+}
+
+
+.explore-quick-search button:hover {
+    color: #0f9f8f;
+
+    border-color: #b9ded8;
+
+    background: #eaf8f5;
+}
+
+
+/* =========================================================
+   HERO VISUAL
+========================================================= */
+
+.explore-hero-visual {
+    position: relative;
+
+    min-height: 440px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+}
+
+
+.explore-hero-card {
+    position: relative;
+
+    z-index: 2;
+
+    width: 385px;
+
+    padding: 27px;
+
+    border: 1px solid #dfe9e6;
+
+    border-radius: 17px;
+
+    background: #ffffff;
+
+    box-shadow:
+        0 30px 70px rgba(20, 60, 55, 0.13);
+}
+
+
+.explore-hero-card-header {
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+}
+
+
+.explore-card-icon {
+    width: 46px;
+    height: 46px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    border-radius: 11px;
+
+    color: #0f9f8f;
+
+    background: #eaf8f5;
+}
+
+
+.explore-hero-card-header strong,
+.explore-hero-card-header span {
+    display: block;
+}
+
+
+.explore-hero-card-header strong {
+    color: #2b3532;
+
+    font-size: 12px;
+}
+
+
+.explore-hero-card-header span {
+    margin-top: 4px;
+
+    color: #8a9591;
+
+    font-size: 8px;
+}
+
+
+/* =========================================================
+   MATCH SCORE
+========================================================= */
+
+.explore-match-score {
+    margin-top: 27px;
+
+    padding: 17px;
+
+    border-radius: 11px;
+
+    background: #f5faf9;
+}
+
+
+.explore-match-score>div:first-child {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+}
+
+
+.explore-match-score span {
+    color: #6c7774;
+
+    font-size: 8px;
+}
+
+
+.explore-match-score strong {
+    color: #0f9f8f;
+
+    font-size: 19px;
+}
+
+
+.match-progress {
+    height: 6px;
+
+    margin-top: 12px;
+
+    overflow: hidden;
+
+    border-radius: 10px;
+
+    background: #dcebe7;
+}
+
+
+.match-progress span {
+    display: block;
+
+    width: 96%;
+
+    height: 100%;
+
+    border-radius: inherit;
+
+    background: #0f9f8f;
+}
+
+
+/* =========================================================
+   MATCH PROGRAM
+========================================================= */
+
+.explore-match-program {
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    margin-top: 20px;
+}
+
+
+.explore-program-logo {
+    width: 43px;
+    height: 43px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    border-radius: 10px;
+
+    color: #0f9f8f;
+
+    background: #eaf8f5;
+
+    font-size: 10px;
+
+    font-weight: 800;
+}
+
+
+.explore-match-program strong,
+.explore-match-program span {
+    display: block;
+}
+
+
+.explore-match-program strong {
+    color: #303936;
+
+    font-size: 10px;
+}
+
+
+.explore-match-program span {
+    margin-top: 4px;
+
+    color: #8a9491;
+
+    font-size: 8px;
+}
+
+
+/* =========================================================
+   HERO CARD FOOTER
+========================================================= */
+
+.explore-card-footer {
+    display: flex;
+
+    align-items: center;
+
+    gap: 18px;
+
+    margin-top: 21px;
+
+    padding-top: 17px;
+
+    border-top: 1px solid #edf1ef;
+}
+
+
+.explore-card-footer span {
+    display: flex;
+
+    align-items: center;
+
+    gap: 5px;
+
+    color: #78837f;
+
+    font-size: 8px;
+}
+
+
+.explore-card-footer svg {
+    color: #0f9f8f;
+}
+
+
+/* =========================================================
+   HERO EMPTY
+========================================================= */
+
+.explore-hero-empty {
+    margin-top: 30px;
+
+    padding: 25px 15px;
+
+    border-radius: 11px;
+
+    color: #7d8985;
+
+    background: #f7faf9;
+
+    font-size: 9px;
+
+    text-align: center;
+}
+
+
+/* =========================================================
+   FLOATING CARDS
+========================================================= */
+
+.explore-floating-card {
+    position: absolute;
+
+    z-index: 3;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 9px;
+
+    padding: 12px 15px;
+
+    border: 1px solid #dfe9e6;
+
+    border-radius: 10px;
+
+    background: #ffffff;
+
+    box-shadow:
+        0 15px 35px rgba(20, 60, 55, 0.10);
+}
+
+
+.explore-floating-top {
+    top: 40px;
+
+    right: 0;
+}
+
+
+.explore-floating-bottom {
+    bottom: 35px;
+
+    left: 0;
+}
+
+
+.floating-icon {
+    width: 34px;
+    height: 34px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    border-radius: 8px;
+
+    color: #0f9f8f;
+
+    background: #eaf8f5;
+}
+
+
+.explore-floating-card strong,
+.explore-floating-card span {
+    display: block;
+}
+
+
+.explore-floating-card strong {
+    color: #303936;
+
+    font-size: 10px;
+}
+
+
+.explore-floating-card span {
+    margin-top: 3px;
+
+    color: #8a9491;
+
+    font-size: 7px;
+}
+
+
+/* =========================================================
+   SECTION COMMON
+========================================================= */
+
+.explore-categories,
+.explore-programs,
+.explore-destinations {
+    padding: 100px 8%;
+}
+
+
+.explore-categories {
+    background: #ffffff;
+}
+
+
+.explore-programs {
+    background: #f7faf9;
+}
+
+
+.explore-destinations {
+    background: #ffffff;
+}
+
+
+.explore-section-heading {
+    display: flex;
+
+    align-items: end;
+
+    justify-content: space-between;
+
+    gap: 40px;
+
+    margin-bottom: 42px;
+}
+
+
+.section-label {
+    display: inline-block;
+
+    color: #0f9f8f;
+
+    font-size: 9px;
+
+    font-weight: 800;
+
+    letter-spacing: 0.8px;
+
+    text-transform: uppercase;
+}
+
+
+.explore-section-heading h2 {
+    max-width: 600px;
+
+    margin: 10px 0 0;
+
+    color: #293330;
+
+    font-size: 37px;
+
+    font-weight: 800;
+
+    line-height: 1.1;
+
+    letter-spacing: -1.4px;
+}
+
+
+.explore-section-heading h2 span {
+    display: block;
+
+    color: #0f9f8f;
+}
+
+
+.explore-section-heading>p {
+    max-width: 360px;
+
+    margin: 0;
+
+    color: #77827f;
+
+    font-size: 10px;
+
+    line-height: 1.8;
+}
+
+
+/* =========================================================
+   VIEW ALL
+========================================================= */
+
+.explore-view-all {
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 5px;
+
+    white-space: nowrap;
+
+    color: #0f9f8f;
+
+    text-decoration: none;
+
+    font-size: 9px;
+
+    font-weight: 800;
+
+    transition:
+        gap 0.2s ease,
+        color 0.2s ease;
+}
+
+
+.explore-view-all:hover {
+    gap: 8px;
+
+    color: #0c887a;
+}
+
+
+/* =========================================================
+   CATEGORY GRID
+========================================================= */
+
+.explore-category-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, 1fr);
+
+    gap: 18px;
+}
+
+
+.explore-category-card {
+    min-height: 245px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    padding: 25px;
+
+    border: 1px solid #e1eae7;
+
+    border-radius: 13px;
+
+    color: inherit;
+
+    background: #ffffff;
+
+    text-decoration: none;
+
+    transition:
+        transform 0.25s ease,
+        border-color 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+
+.explore-category-card:hover {
+    transform: translateY(-5px);
+
+    border-color: #b9ded8;
+
+    box-shadow:
+        0 20px 45px rgba(20, 60, 55, 0.08);
+}
+
+
+.category-icon {
+    width: 46px;
+    height: 46px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 11px;
+
+    color: #0f9f8f;
+
+    background: #eaf8f5;
+}
+
+
+.explore-category-card h3 {
+    margin: 22px 0 9px;
+
+    color: #293330;
+
+    font-size: 14px;
+}
+
+
+.explore-category-card p {
+    flex: 1;
+
+    margin: 0;
+
+    color: #77827f;
+
+    font-size: 9px;
+
+    line-height: 1.8;
+}
+
+
+.explore-category-card>span {
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 6px;
+
+    margin-top: 22px;
+
+    color: #0f9f8f;
+
+    font-size: 9px;
+
+    font-weight: 800;
+}
+
+
+.explore-ai-category {
+    background:
+        linear-gradient(145deg,
+            #ffffff,
+            #f3faf8);
+}
+
+
+/* =========================================================
+   RECOMMENDED PROGRAM GRID
+========================================================= */
+
+.explore-program-grid {
+    width: 100%;
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
+    gap: 16px;
+}
+
+
+/* =========================================================
+   PROGRAM CARD
+   SAME DESIGN AS PROGRAMS PAGE
+========================================================= */
+
+.explore-programs .program-card {
+    min-width: 0;
+
+    display: flex;
+
+    flex-direction: column;
+
+    overflow: hidden;
+
+    background: #ffffff;
+
+    border: 1px solid #e2e8f0;
+
+    border-radius: 17px;
+
+    box-shadow:
+        0 4px 16px rgba(15, 23, 42, 0.03);
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        transform 0.2s ease;
+}
+
+
+.explore-programs .program-card:hover {
+    border-color: #a7ddd7;
+
+    box-shadow:
+        0 10px 28px rgba(15, 23, 42, 0.07);
+
+    transform: translateY(-2px);
+}
+
+
+/* =========================================================
+   CARD TOP
+========================================================= */
+
+.explore-programs .program-card-top {
+    padding: 18px 18px 17px;
+
+    border-bottom: 1px solid #e2e8f0;
+
+    background: #ffffff;
+}
+
+
+.explore-programs .program-card-top-main {
+    min-width: 0;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+}
+
+
+/* =========================================================
+   PROGRAM ICON
+========================================================= */
+
+.explore-programs .program-card-logo {
+    width: 42px;
+    height: 42px;
+
+    flex: 0 0 42px;
+
+    border-radius: 12px;
+
+    background: #e8f7f5;
+
+    color: #0f9f8f;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+}
+
+
+.explore-programs .program-card-logo svg {
+    color: #0f9f8f;
+}
+
+
+.explore-programs .program-card-logo.is-clickable {
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        transform 0.2s ease;
+}
+
+
+.explore-programs .program-card-logo.is-clickable:hover {
+    background: #dff3ef;
+
+    transform: translateY(-1px);
+}
+
+
+/* =========================================================
+   DEGREE + UNIVERSITY
+========================================================= */
+
+.explore-programs .program-card-degree-header {
+    min-width: 0;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 4px;
+}
+
+
+.explore-programs .program-card-degree-header strong {
+    display: block;
+
+    overflow: hidden;
+
+    color: #0f172a;
+
+    font-size: 14px;
+
+    line-height: 1.4;
+
+    font-weight: 750;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
+}
+
+
+.explore-programs .program-card-degree-header span {
+    display: block;
+
+    overflow: hidden;
+
+    color: #64748b;
+
+    font-size: 13px;
+
+    line-height: 1.4;
+
+    font-weight: 500;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   CARD BODY
+========================================================= */
+
+.explore-programs .program-card-body {
+    min-width: 0;
+
+    flex: 1;
+
+    padding: 18px;
+}
+
+
+/* =========================================================
+   FIELD
+========================================================= */
+
+.explore-programs .program-card-field {
+    display: block;
+
+    margin-bottom: 7px;
+
+    color: #0f9f8f;
+
+    font-size: 11px;
+
+    line-height: 1.4;
+
+    font-weight: 700;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.04em;
+}
+
+
+/* =========================================================
+   TITLE
+========================================================= */
+
+.explore-programs .program-card h2 {
+    margin: 0;
+
+    color: #0f172a;
+
+    font-size: 18px;
+
+    line-height: 1.4;
+
+    font-weight: 750;
+
+    letter-spacing: -0.2px;
+}
+
+
+/* =========================================================
+   DESCRIPTION
+========================================================= */
+
+.explore-programs .program-card-description {
+    margin: 12px 0 0;
+
+    display: -webkit-box;
+
+    overflow: hidden;
+
+    color: #64748b;
+
+    font-size: 13px;
+
+    line-height: 1.65;
+
+    -webkit-line-clamp: 3;
+
+    -webkit-box-orient: vertical;
+}
+
+
+/* =========================================================
+   META
+========================================================= */
+
+.explore-programs .program-card-meta {
+    margin: 0 18px;
+
+    padding: 14px 0;
+
+    display: flex;
+
+    flex-direction: row;
+
+    flex-wrap: wrap;
+
+    align-items: center;
+
+    gap: 7px;
+
+    border-top: 1px solid #e2e8f0;
+}
+
+
+.explore-programs .program-card-meta span {
+    min-height: 27px;
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    width: fit-content;
+
+    max-width: 100%;
+
+    padding: 0 9px;
+
+    box-sizing: border-box;
+
+    border-radius: 7px;
+
+    background: #f8fafc;
+
+    border: 1px solid #e2e8f0;
+
+    color: #475569;
+
+    font-size: 11px;
+
+    line-height: 1.4;
+
+    font-weight: 600;
+
+    white-space: nowrap;
+}
+
+
+/*
+   First item = Program Type
+*/
+
+.explore-programs .program-card-meta span:first-child {
+    color: #0f9f8f;
+
+    background: #e8f7f5;
+
+    border-color: #c5ebe6;
+}
+
+
+.explore-programs .program-card-meta span:not(:first-child) {
+    background: #f8fafc;
+
+    border-color: #e2e8f0;
+
+    color: #475569;
+}
+
+
+/* =========================================================
+   FOOTER
+========================================================= */
+
+.explore-programs .program-card-footer {
+    min-height: 68px;
+
+    padding: 13px 18px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 12px;
+
+    border-top: 1px solid #e2e8f0;
+
+    background: #f8fafc;
+}
+
+
+/* =========================================================
+   DEADLINE
+========================================================= */
+
+.explore-programs .program-card-deadline {
+    min-width: 0;
+}
+
+
+.explore-programs .program-card-deadline span {
+    display: block;
+
+    margin-bottom: 3px;
+
+    color: #64748b;
+
+    font-size: 11px;
+
+    line-height: 1.4;
+
+    font-weight: 600;
+}
+
+
+.explore-programs .program-card-deadline strong {
+    display: block;
+
+    overflow: hidden;
+
+    color: #0f172a;
+
+    font-size: 13px;
+
+    line-height: 1.4;
+
+    font-weight: 700;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   ARROW
+========================================================= */
+
+.explore-programs .program-card-arrow {
+    width: 36px;
+    height: 36px;
+
+    flex: 0 0 36px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 10px;
+
+    background: #ffffff;
+
+    border: 1px solid #c5ebe6;
+
+    color: #0f9f8f;
+
+    text-decoration: none;
+
+    transition:
+        background 0.2s ease,
+        color 0.2s ease,
+        transform 0.2s ease;
+}
+
+
+.explore-programs .program-card-arrow:hover {
+    background: #0f9f8f;
+
+    color: #ffffff;
+
+    transform: translateX(2px);
+}
+
+
+/* =========================================================
+   EMPTY STATE
+========================================================= */
+
+.explore-empty-state {
+    min-height: 180px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 10px;
+
+    padding: 30px;
+
+    border: 1px dashed #d7e4e0;
+
+    border-radius: 12px;
+
+    color: #7b8783;
+
+    background: #ffffff;
+
+    text-align: center;
+}
+
+
+.explore-empty-state svg {
+    color: #0f9f8f;
+}
+
+
+.explore-empty-state p {
+    margin: 0;
+
+    font-size: 10px;
+}
+
+
+/* =========================================================
+   DESTINATIONS
+========================================================= */
+
+.destination-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, 1fr);
+
+    gap: 15px;
+}
+
+
+.destination-card {
+    min-height: 105px;
+
+    min-width: 0;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    padding: 18px;
+
+    border: 1px solid #e1eae7;
+
+    border-radius: 12px;
+
+    text-align: left;
+
+    background: #ffffff;
+
+    cursor: pointer;
+
+    font-family: inherit;
+
+    transition:
+        transform 0.2s ease,
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+.destination-card:hover {
+    transform: translateY(-4px);
+
+    border-color: #b9ded8;
+
+    box-shadow:
+        0 15px 35px rgba(20, 60, 55, 0.07);
+}
+
+
+.destination-icon {
+    width: 42px;
+    height: 42px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    border-radius: 10px;
+
+    color: #0f9f8f;
+
+    background: #eaf8f5;
+}
+
+
+.destination-card>div:nth-child(2) {
+    min-width: 0;
+
+    display: flex;
+
+    flex-direction: column;
+}
+
+
+.destination-card strong {
+    color: #303936;
+
+    font-size: 10px;
+
+    overflow-wrap: anywhere;
+}
+
+
+.destination-card span {
+    margin-top: 5px;
+
+    color: #8a9491;
+
+    font-size: 7px;
+}
+
+
+.destination-arrow {
+    margin-left: auto;
+
+    flex-shrink: 0;
+
+    color: #9aa5a1;
+}
+
+
+/* =========================================================
+   AI SECTION
+========================================================= */
+
+.explore-ai-section {
+    min-height: 360px;
+
+    display: grid;
+
+    grid-template-columns:
+        1fr 0.7fr;
+
+    align-items: center;
+
+    gap: 50px;
+
+    margin: 0 8% 90px;
+
+    padding: 55px 65px;
+
+    overflow: hidden;
+
+    border-radius: 17px;
+
+    background:
+        linear-gradient(135deg,
+            #eff9f6,
+            #f7fbfa);
+}
+
+
+.explore-ai-content {
+    max-width: 560px;
+}
+
+
+.explore-ai-content h2 {
+    margin: 10px 0 15px;
+
+    color: #293330;
+
+    font-size: 37px;
+
+    line-height: 1.08;
+
+    letter-spacing: -1.4px;
+}
+
+
+.explore-ai-content h2 span {
+    display: block;
+
+    color: #0f9f8f;
+}
+
+
+.explore-ai-content p {
+    max-width: 500px;
+
+    margin: 0;
+
+    color: #6f7b77;
+
+    font-size: 10px;
+
+    line-height: 1.9;
+}
+
+
+.explore-ai-button {
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 7px;
+
+    margin-top: 25px;
+
+    padding: 13px 20px;
+
+    border-radius: 8px;
+
+    color: #ffffff;
+
+    background: #0f9f8f;
+
+    text-decoration: none;
+
+    font-size: 9px;
+
+    font-weight: 800;
+
+    transition:
+        background 0.2s ease,
+        transform 0.2s ease;
+}
+
+
+.explore-ai-button:hover {
+    background: #0c887a;
+
+    transform: translateY(-2px);
+}
+
+
+/* =========================================================
+   AI VISUAL
+========================================================= */
+
+.explore-ai-visual {
+    position: relative;
+
+    min-height: 250px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+}
+
+
+.ai-orb {
+    width: 120px;
+    height: 120px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    color: #0f9f8f;
+
+    background: #ffffff;
+
+    box-shadow:
+        0 20px 55px rgba(20, 60, 55, 0.12);
+}
+
+
+.ai-result-card {
+    position: absolute;
+
+    right: 0;
+
+    bottom: 15px;
+
+    width: 205px;
+
+    padding: 16px;
+
+    border: 1px solid #dfe9e6;
+
+    border-radius: 11px;
+
+    background: #ffffff;
+
+    box-shadow:
+        0 15px 35px rgba(20, 60, 55, 0.10);
+}
+
+
+.ai-result-card span {
+    display: block;
+
+    color: #0f9f8f;
+
+    font-size: 7px;
+
+    font-weight: 800;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.6px;
+}
+
+
+.ai-result-card strong {
+    display: block;
+
+    margin-top: 7px;
+
+    color: #303936;
+
+    font-size: 10px;
+
+    line-height: 1.4;
+}
+
+
+.ai-result-card small {
+    display: block;
+
+    margin-top: 5px;
+
+    color: #8a9491;
+
+    font-size: 7px;
+}
+
+
+/* =========================================================
+   LARGE TABLET
+========================================================= */
+
+@media (max-width: 1100px) {
+
+    .explore-hero {
+        gap: 35px;
+
+        padding-left: 6%;
+        padding-right: 6%;
+    }
+
+
+    .explore-categories,
+    .explore-programs,
+    .explore-destinations {
+        padding-left: 6%;
+        padding-right: 6%;
+    }
+
+
+    .explore-category-grid {
+        grid-template-columns:
+            repeat(2, 1fr);
+    }
+
+
+    .destination-grid {
+        grid-template-columns:
+            repeat(2, 1fr);
+    }
+
+
+    .explore-ai-section {
+        margin-left: 6%;
+
+        margin-right: 6%;
+    }
+
+}
+
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 900px) {
+
+    .explore-hero {
+        grid-template-columns: 1fr;
+
+        padding-top: 65px;
+
+        padding-bottom: 75px;
+    }
+
+
+    .explore-hero-content {
+        max-width: 720px;
+    }
+
+
+    .explore-hero h1 {
+        font-size: 48px;
+    }
+
+
+    .explore-hero-visual {
+        min-height: 430px;
+    }
+
+
+    .explore-program-grid {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+
+    .explore-section-heading {
+        align-items: flex-start;
+    }
+
+
+    .explore-ai-section {
+        grid-template-columns: 1fr;
+
+        padding: 50px;
+    }
+
+
+    .explore-ai-visual {
+        min-height: 230px;
+    }
+
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 650px) {
+
+    .explore-hero {
+        padding: 55px 20px 70px;
+    }
+
+
+    .explore-hero h1 {
+        font-size: 39px;
+
+        letter-spacing: -1.7px;
+    }
+
+
+    .explore-hero-content>p {
+        font-size: 11px;
+    }
+
+
+    .explore-search {
+        height: 55px;
+
+        padding-left: 14px;
+    }
+
+
+    .explore-search button {
+        height: 43px;
+
+        padding: 0 15px;
+    }
+
+
+    .explore-quick-search {
+        align-items: flex-start;
+    }
+
+
+    .explore-hero-visual {
+        min-height: 370px;
+    }
+
+
+    .explore-hero-card {
+        width: 290px;
+
+        padding: 20px;
+    }
+
+
+    .explore-floating-card {
+        padding: 9px 11px;
+    }
+
+
+    .explore-floating-top {
+        top: 10px;
+
+        right: 0;
+    }
+
+
+    .explore-floating-bottom {
+        bottom: 10px;
+
+        left: 0;
+    }
+
+
+    .explore-floating-card strong {
+        font-size: 8px;
+    }
+
+
+    .explore-floating-card span {
+        font-size: 6px;
+    }
+
+
+    .explore-categories,
+    .explore-programs,
+    .explore-destinations {
+        padding: 70px 20px;
+    }
+
+
+    .explore-section-heading {
+        flex-direction: column;
+
+        gap: 18px;
+
+        margin-bottom: 32px;
+    }
+
+
+    .explore-section-heading h2 {
+        font-size: 30px;
+    }
+
+
+    .explore-section-heading>p {
+        font-size: 9px;
+    }
+
+
+    .explore-category-grid,
+    .explore-program-grid,
+    .destination-grid {
+        grid-template-columns: 1fr;
+    }
+
+
+    .explore-category-card {
+        min-height: 220px;
+    }
+
+
+    /* =====================================================
+       MOBILE PROGRAM CARD
+    ===================================================== */
+
+    .explore-programs .program-card {
+        border-radius: 15px;
+    }
+
+
+    .explore-programs .program-card-top {
+        padding: 15px;
+    }
+
+
+    .explore-programs .program-card-logo {
+        width: 40px;
+        height: 40px;
+
+        flex-basis: 40px;
+
+        border-radius: 11px;
+    }
+
+
+    .explore-programs .program-card-degree-header strong {
+        font-size: 13px;
+    }
+
+
+    .explore-programs .program-card-degree-header span {
+        font-size: 12px;
+    }
+
+
+    .explore-programs .program-card-body {
+        padding: 16px 15px;
+    }
+
+
+    .explore-programs .program-card-field {
+        font-size: 10px;
+    }
+
+
+    .explore-programs .program-card h2 {
+        font-size: 17px;
+    }
+
+
+    .explore-programs .program-card-description {
+        margin-top: 10px;
+
+        font-size: 12px;
+    }
+
+
+    .explore-programs .program-card-meta {
+        margin: 0 15px;
+
+        padding: 13px 0;
+
+        display: flex;
+
+        flex-direction: row;
+
+        flex-wrap: wrap;
+
+        align-items: center;
+
+        gap: 6px;
+    }
+
+
+    .explore-programs .program-card-meta span {
+        min-height: 26px;
+
+        width: fit-content;
+
+        max-width: 100%;
+
+        padding: 0 8px;
+
+        font-size: 10px;
+
+        white-space: nowrap;
+    }
+
+
+    .explore-programs .program-card-footer {
+        min-height: 62px;
+
+        padding: 12px 15px;
+    }
+
+
+    .explore-programs .program-card-deadline span {
+        font-size: 10px;
+    }
+
+
+    .explore-programs .program-card-deadline strong {
+        font-size: 12px;
+    }
+
+
+    .explore-programs .program-card-arrow {
+        width: 34px;
+        height: 34px;
+
+        flex-basis: 34px;
+
+        border-radius: 9px;
+    }
+
+
+    .explore-ai-section {
+        grid-template-columns: 1fr;
+
+        gap: 30px;
+
+        margin: 0 20px 65px;
+
+        padding: 45px 22px;
+
+        border-radius: 15px;
+    }
+
+
+    .explore-ai-content h2 {
+        font-size: 30px;
+    }
+
+
+    .explore-ai-content p {
+        font-size: 9px;
+    }
+
+
+    .explore-ai-button {
+        width: 100%;
+
+        justify-content: center;
+    }
+
+
+    .explore-ai-visual {
+        min-height: 220px;
+    }
+
+
+    .ai-result-card {
+        right: 0;
+
+        bottom: 0;
+
+        width: 190px;
+    }
+
+}
+
+
+/* =========================================================
+   SMALL MOBILE
+========================================================= */
+
+@media (max-width: 420px) {
+
+    .explore-hero h1 {
+        font-size: 35px;
+    }
+
+
+    .explore-search input {
+        font-size: 9px;
+    }
+
+
+    .explore-search button {
+        padding: 0 12px;
+
+        font-size: 8px;
+    }
+
+
+    .explore-hero-visual {
+        min-height: 330px;
+    }
+
+
+    .explore-hero-card {
+        width: 260px;
+
+        padding: 18px;
+    }
+
+
+    .explore-floating-card {
+        display: none;
+    }
+
+
+    .explore-section-heading h2 {
+        font-size: 28px;
+    }
+
+
+    /* FIXED:
+       كان الاسم القديم explore-program-card
+       والصحيح program-card
+    */
+
+    .explore-programs .program-card {
+        padding: 0;
+    }
+
+
+    .explore-ai-content h2 {
+        font-size: 28px;
+    }
+
+
+    .ai-orb {
+        width: 95px;
+        height: 95px;
+    }
+
+
+    .ai-result-card {
+        width: 175px;
+    }
+
+}

@@ -5,54 +5,125 @@ import {
     Routes,
 } from "react-router-dom";
 
+
+// =========================================================
+// Authentication
+// =========================================================
+
 import Login from "../pages/auth/Login";
 import Register from "../pages/auth/Register";
 
-// Student Pages
-import Dashboard from "../pages/student/Dashboard";
-import Opportunities from "../pages/student/Opportunities";
-import OpportunityDetails from "../pages/student/OpportunityDetails";
-import Applications from "../pages/student/Applications";
-import ApplicationDetails from "../pages/student/ApplicationDetails";
-import Profile from "../pages/student/profile";
-import Recommended from "../pages/student/Recommended";
 
-// Admin Pages
-import AdminDashboard from "../pages/admin/Dashboard";
-import AdminOpportunities from "../pages/admin/Opportunities";
-import AdminApplications from "../pages/admin/Applications";
-import OpportunityCreate from "../pages/admin/OpportunityCreate";
-import AdminOpportunityDetails from "../pages/admin/OpportunityDetails";
-import OpportunityEdit from "../pages/admin/OpportunityEdit";
-import AdminApplicationDetails from "../pages/admin/ApplicationDetails";
-import Universities from "../pages/admin/Universities";
-import Countries from "../pages/admin/Countries";
+// =========================================================
+// Landing & Legal
+// =========================================================
 
-// Layouts
-import AdminLayout from "../components/layout/admin/AdminLayout";
-import StudentLayout from "../components/layout/student/StudentLayout";
-
-// Protected Route
-import ProtectedRoute from "./ProtectedRoute";
-
-// Landing Page
 import Landing from "../pages/Landing";
 import PrivacyPolicy from "../pages/PrivacyPolicy";
 import TermsOfUse from "../pages/TermsOfUse";
 import Security from "../pages/Security";
 
+
+// =========================================================
+// Student Pages
+// =========================================================
+
+// Explore
+import Explore from "../pages/student/Explore/Explore";
+
+// Programs
+import Programs from "../pages/student/Programs/Programs";
+import ProgramDetails from "../pages/student/Programs/ProgramDetails";
+
+// Opportunities
+import Opportunities from "../pages/student/Opportunities/Opportunities";
+import OpportunityDetails from "../pages/student/Opportunities/OpportunityDetails";
+
+// Universities
+import StudentUniversities from "../pages/student/Universities/Universities";
+import UniversityDetails from "../pages/student/Universities/UniversityDetails";
+
+// Scholarships
+import Scholarships from "../pages/student/Scholarships/Scholarships";
+
+// AI Advisor
+import AIAdvisor from "../pages/student/AIAdvisor/AIAdvisor";
+
+// Compare
+import Compare from "../pages/student/Compare/Compare";
+
+// Saved
+import Saved from "../pages/student/Saved/Saved";
+
+// Applications
+import Applications from "../pages/student/Applications/Applications";
+import ApplicationDetails from "../pages/student/Applications/ApplicationDetails";
+
+// Profile
+import Profile from "../pages/student/Profile/Profile";
+
+
+// =========================================================
+// Student Layout
+// =========================================================
+
+import StudentLayout from "../components/student/StudentLayout";
+
+
+// =========================================================
+// Admin Pages
+// =========================================================
+
+import AdminDashboard from "../pages/admin/Dashboard";
+import AdminOpportunities from "../pages/admin/Opportunities";
+import OpportunityCreate from "../pages/admin/OpportunityCreate";
+import AdminOpportunityDetails from "../pages/admin/OpportunityDetails";
+import OpportunityEdit from "../pages/admin/OpportunityEdit";
+
+import AdminApplications from "../pages/admin/Applications";
+import AdminApplicationDetails from "../pages/admin/ApplicationDetails";
+
+import AdminUniversities from "../pages/admin/Universities";
+import Countries from "../pages/admin/Countries";
+
+
+// =========================================================
+// Admin Layout
+// =========================================================
+
+import AdminLayout from "../components/layout/admin/AdminLayout";
+
+
+// =========================================================
+// Protected Route
+// =========================================================
+
+import ProtectedRoute from "./ProtectedRoute";
+
+
 function AppRoutes() {
+
     return (
+
         <BrowserRouter>
 
             <Routes>
 
-                {/* Landing Page */}
+
+                {/* =================================================
+                    Landing
+                ================================================= */}
 
                 <Route
                     path="/"
                     element={<Landing />}
                 />
+
+
+                {/* =================================================
+                    Legal
+                ================================================= */}
+
                 <Route
                     path="/privacy-policy"
                     element={<PrivacyPolicy />}
@@ -68,7 +139,10 @@ function AppRoutes() {
                     element={<Security />}
                 />
 
-                {/* Authentication */}
+
+                {/* =================================================
+                    Authentication
+                ================================================= */}
 
                 <Route
                     path="/login"
@@ -80,7 +154,10 @@ function AppRoutes() {
                     element={<Register />}
                 />
 
-                {/* Student Routes */}
+
+                {/* =================================================
+                    Student Platform
+                ================================================= */}
 
                 <Route
                     element={
@@ -90,15 +167,50 @@ function AppRoutes() {
                     }
                 >
 
+
+                    {/* =================================================
+                        Student Home
+                    ================================================= */}
+
                     <Route
                         path="/student"
-                        element={<Dashboard />}
+                        element={
+                            <Navigate
+                                to="/student/explore"
+                                replace
+                            />
+                        }
+                    />
+
+
+                    {/* =================================================
+                        Explore
+                    ================================================= */}
+
+                    <Route
+                        path="/student/explore"
+                        element={<Explore />}
+                    />
+
+
+                    {/* =================================================
+                        Programs
+                    ================================================= */}
+
+                    <Route
+                        path="/student/programs"
+                        element={<Programs />}
                     />
 
                     <Route
-                        path="/student/profile"
-                        element={<Profile />}
+                        path="/student/programs/:id"
+                        element={<ProgramDetails />}
                     />
+
+
+                    {/* =================================================
+                        Opportunities
+                    ================================================= */}
 
                     <Route
                         path="/student/opportunities"
@@ -110,14 +222,69 @@ function AppRoutes() {
                         element={<OpportunityDetails />}
                     />
 
+
+                    {/* =================================================
+                        Universities
+                    ================================================= */}
+
                     <Route
-                        path="/student/applications"
-                        element={<Applications />}
+                        path="/student/universities"
+                        element={<StudentUniversities />}
                     />
 
                     <Route
-                        path="/student/recommended"
-                        element={<Recommended />}
+                        path="/student/universities/:id"
+                        element={<UniversityDetails />}
+                    />
+
+
+                    {/* =================================================
+                        Scholarships
+                    ================================================= */}
+
+                    <Route
+                        path="/student/scholarships"
+                        element={<Scholarships />}
+                    />
+
+
+                    {/* =================================================
+                        AI Advisor
+                    ================================================= */}
+
+                    <Route
+                        path="/student/ai-advisor"
+                        element={<AIAdvisor />}
+                    />
+
+
+                    {/* =================================================
+                        Compare
+                    ================================================= */}
+
+                    <Route
+                        path="/student/compare"
+                        element={<Compare />}
+                    />
+
+
+                    {/* =================================================
+                        Saved
+                    ================================================= */}
+
+                    <Route
+                        path="/student/saved"
+                        element={<Saved />}
+                    />
+
+
+                    {/* =================================================
+                        Applications
+                    ================================================= */}
+
+                    <Route
+                        path="/student/applications"
+                        element={<Applications />}
                     />
 
                     <Route
@@ -125,10 +292,22 @@ function AppRoutes() {
                         element={<ApplicationDetails />}
                     />
 
+
+                    {/* =================================================
+                        Profile
+                    ================================================= */}
+
+                    <Route
+                        path="/student/profile"
+                        element={<Profile />}
+                    />
+
                 </Route>
 
 
-                {/* Admin Routes */}
+                {/* =================================================
+                    Admin Platform
+                ================================================= */}
 
                 <Route
                     element={
@@ -138,10 +317,16 @@ function AppRoutes() {
                     }
                 >
 
+
+                    {/* Dashboard */}
+
                     <Route
                         path="/admin"
                         element={<AdminDashboard />}
                     />
+
+
+                    {/* Opportunities */}
 
                     <Route
                         path="/admin/opportunities"
@@ -163,6 +348,9 @@ function AppRoutes() {
                         element={<OpportunityEdit />}
                     />
 
+
+                    {/* Applications */}
+
                     <Route
                         path="/admin/applications"
                         element={<AdminApplications />}
@@ -173,10 +361,16 @@ function AppRoutes() {
                         element={<AdminApplicationDetails />}
                     />
 
+
+                    {/* Universities */}
+
                     <Route
                         path="/admin/universities"
-                        element={<Universities />}
+                        element={<AdminUniversities />}
                     />
+
+
+                    {/* Countries */}
 
                     <Route
                         path="/admin/countries"
@@ -186,7 +380,9 @@ function AppRoutes() {
                 </Route>
 
 
-                {/* Unknown Routes */}
+                {/* =================================================
+                    Unknown Routes
+                ================================================= */}
 
                 <Route
                     path="*"
@@ -203,5 +399,6 @@ function AppRoutes() {
         </BrowserRouter>
     );
 }
+
 
 export default AppRoutes;

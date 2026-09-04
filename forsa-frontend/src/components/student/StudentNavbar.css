@@ -1,0 +1,594 @@
+/* =========================================================
+   STUDENT NAVBAR
+========================================================= */
+
+.student-navbar {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+
+    width: 100%;
+
+    border-bottom: 1px solid #e7eeeb;
+
+    background: rgba(255, 255, 255, 0.97);
+
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+}
+
+
+.student-navbar-inner {
+    width: 100%;
+    max-width: 1440px;
+    min-height: 72px;
+
+    display: flex;
+    align-items: center;
+
+    margin: 0 auto;
+    padding: 0 32px;
+}
+
+
+/* =========================================================
+   LOGO
+========================================================= */
+
+.student-logo {
+    display: inline-flex;
+    align-items: center;
+
+    gap: 9px;
+
+    flex-shrink: 0;
+
+    color: #26302e;
+
+    text-decoration: none;
+}
+
+
+.student-logo-mark {
+    width: 35px;
+    height: 35px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 9px;
+
+    color: #ffffff;
+
+    background: var(--primary);
+}
+
+
+.student-logo-text {
+    color: #26302e;
+
+    font-size: 17px;
+    font-weight: 800;
+
+    letter-spacing: -0.5px;
+}
+
+
+/* =========================================================
+   NAVIGATION
+========================================================= */
+
+.student-nav {
+    display: flex;
+    align-items: center;
+
+    gap: 4px;
+
+    margin-left: 42px;
+}
+
+
+.student-nav-link {
+    position: relative;
+
+    min-height: 72px;
+
+    display: inline-flex;
+    align-items: center;
+
+    gap: 6px;
+
+    padding: 0 13px;
+
+    color: #697572;
+
+    text-decoration: none;
+
+    font-size: 10px;
+    font-weight: 700;
+
+    transition:
+        color 0.2s ease,
+        background 0.2s ease;
+}
+
+
+.student-nav-link:hover {
+    color: var(--primary);
+}
+
+
+.student-nav-link.active {
+    color: var(--primary);
+}
+
+
+.student-nav-link.active::after {
+    content: "";
+
+    position: absolute;
+
+    left: 13px;
+    right: 13px;
+    bottom: 0;
+
+    height: 2px;
+
+    border-radius: 2px 2px 0 0;
+
+    background: var(--primary);
+}
+
+
+/* =========================================================
+   AI NAVIGATION
+========================================================= */
+
+.ai-nav-link {
+    color: var(--primary);
+}
+
+
+.ai-nav-link svg {
+    flex-shrink: 0;
+}
+
+
+/* =========================================================
+   RIGHT ACTIONS
+========================================================= */
+
+.student-navbar-actions {
+    display: flex;
+    align-items: center;
+
+    gap: 5px;
+
+    margin-left: auto;
+}
+
+
+/* =========================================================
+   ICON BUTTON
+========================================================= */
+
+.navbar-icon-button {
+    width: 36px;
+    height: 36px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0;
+
+    border: 0;
+    border-radius: 8px;
+
+    color: #65716e;
+
+    background: transparent;
+
+    cursor: pointer;
+
+    transition:
+        color 0.2s ease,
+        background 0.2s ease;
+}
+
+
+.navbar-icon-button:hover {
+    color: var(--primary);
+
+    background: var(--primary-light);
+}
+
+
+/* =========================================================
+   DIVIDER
+========================================================= */
+
+.navbar-divider {
+    width: 1px;
+    height: 27px;
+
+    margin: 0 8px;
+
+    background: #e4ebe8;
+}
+
+
+/* =========================================================
+   PROFILE
+========================================================= */
+
+.student-profile-wrapper {
+    position: relative;
+}
+
+
+.student-profile-button {
+    min-height: 40px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 8px;
+
+    padding: 3px 7px 3px 4px;
+
+    border: 0;
+    border-radius: 9px;
+
+    color: #3b4643;
+
+    background: transparent;
+
+    cursor: pointer;
+
+    font-family: inherit;
+
+    transition:
+        background 0.2s ease;
+}
+
+
+.student-profile-button:hover {
+    background: #f5f9f8;
+}
+
+
+.student-avatar {
+    width: 31px;
+    height: 31px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 8px;
+
+    color: var(--primary);
+
+    background: var(--primary-light);
+}
+
+
+.student-profile-name {
+    color: #46514e;
+
+    font-size: 9px;
+    font-weight: 700;
+}
+
+
+.profile-chevron {
+    color: #89938f;
+
+    transition: transform 0.2s ease;
+}
+
+
+.profile-chevron.rotated {
+    transform: rotate(180deg);
+}
+
+
+/* =========================================================
+   PROFILE MENU
+========================================================= */
+
+.student-profile-menu {
+    position: absolute;
+
+    top: calc(100% + 9px);
+    right: 0;
+
+    width: 190px;
+
+    padding: 7px;
+
+    border: 1px solid #e3ebe8;
+    border-radius: 11px;
+
+    background: #ffffff;
+
+    box-shadow: 0 15px 40px rgba(20, 55, 50, 0.12);
+}
+
+
+.student-profile-menu a,
+.profile-logout {
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+
+    gap: 9px;
+
+    padding: 10px;
+
+    border: 0;
+    border-radius: 7px;
+
+    color: #5e6966;
+
+    background: transparent;
+
+    text-decoration: none;
+
+    font-family: inherit;
+    font-size: 9px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        color 0.2s ease,
+        background 0.2s ease;
+}
+
+
+.student-profile-menu a:hover {
+    color: var(--primary);
+
+    background: var(--primary-light);
+}
+
+
+.profile-logout {
+    color: #777f7d;
+}
+
+
+.profile-logout:hover {
+    color: #d14f4f;
+
+    background: #fff4f4;
+}
+
+
+.profile-menu-divider {
+    height: 1px;
+
+    margin: 5px 3px;
+
+    background: #edf1ef;
+}
+
+
+/* =========================================================
+   MOBILE MENU BUTTON
+========================================================= */
+
+.mobile-menu-button {
+    width: 38px;
+    height: 38px;
+
+    display: none;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0;
+
+    border: 1px solid #e0e8e5;
+    border-radius: 8px;
+
+    color: #4f5a57;
+
+    background: #ffffff;
+
+    cursor: pointer;
+}
+
+
+/* =========================================================
+   MOBILE MENU
+========================================================= */
+
+.student-mobile-menu {
+    display: none;
+}
+
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 1150px) {
+
+    .student-navbar-inner {
+        padding: 0 22px;
+    }
+
+    .student-nav {
+        margin-left: 22px;
+    }
+
+    .student-nav-link {
+        padding: 0 9px;
+
+        font-size: 9px;
+    }
+
+    .student-nav-link.active::after {
+        left: 9px;
+        right: 9px;
+    }
+
+    .student-profile-name {
+        display: none;
+    }
+
+}
+
+
+/* =========================================================
+   TABLET SMALL
+========================================================= */
+
+@media (max-width: 900px) {
+
+    .student-navbar-inner {
+        min-height: 68px;
+
+        padding: 0 20px;
+    }
+
+    .student-nav {
+        display: none;
+    }
+
+    .navbar-icon-button {
+        display: none;
+    }
+
+    .navbar-divider {
+        display: none;
+    }
+
+    .student-profile-wrapper {
+        display: none;
+    }
+
+    .mobile-menu-button {
+        display: flex;
+    }
+
+    .student-mobile-menu {
+        display: flex;
+        flex-direction: column;
+
+        width: 100%;
+
+        padding: 10px 20px 18px;
+
+        border-top: 1px solid #edf1ef;
+
+        background: #ffffff;
+    }
+
+    .student-mobile-menu .student-nav-link {
+        min-height: 46px;
+
+        display: flex;
+
+        padding: 0 12px;
+
+        border-radius: 8px;
+
+        font-size: 10px;
+    }
+
+    .student-mobile-menu .student-nav-link.active::after {
+        display: none;
+    }
+
+    .student-mobile-menu .student-nav-link.active {
+        background: var(--primary-light);
+    }
+
+    .mobile-logout {
+        min-height: 44px;
+
+        display: flex;
+        align-items: center;
+
+        gap: 9px;
+
+        margin-top: 6px;
+        padding: 0 12px;
+
+        border: 0;
+        border-top: 1px solid #edf1ef;
+        border-radius: 0;
+
+        color: #777f7d;
+
+        background: transparent;
+
+        font-family: inherit;
+        font-size: 10px;
+        font-weight: 600;
+
+        cursor: pointer;
+    }
+
+    .mobile-logout:hover {
+        color: #d14f4f;
+    }
+
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 600px) {
+
+    .student-navbar-inner {
+        min-height: 64px;
+
+        padding: 0 16px;
+    }
+
+    .student-logo-mark {
+        width: 33px;
+        height: 33px;
+    }
+
+    .student-logo-text {
+        font-size: 16px;
+    }
+
+    .student-mobile-menu {
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+
+}
+
+
+/* =========================================================
+   SMALL MOBILE
+========================================================= */
+
+@media (max-width: 380px) {
+
+    .student-logo-text {
+        font-size: 15px;
+    }
+
+    .student-logo-mark {
+        width: 31px;
+        height: 31px;
+    }
+
+    .mobile-menu-button {
+        width: 35px;
+        height: 35px;
+    }
+
+}

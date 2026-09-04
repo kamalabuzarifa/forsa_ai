@@ -10,9 +10,14 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class OpportunityController extends Controller
 {
+    /* =========================================================
+       GET ALL PUBLISHED OPPORTUNITIES
+    ========================================================= */
+
     public function index(
         Request $request
     ): AnonymousResourceCollection {
+
         $opportunities = Opportunity::query()
             ->where('status', 'published')
             ->with([
@@ -42,24 +47,36 @@ class OpportunityController extends Controller
         );
     }
 
-    public function show(
-        Opportunity $opportunity
-    ): AdminOpportunityResource {
-        if ($opportunity->status !== 'published') {
-            abort(404);
-        }
 
-        $opportunity->load([
-            'university',
-            'country',
-            'type',
-            'fundingType',
-            'fields',
-            'degrees',
-            'skills',
-            'opportunityNationalities.country',
-            'requirements.language',
-        ]);
+    /* =========================================================
+       GET SINGLE PUBLISHED OPPORTUNITY
+       Supports ID and SLUG
+    ========================================================= */
+
+    public function show(
+        string $identifier
+    ): AdminOpportunityResource {
+
+        $opportunity = Opportunity::query()
+            ->where('status', 'published')
+            ->where(function ($query) use ($identifier) {
+
+                $query
+                    ->where('id', $identifier)
+                    ->orWhere('slug', $identifier);
+            })
+            ->with([
+                'university',
+                'country',
+                'type',
+                'fundingType',
+                'fields',
+                'degrees',
+                'skills',
+                'opportunityNationalities.country',
+                'requirements.language',
+            ])
+            ->firstOrFail();
 
         return new AdminOpportunityResource(
             $opportunity

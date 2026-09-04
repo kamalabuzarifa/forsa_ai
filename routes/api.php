@@ -12,6 +12,9 @@ use App\Http\Controllers\Api\MatchingController;
 use App\Http\Controllers\Api\OpportunityController;
 use App\Http\Controllers\Api\RecommendationController;
 use App\Http\Controllers\Api\StudentProfileController;
+use App\Http\Controllers\Api\AdvisorController;
+use App\Http\Controllers\Api\SavedOpportunityController;
+use App\Http\Controllers\Api\UniversityController;
 
 /*
 |--------------------------------------------------------------------------
@@ -70,6 +73,40 @@ Route::middleware('auth:sanctum')->group(function () {
         '/opportunities/recommended',
         [RecommendationController::class, 'index']
     )->name('opportunities.recommended');
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Student - Saved Opportunities
+    |--------------------------------------------------------------------------
+    */
+
+    Route::get(
+        '/saved',
+        [SavedOpportunityController::class, 'index']
+    )->name('saved.index');
+
+    Route::post(
+        '/opportunities/{opportunity}/save',
+        [SavedOpportunityController::class, 'store']
+    )->name('opportunities.save');
+
+    Route::delete(
+        '/opportunities/{opportunity}/save',
+        [SavedOpportunityController::class, 'destroy']
+    )->name('opportunities.save.destroy');
+
+    Route::get(
+        '/opportunities/{opportunity}/saved',
+        [SavedOpportunityController::class, 'show']
+    )->name('opportunities.saved');
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Student - Opportunity Details
+    |--------------------------------------------------------------------------
+    */
 
     Route::get(
         '/opportunities/{opportunity}/eligibility',
@@ -195,6 +232,45 @@ Route::middleware('auth:sanctum')->group(function () {
         '/profile/work-experiences/{id}',
         [StudentProfileController::class, 'destroyWorkExperience']
     )->name('student.profile.work-experiences.destroy');
+    /*
+    |--------------------------------------------------------------------------
+    | Student - Universities
+    |--------------------------------------------------------------------------
+    */
+
+    Route::get(
+        '/universities',
+        [UniversityController::class, 'index']
+    )->name('universities.index');
+
+    Route::get(
+        '/universities/{university}/programs',
+        [UniversityController::class, 'programs']
+    )->name('universities.programs');
+
+    Route::get(
+        '/universities/{university}',
+        [UniversityController::class, 'show']
+    )->name('universities.show');
+
+    /*
+    |--------------------------------------------------------------------------
+    | Student - AI Advisor
+    |--------------------------------------------------------------------------
+    */
+
+    Route::prefix('advisor')->group(function () {
+
+        Route::get(
+            '/lookups',
+            [AdvisorController::class, 'lookups']
+        )->name('advisor.lookups');
+
+        Route::post(
+            '/recommend',
+            [AdvisorController::class, 'recommend']
+        )->name('advisor.recommend');
+    });
 
 
     /*

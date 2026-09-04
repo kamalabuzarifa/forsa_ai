@@ -15,18 +15,21 @@ return Application::configure(basePath: dirname(__DIR__))
     )
 
     ->withMiddleware(function (Middleware $middleware): void {
+
         $middleware->alias([
             'admin' => \App\Http\Middleware\AdminMiddleware::class,
         ]);
+
+        $middleware->redirectGuestsTo(function (Request $request) {
+            if ($request->is('api/*')) {
+                return null;
+            }
+
+            return '/login';
+        });
     })
 
     ->withExceptions(function (Exceptions $exceptions): void {
-
-        /*
-        |--------------------------------------------------------------------------
-        | API unauthenticated response
-        |--------------------------------------------------------------------------
-        */
 
         $exceptions->shouldRenderJsonWhen(function (Request $request) {
             return $request->is('api/*') || $request->expectsJson();

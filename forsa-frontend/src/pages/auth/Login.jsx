@@ -1,5 +1,10 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+
+import {
+    Link,
+    useNavigate,
+} from "react-router-dom";
+
 import {
     ArrowLeft,
     Eye,
@@ -9,47 +14,128 @@ import {
     Sparkles,
 } from "lucide-react";
 
-import { login } from "../../api/auth";
 import { useAuth } from "../../context/AuthContext";
 
 import "./Login.css";
 
 
 function Login() {
-    const navigate = useNavigate();
-    const { login: saveLogin } = useAuth();
 
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
+    const navigate =
+        useNavigate();
 
-    const [showPassword, setShowPassword] = useState(false);
+    const {
+        login: loginUser,
+    } = useAuth();
 
-    const [error, setError] = useState("");
-    const [loading, setLoading] = useState(false);
 
+    const [email, setEmail] =
+        useState("");
+
+    const [password, setPassword] =
+        useState("");
+
+    const [showPassword, setShowPassword] =
+        useState(false);
+
+    const [error, setError] =
+        useState("");
+
+    const [loading, setLoading] =
+        useState(false);
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Submit
+    |--------------------------------------------------------------------------
+    */
 
     const handleSubmit = async (event) => {
+
         event.preventDefault();
 
         setError("");
+
         setLoading(true);
 
         try {
-            const result = await login(
-                email,
-                password
+
+            /*
+            | This calls AuthContext.login
+            | which calls the API once.
+            */
+
+            const user =
+                await loginUser(
+                    email.trim(),
+                    password
+                );
+
+
+            /*
+            | Redirect according to role
+            */
+
+            if (user?.role === "admin") {
+
+                navigate(
+                    "/admin",
+                    {
+                        replace: true,
+                    }
+                );
+
+                return;
+            }
+
+
+            navigate(
+                "/student",
+                {
+                    replace: true,
+                }
             );
 
-            saveLogin(result.data);
-
-            navigate("/student");
         } catch (error) {
-            setError(
-                error.response?.data?.message ||
-                "Login failed."
+
+            console.error(
+                "Login failed:",
+                error
             );
+
+
+            const validationErrors =
+                error.response?.data?.errors;
+
+
+            if (validationErrors) {
+
+                const firstError =
+                    Object.values(
+                        validationErrors
+                    )[0];
+
+
+                setError(
+                    Array.isArray(firstError)
+                        ? firstError[0]
+                        : "Login failed."
+                );
+
+            } else {
+
+                setError(
+                    error.response?.data?.message ||
+                    error.message ||
+                    "Login failed."
+                );
+            }
+
         } finally {
+
             setLoading(false);
+
         }
     };
 
@@ -64,6 +150,7 @@ function Login() {
 
             <div className="auth-container">
 
+
                 {/* Left Side */}
 
                 <div className="auth-visual">
@@ -74,6 +161,7 @@ function Login() {
                             to="/"
                             className="auth-logo"
                         >
+
                             <span className="auth-logo-mark">
                                 <span />
                             </span>
@@ -81,6 +169,7 @@ function Login() {
                             <span>
                                 EduMatch
                             </span>
+
                         </Link>
 
                     </div>
@@ -117,29 +206,35 @@ function Login() {
                         <div className="auth-check-list">
 
                             <div>
+
                                 <span className="auth-check">
                                     ✓
                                 </span>
 
                                 Personalized opportunities
+
                             </div>
 
 
                             <div>
+
                                 <span className="auth-check">
                                     ✓
                                 </span>
 
                                 AI-powered matching
+
                             </div>
 
 
                             <div>
+
                                 <span className="auth-check">
                                     ✓
                                 </span>
 
                                 One place for your applications
+
                             </div>
 
                         </div>
@@ -162,13 +257,16 @@ function Login() {
                         to="/"
                         className="back-home"
                     >
+
                         <ArrowLeft size={17} />
 
                         Back to Home
+
                     </Link>
 
 
                     <div className="auth-form-wrapper">
+
 
                         <div className="auth-mobile-logo">
 
@@ -176,6 +274,7 @@ function Login() {
                                 to="/"
                                 className="auth-logo"
                             >
+
                                 <span className="auth-logo-mark">
                                     <span />
                                 </span>
@@ -183,6 +282,7 @@ function Login() {
                                 <span>
                                     EduMatch
                                 </span>
+
                             </Link>
 
                         </div>
@@ -206,6 +306,7 @@ function Login() {
                             onSubmit={handleSubmit}
                         >
 
+
                             {/* Email */}
 
                             <div className="auth-field">
@@ -224,7 +325,9 @@ function Login() {
                                         type="email"
                                         value={email}
                                         onChange={(event) =>
-                                            setEmail(event.target.value)
+                                            setEmail(
+                                                event.target.value
+                                            )
                                         }
                                         placeholder="Enter your email"
                                         autoComplete="email"
@@ -262,7 +365,9 @@ function Login() {
                                         }
                                         value={password}
                                         onChange={(event) =>
-                                            setPassword(event.target.value)
+                                            setPassword(
+                                                event.target.value
+                                            )
                                         }
                                         placeholder="Enter your password"
                                         autoComplete="current-password"
@@ -284,11 +389,13 @@ function Login() {
                                                 : "Show password"
                                         }
                                     >
+
                                         {showPassword ? (
                                             <EyeOff size={18} />
                                         ) : (
                                             <Eye size={18} />
                                         )}
+
                                     </button>
 
                                 </div>
@@ -299,9 +406,11 @@ function Login() {
                             {/* Error */}
 
                             {error && (
+
                                 <div className="auth-error">
                                     {error}
                                 </div>
+
                             )}
 
 
@@ -312,9 +421,11 @@ function Login() {
                                 className="auth-submit"
                                 disabled={loading}
                             >
+
                                 {loading
                                     ? "Logging in..."
                                     : "Log In"}
+
                             </button>
 
                         </form>

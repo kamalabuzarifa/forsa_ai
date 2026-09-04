@@ -20,6 +20,9 @@ class Opportunity extends Model
         'country_id',
         'opportunity_type_id',
         'funding_type_id',
+        'annual_tuition',
+        'currency',
+        'study_mode',
         'application_url',
         'source_url',
         'deadline',
@@ -36,6 +39,7 @@ class Opportunity extends Model
             'deadline' => 'datetime',
             'start_date' => 'date',
             'end_date' => 'date',
+            'annual_tuition' => 'decimal:2',
             'is_verified' => 'boolean',
         ];
     }

@@ -1,63 +1,125 @@
-import { useEffect, useState } from "react";
-import { Navigate, useLocation } from "react-router-dom";
+import {
+    useEffect,
+    useState,
+} from "react";
+
+import {
+    Navigate,
+    useLocation,
+} from "react-router-dom";
 
 import { useAuth } from "../context/AuthContext";
-import { getStudentProfile } from "../api/profile";
 
-function ProtectedRoute({ children, role }) {
+import {
+    getStudentProfile,
+} from "../api/profile";
+
+
+function ProtectedRoute({
+    children,
+    role,
+}) {
+
     const {
         loading,
         isAuthenticated,
         user,
     } = useAuth();
 
-    const location = useLocation();
+    const location =
+        useLocation();
 
-    const [profileLoading, setProfileLoading] = useState(false);
-    const [profileComplete, setProfileComplete] = useState(true);
+    const [
+        profileLoading,
+        setProfileLoading,
+    ] = useState(false);
+
+    const [
+        profileComplete,
+        setProfileComplete,
+    ] = useState(true);
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Check Student Profile
+    |--------------------------------------------------------------------------
+    */
 
     useEffect(() => {
-        const checkProfileCompletion = async () => {
-            if (
-                !isAuthenticated ||
-                !user ||
-                user.role !== "student" ||
-                role !== "student"
-            ) {
-                setProfileLoading(false);
-                return;
-            }
 
-            // Profile page must always be accessible
-            if (location.pathname === "/student/profile") {
-                setProfileLoading(false);
-                return;
-            }
+        const checkProfileCompletion =
+            async () => {
 
-            try {
-                setProfileLoading(true);
+                if (
+                    !isAuthenticated ||
+                    !user ||
+                    role !== "student" ||
+                    user.role !== "student"
+                ) {
+                    return;
+                }
 
-                const response = await getStudentProfile();
 
-                const completion =
-                    Number(
-                        response?.profile?.profile_completion
-                    ) || 0;
+                /*
+                |------------------------------------------------------------------
+                | Profile Page
+                |------------------------------------------------------------------
+                |
+                | The student must always be able to access the profile page.
+                |
+                */
 
-                setProfileComplete(completion >= 100);
-            } catch (error) {
-                console.error(
-                    "Failed to check profile completion:",
-                    error
-                );
+                if (
+                    location.pathname ===
+                    "/student/profile"
+                ) {
+                    setProfileComplete(true);
+                    return;
+                }
 
-                setProfileComplete(false);
-            } finally {
-                setProfileLoading(false);
-            }
-        };
+
+                try {
+
+                    setProfileLoading(true);
+
+                    const response =
+                        await getStudentProfile();
+
+                    const completion =
+                        Number(
+                            response?.profile
+                                ?.profile_completion
+                        ) || 0;
+
+                    setProfileComplete(
+                        completion >= 100
+                    );
+
+                } catch (error) {
+
+                    console.error(
+                        "Failed to check profile completion:",
+                        error
+                    );
+
+                    /*
+                    |--------------------------------------------------------------
+                    | If the profile cannot be loaded, don't block the user.
+                    |--------------------------------------------------------------
+                    */
+
+                    setProfileComplete(true);
+
+                } finally {
+
+                    setProfileLoading(false);
+
+                }
+            };
 
         checkProfileCompletion();
+
     }, [
         isAuthenticated,
         user,
@@ -65,21 +127,40 @@ function ProtectedRoute({ children, role }) {
         location.pathname,
     ]);
 
-    if (loading || profileLoading) {
-        return (
-            <div className="flex min-h-screen items-center justify-center bg-background">
-                <div className="flex flex-col items-center gap-3">
-                    <div className="size-8 animate-spin rounded-full border-2 border-muted border-t-primary" />
 
-                    <p className="text-sm text-muted-foreground">
-                        Loading...
-                    </p>
-                </div>
+    /*
+    |--------------------------------------------------------------------------
+    | Loading
+    |--------------------------------------------------------------------------
+    */
+
+    if (
+        loading ||
+        profileLoading
+    ) {
+
+        return (
+            <div className="route-loading">
+
+                <div className="route-loading-spinner" />
+
+                <p>
+                    Loading...
+                </p>
+
             </div>
         );
     }
 
+
+    /*
+    |--------------------------------------------------------------------------
+    | Authentication
+    |--------------------------------------------------------------------------
+    */
+
     if (!isAuthenticated) {
+
         return (
             <Navigate
                 to="/login"
@@ -91,7 +172,18 @@ function ProtectedRoute({ children, role }) {
         );
     }
 
-    if (role && user?.role !== role) {
+
+    /*
+    |--------------------------------------------------------------------------
+    | Role Protection
+    |--------------------------------------------------------------------------
+    */
+
+    if (
+        role &&
+        user?.role !== role
+    ) {
+
         const fallbackPath =
             user?.role === "admin"
                 ? "/admin"
@@ -105,6 +197,7 @@ function ProtectedRoute({ children, role }) {
         );
     }
 
+
     /*
     |--------------------------------------------------------------------------
     | Student Profile Completion
@@ -114,9 +207,11 @@ function ProtectedRoute({ children, role }) {
     if (
         role === "student" &&
         user?.role === "student" &&
-        location.pathname !== "/student/profile" &&
+        location.pathname !==
+        "/student/profile" &&
         !profileComplete
     ) {
+
         return (
             <Navigate
                 to="/student/profile"
@@ -129,7 +224,15 @@ function ProtectedRoute({ children, role }) {
         );
     }
 
+
+    /*
+    |--------------------------------------------------------------------------
+    | Access Granted
+    |--------------------------------------------------------------------------
+    */
+
     return children;
 }
+
 
 export default ProtectedRoute;

@@ -12,13 +12,12 @@ import {
 import { Link, useNavigate } from "react-router-dom";
 
 import { register } from "../../api/auth";
-import { useAuth } from "../../context/AuthContext";
 
 import "./Register.css";
 
+
 function Register() {
     const navigate = useNavigate();
-    const { login: saveLogin } = useAuth();
 
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
@@ -33,53 +32,143 @@ function Register() {
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
 
+
     const handleSubmit = async (event) => {
         event.preventDefault();
 
         setError("");
 
-        if (password !== passwordConfirmation) {
-            setError("Password confirmation does not match.");
+
+        /*
+        |--------------------------------------------------------------------------
+        | Client Validation
+        |--------------------------------------------------------------------------
+        */
+
+        const trimmedName = name.trim();
+        const trimmedEmail = email.trim();
+
+
+        if (!trimmedName) {
+            setError("Name is required.");
             return;
         }
 
+
+        if (!trimmedEmail) {
+            setError("Email is required.");
+            return;
+        }
+
+
+        if (password.length < 8) {
+            setError(
+                "Password must be at least 8 characters."
+            );
+            return;
+        }
+
+
+        if (password !== passwordConfirmation) {
+            setError(
+                "Password confirmation does not match."
+            );
+            return;
+        }
+
+
         setLoading(true);
 
+
         try {
-            const result = await register(
-                name,
-                email,
+
+            /*
+            |--------------------------------------------------------------------------
+            | Register
+            |--------------------------------------------------------------------------
+            */
+
+            await register(
+                trimmedName,
+                trimmedEmail,
                 password,
                 passwordConfirmation
             );
 
-            saveLogin(result.data);
 
-            navigate("/student/profile");
+            /*
+            |--------------------------------------------------------------------------
+            | Registration Successful
+            |--------------------------------------------------------------------------
+            |
+            | Do NOT call saveLogin() here.
+            |
+            | Registration creates the account only.
+            | Login creates the authentication token.
+            |
+            */
+
+            navigate("/login", {
+                replace: true,
+                state: {
+                    registered: true,
+                    email: trimmedEmail,
+                },
+            });
+
+
         } catch (error) {
+
+            console.error(
+                "Registration failed:",
+                error
+            );
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | Laravel Validation Errors
+            |--------------------------------------------------------------------------
+            */
+
             const validationErrors =
                 error.response?.data?.errors;
 
+
             if (validationErrors) {
-                const firstError = Object.values(
-                    validationErrors
-                )[0];
+
+                const firstError =
+                    Object.values(validationErrors)[0];
+
+
+                if (Array.isArray(firstError)) {
+
+                    setError(firstError[0]);
+
+                } else {
+
+                    setError(
+                        String(firstError)
+                    );
+
+                }
+
+            } else {
 
                 setError(
-                    Array.isArray(firstError)
-                        ? firstError[0]
-                        : "Registration failed."
-                );
-            } else {
-                setError(
                     error.response?.data?.message ||
-                    "Registration failed."
+                    "Registration failed. Please try again."
                 );
+
             }
+
         } finally {
+
             setLoading(false);
+
         }
     };
+
 
     return (
         <div className="register-page">
@@ -87,13 +176,18 @@ function Register() {
             <div className="register-background">
 
                 <div className="register-shape register-shape-one" />
+
                 <div className="register-shape register-shape-two" />
+
                 <div className="register-shape register-shape-three" />
 
 
                 <div className="register-container">
 
-                    {/* Left Side */}
+
+                    {/* =====================================================
+                        Left Side
+                    ===================================================== */}
 
                     <div className="register-left">
 
@@ -103,6 +197,7 @@ function Register() {
                                 to="/"
                                 className="register-logo"
                             >
+
                                 <span className="register-logo-mark">
                                     <span />
                                 </span>
@@ -110,6 +205,7 @@ function Register() {
                                 <span>
                                     EduMatch
                                 </span>
+
                             </Link>
 
                         </div>
@@ -129,23 +225,30 @@ function Register() {
 
 
                             <h1>
+
                                 Start finding
+
                                 <span>
                                     opportunities
                                 </span>
+
                                 made for you
+
                             </h1>
 
 
                             <p>
+
                                 Create your EduMatch account and
                                 discover scholarships and educational
                                 opportunities that match your academic
                                 background, skills and goals.
+
                             </p>
 
 
                             <div className="register-benefits">
+
 
                                 <div className="register-benefit">
 
@@ -154,6 +257,7 @@ function Register() {
                                     </div>
 
                                     <div>
+
                                         <strong>
                                             Personalized Matching
                                         </strong>
@@ -162,6 +266,7 @@ function Register() {
                                             Get opportunities based on
                                             your profile.
                                         </span>
+
                                     </div>
 
                                 </div>
@@ -174,6 +279,7 @@ function Register() {
                                     </div>
 
                                     <div>
+
                                         <strong>
                                             Save Time
                                         </strong>
@@ -182,6 +288,7 @@ function Register() {
                                             Find relevant opportunities
                                             in one place.
                                         </span>
+
                                     </div>
 
                                 </div>
@@ -194,6 +301,7 @@ function Register() {
                                     </div>
 
                                     <div>
+
                                         <strong>
                                             Free Student Account
                                         </strong>
@@ -202,9 +310,11 @@ function Register() {
                                             Create your account and
                                             complete your profile.
                                         </span>
+
                                     </div>
 
                                 </div>
+
 
                             </div>
 
@@ -212,17 +322,22 @@ function Register() {
 
 
                         <div className="register-left-footer">
+
                             © 2026 EduMatch
+
                         </div>
 
                     </div>
 
 
-                    {/* Right Side */}
+                    {/* =====================================================
+                        Right Side
+                    ===================================================== */}
 
                     <div className="register-right">
 
                         <div className="register-form-wrapper">
+
 
                             <div className="register-form-header">
 
@@ -243,13 +358,17 @@ function Register() {
                                 className="register-form"
                             >
 
-                                {/* Name */}
+
+                                {/* =================================================
+                                    Full Name
+                                ================================================= */}
 
                                 <div className="register-field">
 
                                     <label htmlFor="name">
                                         Full Name
                                     </label>
+
 
                                     <div className="register-input-wrapper">
 
@@ -266,6 +385,7 @@ function Register() {
                                             }
                                             placeholder="Enter your full name"
                                             autoComplete="name"
+                                            disabled={loading}
                                             required
                                         />
 
@@ -274,13 +394,16 @@ function Register() {
                                 </div>
 
 
-                                {/* Email */}
+                                {/* =================================================
+                                    Email
+                                ================================================= */}
 
                                 <div className="register-field">
 
                                     <label htmlFor="email">
                                         Email Address
                                     </label>
+
 
                                     <div className="register-input-wrapper">
 
@@ -297,6 +420,7 @@ function Register() {
                                             }
                                             placeholder="Enter your email"
                                             autoComplete="email"
+                                            disabled={loading}
                                             required
                                         />
 
@@ -305,13 +429,16 @@ function Register() {
                                 </div>
 
 
-                                {/* Password */}
+                                {/* =================================================
+                                    Password
+                                ================================================= */}
 
                                 <div className="register-field">
 
                                     <label htmlFor="password">
                                         Password
                                     </label>
+
 
                                     <div className="register-input-wrapper">
 
@@ -333,8 +460,10 @@ function Register() {
                                             placeholder="Create a password"
                                             autoComplete="new-password"
                                             minLength={8}
+                                            disabled={loading}
                                             required
                                         />
+
 
                                         <button
                                             type="button"
@@ -344,36 +473,45 @@ function Register() {
                                                     !showPassword
                                                 )
                                             }
+                                            disabled={loading}
                                             aria-label={
                                                 showPassword
                                                     ? "Hide password"
                                                     : "Show password"
                                             }
                                         >
+
                                             {showPassword ? (
                                                 <EyeOff size={18} />
                                             ) : (
                                                 <Eye size={18} />
                                             )}
+
                                         </button>
 
                                     </div>
 
+
                                     <span className="field-hint">
+
                                         Password must be at least 8
                                         characters.
+
                                     </span>
 
                                 </div>
 
 
-                                {/* Confirm Password */}
+                                {/* =================================================
+                                    Confirm Password
+                                ================================================= */}
 
                                 <div className="register-field">
 
                                     <label htmlFor="password_confirmation">
                                         Confirm Password
                                     </label>
+
 
                                     <div className="register-input-wrapper">
 
@@ -396,8 +534,10 @@ function Register() {
                                             }
                                             placeholder="Confirm your password"
                                             autoComplete="new-password"
+                                            disabled={loading}
                                             required
                                         />
+
 
                                         <button
                                             type="button"
@@ -407,17 +547,20 @@ function Register() {
                                                     !showConfirmation
                                                 )
                                             }
+                                            disabled={loading}
                                             aria-label={
                                                 showConfirmation
                                                     ? "Hide password"
                                                     : "Show password"
                                             }
                                         >
+
                                             {showConfirmation ? (
                                                 <EyeOff size={18} />
                                             ) : (
                                                 <Eye size={18} />
                                             )}
+
                                         </button>
 
                                     </div>
@@ -425,16 +568,22 @@ function Register() {
                                 </div>
 
 
-                                {/* Error */}
+                                {/* =================================================
+                                    Error
+                                ================================================= */}
 
                                 {error && (
+
                                     <div className="register-error">
                                         {error}
                                     </div>
+
                                 )}
 
 
-                                {/* Submit */}
+                                {/* =================================================
+                                    Submit
+                                ================================================= */}
 
                                 <button
                                     type="submit"
@@ -443,10 +592,13 @@ function Register() {
                                 >
 
                                     <span>
+
                                         {loading
                                             ? "Creating Account..."
                                             : "Create Account"}
+
                                     </span>
+
 
                                     {!loading && (
                                         <ArrowRight size={19} />
@@ -454,6 +606,10 @@ function Register() {
 
                                 </button>
 
+
+                                {/* =================================================
+                                    Login
+                                ================================================= */}
 
                                 <div className="register-login">
 
@@ -470,6 +626,10 @@ function Register() {
                             </form>
 
 
+                            {/* =====================================================
+                                Next Step
+                            ===================================================== */}
+
                             <div className="register-next-step">
 
                                 <div className="next-step-line" />
@@ -484,11 +644,12 @@ function Register() {
 
 
                             <p className="register-next-description">
+
                                 After creating your account, you will
+                                be redirected to login. Then you can
                                 complete your profile with your academic
-                                information and documents. EduMatch will
-                                use this information to find opportunities
-                                that match you.
+                                information and documents.
+
                             </p>
 
                         </div>
@@ -502,5 +663,6 @@ function Register() {
         </div>
     );
 }
+
 
 export default Register;
