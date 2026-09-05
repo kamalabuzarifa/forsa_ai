@@ -26,6 +26,7 @@ import {
     useRef,
     useState,
 } from "react";
+
 import StudentFooter from "./StudentFooter";
 
 import "./StudentLayout.css";
@@ -64,10 +65,12 @@ function StudentLayout() {
         );
 
         return () => {
+
             document.removeEventListener(
                 "mousedown",
                 handleClickOutside
             );
+
         };
 
     }, []);
@@ -161,295 +164,300 @@ function StudentLayout() {
 
             <header className="student-header">
 
-
-                {/* -------------------------------------------------
-                    Header Left
-                ------------------------------------------------- */}
-
-                <div className="student-header-left">
+                <div className="student-header-container">
 
 
-                    {/* Mobile Menu */}
-                    <button
-                        type="button"
-                        className="student-mobile-menu-button"
-                        onClick={() =>
-                            setMobileMenuOpen(!mobileMenuOpen)
-                        }
-                        aria-label="Toggle navigation"
-                    >
+                    {/* =================================================
+                        Header Left
+                    ================================================= */}
 
-                        {mobileMenuOpen ? (
-                            <X size={20} />
-                        ) : (
-                            <Menu size={20} />
-                        )}
-
-                    </button>
+                    <div className="student-header-left">
 
 
-                    {/* Logo */}
-
-                    <Link
-                        to="/student/explore"
-                        className="student-logo"
-                        onClick={handleMobileNavigation}
-                    >
-
-                        <span className="student-logo-mark">
-                            E
-                        </span>
-
-                        <span className="student-logo-text">
-                            Edu<span>Match</span>
-                        </span>
-
-                    </Link>
-
-
-                </div>
-
-
-                {/* =================================================
-                    Desktop Navigation
-                ================================================= */}
-
-                <nav className="student-navigation">
-
-
-                    {navigation.map((item) => {
-
-                        const Icon = item.icon;
-
-                        return (
-
-                            <NavLink
-                                key={item.path}
-                                to={item.path}
-                                className={({ isActive }) =>
-                                    `student-nav-link ${isActive
-                                        ? "active"
-                                        : ""
-                                    }`
-                                }
-                            >
-
-                                <Icon size={16} />
-
-                                <span>
-                                    {item.label}
-                                </span>
-
-                            </NavLink>
-
-                        );
-
-                    })}
-
-
-                    {/* AI Advisor */}
-
-                    <NavLink
-                        to="/student/ai-advisor"
-                        className={({ isActive }) =>
-                            `student-ai-nav-link ${isActive
-                                ? "active"
-                                : ""
-                            }`
-                        }
-                    >
-
-                        <Sparkles size={15} />
-
-                        <span>
-                            AI Advisor
-                        </span>
-
-                    </NavLink>
-
-
-                </nav>
-
-
-                {/* =================================================
-                    Header Right
-                ================================================= */}
-
-                <div className="student-header-right">
-
-
-                    {/* Search */}
-
-                    <button
-                        type="button"
-                        className="student-header-icon"
-                        title="Search"
-                        onClick={() =>
-                            navigate("/student/explore")
-                        }
-                    >
-
-                        <Search size={18} />
-
-                    </button>
-
-
-                    {/* Notifications */}
-
-                    <button
-                        type="button"
-                        className="student-header-icon notification-button"
-                        title="Notifications"
-                    >
-
-                        <Bell size={18} />
-
-                        <span className="notification-dot" />
-
-                    </button>
-
-
-                    {/* Profile */}
-
-                    <div
-                        className="student-profile-wrapper"
-                        ref={profileRef}
-                    >
+                        {/* Mobile Menu */}
 
                         <button
                             type="button"
-                            className="student-profile-button"
+                            className="student-mobile-menu-button"
                             onClick={() =>
-                                setProfileOpen(!profileOpen)
+                                setMobileMenuOpen(!mobileMenuOpen)
                             }
+                            aria-label="Toggle navigation"
                         >
 
-                            <span className="student-avatar">
-                                K
-                            </span>
-
-                            <span className="student-profile-name">
-                                Student
-                            </span>
-
-                            <ChevronDown
-                                size={15}
-                                className={
-                                    profileOpen
-                                        ? "rotate"
-                                        : ""
-                                }
-                            />
+                            {mobileMenuOpen ? (
+                                <X size={20} />
+                            ) : (
+                                <Menu size={20} />
+                            )}
 
                         </button>
 
 
-                        {/* Profile Dropdown */}
+                        {/* Logo */}
 
-                        {profileOpen && (
+                        <Link
+                            to="/student/explore"
+                            className="student-logo"
+                            onClick={handleMobileNavigation}
+                        >
 
-                            <div className="student-profile-dropdown">
+                            <span className="student-logo-mark">
+                                E
+                            </span>
 
+                            <span className="student-logo-text">
+                                Edu<span>Match</span>
+                            </span>
 
-                                <div className="student-profile-dropdown-header">
+                        </Link>
 
-                                    <span className="student-avatar large">
-                                        K
-                                    </span>
-
-                                    <div>
-
-                                        <strong>
-                                            Student
-                                        </strong>
-
-                                        <span>
-                                            Find your future
-                                        </span>
-
-                                    </div>
-
-                                </div>
-
-
-                                <div className="student-dropdown-divider" />
-
-
-                                <Link
-                                    to="/student/profile"
-                                    className="student-dropdown-link"
-                                    onClick={() =>
-                                        setProfileOpen(false)
-                                    }
-                                >
-
-                                    <User size={16} />
-
-                                    <span>
-                                        My Profile
-                                    </span>
-
-                                </Link>
-
-
-                                <Link
-                                    to="/student/saved"
-                                    className="student-dropdown-link"
-                                    onClick={() =>
-                                        setProfileOpen(false)
-                                    }
-                                >
-
-                                    <Heart size={16} />
-
-                                    <span>
-                                        Saved Programs
-                                    </span>
-
-                                </Link>
-
-
-                                <Link
-                                    to="/student/applications"
-                                    className="student-dropdown-link"
-                                    onClick={() =>
-                                        setProfileOpen(false)
-                                    }
-                                >
-
-                                    <GraduationCap size={16} />
-
-                                    <span>
-                                        My Applications
-                                    </span>
-
-                                </Link>
-
-
-                                <div className="student-dropdown-divider" />
-
-
-                                <button
-                                    type="button"
-                                    className="student-dropdown-logout"
-                                    onClick={handleLogout}
-                                >
-
-                                    <LogOut size={16} />
-
-                                    <span>
-                                        Log out
-                                    </span>
-
-                                </button>
-
-
-                            </div>
-
-                        )}
 
                     </div>
 
+
+                    {/* =================================================
+                        Desktop Navigation
+                    ================================================= */}
+
+                    <nav className="student-navigation">
+
+
+                        {navigation.map((item) => {
+
+                            const Icon = item.icon;
+
+                            return (
+
+                                <NavLink
+                                    key={item.path}
+                                    to={item.path}
+                                    className={({ isActive }) =>
+                                        `student-nav-link ${isActive
+                                            ? "active"
+                                            : ""
+                                        }`
+                                    }
+                                >
+
+                                    <Icon size={16} />
+
+                                    <span>
+                                        {item.label}
+                                    </span>
+
+                                </NavLink>
+
+                            );
+
+                        })}
+
+
+                        {/* AI Advisor */}
+
+                        <NavLink
+                            to="/student/ai-advisor"
+                            className={({ isActive }) =>
+                                `student-ai-nav-link ${isActive
+                                    ? "active"
+                                    : ""
+                                }`
+                            }
+                        >
+
+                            <Sparkles size={15} />
+
+                            <span>
+                                AI Advisor
+                            </span>
+
+                        </NavLink>
+
+
+                    </nav>
+
+
+                    {/* =================================================
+                        Header Right
+                    ================================================= */}
+
+                    <div className="student-header-right">
+
+
+                        {/* Search */}
+
+                        <button
+                            type="button"
+                            className="student-header-icon"
+                            title="Search"
+                            onClick={() =>
+                                navigate("/student/explore")
+                            }
+                        >
+
+                            <Search size={18} />
+
+                        </button>
+
+
+                        {/* Notifications */}
+
+                        <button
+                            type="button"
+                            className="student-header-icon notification-button"
+                            title="Notifications"
+                        >
+
+                            <Bell size={18} />
+
+                            <span className="notification-dot" />
+
+                        </button>
+
+
+                        {/* Profile */}
+
+                        <div
+                            className="student-profile-wrapper"
+                            ref={profileRef}
+                        >
+
+                            <button
+                                type="button"
+                                className="student-profile-button"
+                                onClick={() =>
+                                    setProfileOpen(!profileOpen)
+                                }
+                            >
+
+                                <span className="student-avatar">
+                                    K
+                                </span>
+
+                                <span className="student-profile-name">
+                                    Student
+                                </span>
+
+                                <ChevronDown
+                                    size={15}
+                                    className={
+                                        profileOpen
+                                            ? "rotate"
+                                            : ""
+                                    }
+                                />
+
+                            </button>
+
+
+                            {/* Profile Dropdown */}
+
+                            {profileOpen && (
+
+                                <div className="student-profile-dropdown">
+
+
+                                    <div className="student-profile-dropdown-header">
+
+                                        <span className="student-avatar large">
+                                            K
+                                        </span>
+
+                                        <div>
+
+                                            <strong>
+                                                Student
+                                            </strong>
+
+                                            <span>
+                                                Find your future
+                                            </span>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <div className="student-dropdown-divider" />
+
+
+                                    <Link
+                                        to="/student/profile"
+                                        className="student-dropdown-link"
+                                        onClick={() =>
+                                            setProfileOpen(false)
+                                        }
+                                    >
+
+                                        <User size={16} />
+
+                                        <span>
+                                            My Profile
+                                        </span>
+
+                                    </Link>
+
+
+                                    <Link
+                                        to="/student/saved"
+                                        className="student-dropdown-link"
+                                        onClick={() =>
+                                            setProfileOpen(false)
+                                        }
+                                    >
+
+                                        <Heart size={16} />
+
+                                        <span>
+                                            Saved Programs
+                                        </span>
+
+                                    </Link>
+
+
+                                    <Link
+                                        to="/student/applications"
+                                        className="student-dropdown-link"
+                                        onClick={() =>
+                                            setProfileOpen(false)
+                                        }
+                                    >
+
+                                        <GraduationCap size={16} />
+
+                                        <span>
+                                            My Applications
+                                        </span>
+
+                                    </Link>
+
+
+                                    <div className="student-dropdown-divider" />
+
+
+                                    <button
+                                        type="button"
+                                        className="student-dropdown-logout"
+                                        onClick={handleLogout}
+                                    >
+
+                                        <LogOut size={16} />
+
+                                        <span>
+                                            Log out
+                                        </span>
+
+                                    </button>
+
+
+                                </div>
+
+                            )}
+
+                        </div>
+
+
+                    </div>
 
                 </div>
 
@@ -604,15 +612,21 @@ function StudentLayout() {
 
             <main className="student-main">
 
-                <Outlet />
+                <div className="student-main-container">
+
+                    <Outlet />
+
+                </div>
 
             </main>
+
 
             {/* =================================================
                 Footer
             ================================================= */}
 
-            <StudentFooter/>
+            <StudentFooter />
+
 
         </div>
 
