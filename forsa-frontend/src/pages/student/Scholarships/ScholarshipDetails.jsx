@@ -1,16 +1,13 @@
 import {
-    ArrowLeft,
     ArrowRight,
-    Bookmark,
+    BookOpen,
     CheckCircle2,
     Clock3,
     DollarSign,
     ExternalLink,
     Globe2,
     GraduationCap,
-    Heart,
     MapPin,
-    Share2,
     ShieldCheck,
     University,
 } from "lucide-react";
@@ -20,309 +17,455 @@ import {
     useParams,
 } from "react-router-dom";
 
+import {
+    useEffect,
+    useMemo,
+    useState,
+} from "react";
+
 import "./ScholarshipDetails.css";
 
+
+/* =========================================================
+   HELPERS
+   ========================================================= */
+
+const formatDate = (date) => {
+    if (!date) {
+        return "Not specified";
+    }
+
+    const parsedDate = new Date(date);
+
+    if (Number.isNaN(parsedDate.getTime())) {
+        return "Not specified";
+    }
+
+    return new Intl.DateTimeFormat("en-US", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+    }).format(parsedDate);
+};
+
+
+const formatRequirement = (requirement) => {
+    if (!requirement) {
+        return "";
+    }
+
+    if (requirement.description) {
+        return requirement.description;
+    }
+
+    if (requirement.requirement_type === "degree") {
+        return `Required degree: ${requirement.value || "Not specified"}`;
+    }
+
+    if (requirement.requirement_type === "gpa") {
+        return `Minimum GPA: ${requirement.value || "Not specified"} ${requirement.unit || ""}`;
+    }
+
+    if (requirement.requirement_type === "language") {
+        const language = requirement.language_name
+            ? `${requirement.language_name} `
+            : "";
+
+        return `${language}language level: ${requirement.value || "Not specified"} ${requirement.unit || ""}`;
+    }
+
+    return requirement.value || "Requirement not specified";
+};
+
+
+const getDegreeNames = (degrees) => {
+    if (!Array.isArray(degrees) || degrees.length === 0) {
+        return "";
+    }
+
+    return degrees
+        .map((degree) => degree?.name)
+        .filter(Boolean)
+        .join(", ");
+};
+
+
+/* =========================================================
+   COMPONENT
+   ========================================================= */
 
 function ScholarshipDetails() {
 
     const { id } = useParams();
 
-    const scholarship = {
-        id,
-        title: "Global Excellence Scholarship",
+    const [scholarship, setScholarship] = useState(null);
 
-        university: "University of Oxford",
+    const [loading, setLoading] = useState(true);
 
-        country: "United Kingdom",
-
-        city: "Oxford, United Kingdom",
-
-        degree: "Master's",
-
-        funding: "Fully Funded",
-
-        amount: "£25,000",
-
-        deadline: "15 January 2027",
-
-        duration: "1 year",
-
-        match: 96,
-
-        description:
-            "The Global Excellence Scholarship supports international students who demonstrate strong academic performance, leadership potential, and a clear commitment to their field of study.",
-
-        longDescription:
-            "This scholarship provides financial support for international students who want to pursue postgraduate study at the University of Oxford. The program is designed to support students with strong academic records and a clear study plan.",
-
-        eligibility: [
-            "You must be an international student.",
-            "You must hold an offer for an eligible master's program.",
-            "You must meet the academic requirements of the university.",
-            "You must demonstrate academic excellence.",
-            "You must submit the scholarship application before the deadline.",
-        ],
-
-        benefits: [
-            "Tuition fee support",
-            "Living cost contribution",
-            "Academic support",
-            "Access to university resources",
-            "International student community",
-        ],
-
-        applicationSteps: [
-            "Choose an eligible master's program.",
-            "Submit your university application.",
-            "Receive or secure your admission status.",
-            "Prepare the scholarship documents.",
-            "Submit your scholarship application.",
-        ],
-
-        documents: [
-            "Academic transcripts",
-            "CV or resume",
-            "Personal statement",
-            "Academic references",
-            "Proof of English proficiency",
-        ],
-    };
+    const [error, setError] = useState("");
 
 
-    return (
-        <div className="scholarship-details-page">
+    /* =====================================================
+       FETCH SCHOLARSHIP
+       ===================================================== */
 
-            {/* =================================================
-                Top Navigation
-            ================================================= */}
+    useEffect(() => {
 
-            <div className="scholarship-details-top">
+        let cancelled = false;
 
-                <Link
-                    to="/student/scholarships"
-                    className="back-to-scholarships"
-                >
-                    <ArrowLeft size={16} />
 
-                    Back to scholarships
-                </Link>
+        const fetchScholarship = async () => {
+
+            try {
+
+                setLoading(true);
+
+                setError("");
+
+                setScholarship(null);
+
+
+                const token = localStorage.getItem("token");
+
+
+                if (!token) {
+
+                    throw new Error(
+                        "Your session has expired. Please log in again."
+                    );
+
+                }
+
+
+                const response = await fetch(
+                    `http://127.0.0.1:8000/api/opportunities/${id}`,
+                    {
+                        method: "GET",
+
+                        headers: {
+                            Accept: "application/json",
+
+                            Authorization: `Bearer ${token}`,
+                        },
+                    }
+                );
+
+
+                const result = await response.json();
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        result?.message ||
+                        "Unable to load scholarship details."
+                    );
+
+                }
+
+
+                if (!result?.data) {
+
+                    throw new Error(
+                        "Scholarship data was not returned by the server."
+                    );
+
+                }
+
+
+                if (!cancelled) {
+
+                    setScholarship(result.data);
+
+                }
+
+            } catch (err) {
+
+                if (!cancelled) {
+
+                    console.error(
+                        "Scholarship details error:",
+                        err
+                    );
+
+                    setError(
+                        err?.message ||
+                        "Something went wrong while loading the scholarship."
+                    );
+
+                }
+
+            } finally {
+
+                if (!cancelled) {
+
+                    setLoading(false);
+
+                }
+
+            }
+
+        };
+
+
+        if (id) {
+
+            fetchScholarship();
+
+        }
+
+
+        return () => {
+
+            cancelled = true;
+
+        };
+
+    }, [id]);
+
+
+    /* =====================================================
+       DERIVED DATA
+       ===================================================== */
+
+    const university = scholarship?.university;
+
+    const country = scholarship?.country;
+
+    const fundingType = scholarship?.funding_type;
+
+    const opportunityType = scholarship?.opportunity_type;
+
+
+    const fields = useMemo(() => {
+
+        return Array.isArray(scholarship?.fields)
+            ? scholarship.fields
+            : [];
+
+    }, [scholarship]);
+
+
+    const degrees = useMemo(() => {
+
+        return Array.isArray(scholarship?.degrees)
+            ? scholarship.degrees
+            : [];
+
+    }, [scholarship]);
+
+
+    const skills = useMemo(() => {
+
+        return Array.isArray(scholarship?.skills)
+            ? scholarship.skills
+            : [];
+
+    }, [scholarship]);
+
+
+    const nationalities = useMemo(() => {
+
+        return Array.isArray(scholarship?.nationalities)
+            ? scholarship.nationalities
+            : [];
+
+    }, [scholarship]);
+
+
+    const requirements = useMemo(() => {
+
+        return Array.isArray(scholarship?.requirements)
+            ? scholarship.requirements
+            : [];
+
+    }, [scholarship]);
+
+
+    const mandatoryRequirements = useMemo(() => {
+
+        return requirements.filter(
+            (requirement) => requirement.is_mandatory
+        );
+
+    }, [requirements]);
+
+
+    const optionalRequirements = useMemo(() => {
+
+        return requirements.filter(
+            (requirement) => !requirement.is_mandatory
+        );
+
+    }, [requirements]);
+
+
+    const isDeadlinePassed = useMemo(() => {
+
+        if (!scholarship?.deadline) {
+
+            return false;
+
+        }
+
+        return new Date(scholarship.deadline) < new Date();
+
+    }, [scholarship]);
+
+
+    /* =====================================================
+       LOADING
+       ===================================================== */
+
+    if (loading) {
+
+        return (
+
+            <div className="scholarship-details-page">
+
+                <div className="scholarship-details-loading">
+
+                    <div className="scholarship-loading-spinner" />
+
+                    <p>
+                        Loading scholarship...
+                    </p>
+
+                </div>
 
             </div>
 
+        );
 
-            {/* =================================================
-                Hero
-            ================================================= */}
+    }
 
-            <section className="scholarship-details-hero">
 
-                <div className="scholarship-hero-content">
+    /* =====================================================
+       ERROR
+       ===================================================== */
 
-                    <div className="scholarship-breadcrumb">
+    if (error || !scholarship) {
 
-                        <Link to="/student/explore">
-                            Explore
-                        </Link>
+        return (
 
-                        <span>/</span>
+            <div className="scholarship-details-page">
 
-                        <Link to="/student/scholarships">
-                            Scholarships
-                        </Link>
+                <div className="scholarship-details-error">
 
-                        <span>/</span>
+                    <div className="scholarship-error-icon">
 
-                        <span>
-                            Details
-                        </span>
+                        <ShieldCheck size={28} />
 
                     </div>
 
 
-                    <div className="scholarship-hero-grid">
-
-                        <div className="scholarship-hero-main">
-
-                            <div className="scholarship-university-icon">
-                                <University size={28} />
-                            </div>
+                    <h2>
+                        Unable to load scholarship
+                    </h2>
 
 
-                            <div className="scholarship-match-badge">
-
-                                <CheckCircle2 size={14} />
-
-                                {scholarship.match}% match for you
-
-                            </div>
+                    <p>
+                        {error ||
+                            "The requested scholarship could not be found."}
+                    </p>
 
 
-                            <h1>
-                                {scholarship.title}
-                            </h1>
+                    <Link
+                        to="/student/scholarships"
+                        className="scholarship-error-button"
+                    >
+                        Explore scholarships
 
+                        <ArrowRight size={16} />
+
+                    </Link>
+
+                </div>
+
+            </div>
+
+        );
+
+    }
+
+
+    return (
+
+        <div className="scholarship-details-page">
+
+
+            {/* =================================================
+                HERO
+            ================================================= */}
+
+            <section className="scholarship-details-hero">
+
+                <div className="scholarship-details-hero-overlay" />
+
+
+                <div className="scholarship-details-hero-inner">
+
+
+                    {/* =================================================
+                        SCHOLARSHIP ICON
+                    ================================================= */}
+
+                    <div className="scholarship-details-icon">
+
+                        <University size={38} />
+
+                    </div>
+
+
+                    {/* =================================================
+                        HERO CONTENT
+                    ================================================= */}
+
+                    <div className="scholarship-details-hero-content">
+
+
+                        <span className="scholarship-details-eyebrow">
+
+                            <GraduationCap size={17} />
+
+                            Scholarship opportunity
+
+                        </span>
+
+
+                        <h1>
+                            {scholarship.title}
+                        </h1>
+
+
+                        {university?.name && (
 
                             <Link
-                                to="/student/universities/1"
-                                className="scholarship-university-link"
+                                to={`/student/universities/${university.id}`}
+                                className="scholarship-details-university"
                             >
-                                {scholarship.university}
+                                <University size={17} />
+
+                                {university.name}
+
                             </Link>
 
-
-                            <div className="scholarship-location">
-
-                                <MapPin size={15} />
-
-                                {scholarship.city}
-
-                            </div>
+                        )}
 
 
-                            <p className="scholarship-hero-description">
-                                {scholarship.description}
-                            </p>
+                        {country?.name && (
 
+                            <div className="scholarship-details-location">
 
-                            <div className="scholarship-hero-actions">
-
-                                <a
-                                    href="#apply"
-                                    className="scholarship-apply-button"
-                                >
-                                    Apply for this scholarship
-
-                                    <ArrowRight size={16} />
-
-                                </a>
-
-
-                                <button className="scholarship-save-button">
-
-                                    <Bookmark size={16} />
-
-                                    Save
-
-                                </button>
-
-
-                                <button className="scholarship-share-button">
-
-                                    <Share2 size={16} />
-
-                                </button>
-
-                            </div>
-
-                        </div>
-
-
-                        <aside className="scholarship-summary-card">
-
-                            <div className="summary-card-header">
+                                <MapPin size={18} />
 
                                 <span>
-                                    Scholarship overview
+                                    {country.name}
                                 </span>
 
-                                <ShieldCheck size={18} />
-
                             </div>
 
-
-                            <div className="summary-items">
-
-                                <div className="summary-item">
-
-                                    <div className="summary-icon">
-                                        <DollarSign size={17} />
-                                    </div>
-
-                                    <div>
-                                        <span>
-                                            Funding
-                                        </span>
-
-                                        <strong>
-                                            {scholarship.funding}
-                                        </strong>
-                                    </div>
-
-                                </div>
-
-
-                                <div className="summary-item">
-
-                                    <div className="summary-icon">
-                                        <GraduationCap size={17} />
-                                    </div>
-
-                                    <div>
-                                        <span>
-                                            Study level
-                                        </span>
-
-                                        <strong>
-                                            {scholarship.degree}
-                                        </strong>
-                                    </div>
-
-                                </div>
-
-
-                                <div className="summary-item">
-
-                                    <div className="summary-icon">
-                                        <Clock3 size={17} />
-                                    </div>
-
-                                    <div>
-                                        <span>
-                                            Deadline
-                                        </span>
-
-                                        <strong>
-                                            {scholarship.deadline}
-                                        </strong>
-                                    </div>
-
-                                </div>
-
-
-                                <div className="summary-item">
-
-                                    <div className="summary-icon">
-                                        <Globe2 size={17} />
-                                    </div>
-
-                                    <div>
-                                        <span>
-                                            Destination
-                                        </span>
-
-                                        <strong>
-                                            {scholarship.country}
-                                        </strong>
-                                    </div>
-
-                                </div>
-
-                            </div>
-
-
-                            <div className="summary-funding">
-
-                                <span>
-                                    Estimated funding
-                                </span>
-
-                                <strong>
-                                    {scholarship.amount}
-                                </strong>
-
-                            </div>
-
-                        </aside>
+                        )}
 
                     </div>
 
@@ -332,29 +475,124 @@ function ScholarshipDetails() {
 
 
             {/* =================================================
-                Main Content
+                STATS
             ================================================= */}
 
-            <main className="scholarship-details-content">
+            <section className="scholarship-details-stats">
+
+                <div className="scholarship-details-stats-inner">
+
+
+                    {/* Funding */}
+
+                    <div className="scholarship-stat">
+
+                        <div className="scholarship-stat-icon">
+
+                            <DollarSign size={20} />
+
+                        </div>
+
+                        <div>
+
+                            <strong>
+                                {fundingType?.name ||
+                                    "Not specified"}
+                            </strong>
+
+                            <span>
+                                Funding
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    {/* Deadline */}
+
+                    <div className="scholarship-stat">
+
+                        <div className="scholarship-stat-icon">
+
+                            <Clock3 size={20} />
+
+                        </div>
+
+                        <div>
+
+                            <strong>
+                                {formatDate(
+                                    scholarship.deadline
+                                )}
+                            </strong>
+
+                            <span>
+                                Application deadline
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    {/* Degree */}
+
+                    <div className="scholarship-stat">
+
+                        <div className="scholarship-stat-icon">
+
+                            <GraduationCap size={20} />
+
+                        </div>
+
+                        <div>
+
+                            <strong>
+                                {getDegreeNames(degrees) ||
+                                    "Not specified"}
+                            </strong>
+
+                            <span>
+                                Study level
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+            </section>
+
+
+            {/* =================================================
+                MAIN CONTAINER
+            ================================================= */}
+
+            <main className="scholarship-details-container">
 
                 <div className="scholarship-details-layout">
 
 
                     {/* =================================================
-                        Main Column
+                        MAIN COLUMN
                     ================================================= */}
 
                     <div className="scholarship-details-main">
 
 
-                        {/* Overview */}
+                        {/* =================================================
+                            ABOUT
+                        ================================================= */}
 
-                        <section className="details-section">
+                        <section className="scholarship-content-section">
 
-                            <div className="details-section-heading">
+                            <div className="scholarship-section-heading">
 
-                                <span>
-                                    ABOUT THIS SCHOLARSHIP
+                                <span className="scholarship-section-kicker">
+                                    About opportunity
                                 </span>
 
                                 <h2>
@@ -364,55 +602,49 @@ function ScholarshipDetails() {
                             </div>
 
 
-                            <p>
-                                {scholarship.longDescription}
-                            </p>
+                            <div className="scholarship-about-content">
 
-                            <p>
-                                Students who receive this scholarship can
-                                focus on their academic goals while receiving
-                                financial support during their studies.
-                            </p>
-
-                        </section>
+                                <p>
+                                    {scholarship.description ||
+                                        "No description is available for this opportunity."}
+                                </p>
 
 
-                        {/* Benefits */}
+                                {scholarship.start_date && (
 
-                        <section className="details-section">
+                                    <p>
 
-                            <div className="details-section-heading">
+                                        The study period starts on{" "}
 
-                                <span>
-                                    FUNDING
-                                </span>
+                                        <strong>
+                                            {formatDate(
+                                                scholarship.start_date
+                                            )}
+                                        </strong>
 
-                                <h2>
-                                    What does it cover?
-                                </h2>
+                                        .
 
-                            </div>
+                                    </p>
+
+                                )}
 
 
-                            <div className="benefits-grid">
+                                {scholarship.end_date && (
 
-                                {scholarship.benefits.map(
-                                    (benefit, index) => (
+                                    <p>
 
-                                        <div
-                                            className="benefit-item"
-                                            key={index}
-                                        >
+                                        The study period ends on{" "}
 
-                                            <CheckCircle2 size={17} />
+                                        <strong>
+                                            {formatDate(
+                                                scholarship.end_date
+                                            )}
+                                        </strong>
 
-                                            <span>
-                                                {benefit}
-                                            </span>
+                                        .
 
-                                        </div>
+                                    </p>
 
-                                    )
                                 )}
 
                             </div>
@@ -420,14 +652,314 @@ function ScholarshipDetails() {
                         </section>
 
 
-                        {/* Eligibility */}
+                        {/* =================================================
+                            AT A GLANCE
+                        ================================================= */}
 
-                        <section className="details-section">
+                        <section className="scholarship-content-section">
 
-                            <div className="details-section-heading">
+                            <div className="scholarship-section-heading">
 
-                                <span>
-                                    ELIGIBILITY
+                                <span className="scholarship-section-kicker">
+                                    Scholarship information
+                                </span>
+
+                                <h2>
+                                    At a glance
+                                </h2>
+
+                            </div>
+
+
+                            <div className="scholarship-information-grid">
+
+
+                                {university?.name && (
+
+                                    <div className="scholarship-information-item">
+
+                                        <div className="scholarship-information-icon">
+
+                                            <University size={20} />
+
+                                        </div>
+
+                                        <div>
+
+                                            <span>
+                                                University
+                                            </span>
+
+                                            <strong>
+                                                {university.name}
+                                            </strong>
+
+                                        </div>
+
+                                    </div>
+
+                                )}
+
+
+                                {country?.name && (
+
+                                    <div className="scholarship-information-item">
+
+                                        <div className="scholarship-information-icon">
+
+                                            <MapPin size={20} />
+
+                                        </div>
+
+                                        <div>
+
+                                            <span>
+                                                Destination
+                                            </span>
+
+                                            <strong>
+                                                {country.name}
+                                            </strong>
+
+                                        </div>
+
+                                    </div>
+
+                                )}
+
+
+                                {fundingType?.name && (
+
+                                    <div className="scholarship-information-item">
+
+                                        <div className="scholarship-information-icon">
+
+                                            <DollarSign size={20} />
+
+                                        </div>
+
+                                        <div>
+
+                                            <span>
+                                                Funding type
+                                            </span>
+
+                                            <strong>
+                                                {fundingType.name}
+                                            </strong>
+
+                                        </div>
+
+                                    </div>
+
+                                )}
+
+
+                                {opportunityType?.name && (
+
+                                    <div className="scholarship-information-item">
+
+                                        <div className="scholarship-information-icon">
+
+                                            <BookOpen size={20} />
+
+                                        </div>
+
+                                        <div>
+
+                                            <span>
+                                                Opportunity type
+                                            </span>
+
+                                            <strong>
+                                                {opportunityType.name}
+                                            </strong>
+
+                                        </div>
+
+                                    </div>
+
+                                )}
+
+
+                                {degrees.length > 0 && (
+
+                                    <div className="scholarship-information-item">
+
+                                        <div className="scholarship-information-icon">
+
+                                            <GraduationCap size={20} />
+
+                                        </div>
+
+                                        <div>
+
+                                            <span>
+                                                Academic level
+                                            </span>
+
+                                            <strong>
+                                                {getDegreeNames(degrees)}
+                                            </strong>
+
+                                        </div>
+
+                                    </div>
+
+                                )}
+
+
+                                {scholarship.deadline && (
+
+                                    <div className="scholarship-information-item">
+
+                                        <div className="scholarship-information-icon">
+
+                                            <Clock3 size={20} />
+
+                                        </div>
+
+                                        <div>
+
+                                            <span>
+                                                Deadline
+                                            </span>
+
+                                            <strong>
+                                                {formatDate(
+                                                    scholarship.deadline
+                                                )}
+                                            </strong>
+
+                                        </div>
+
+                                    </div>
+
+                                )}
+
+                            </div>
+
+                        </section>
+
+
+                        {/* =================================================
+                            FIELDS
+                        ================================================= */}
+
+                        {fields.length > 0 && (
+
+                            <section className="scholarship-content-section">
+
+                                <div className="scholarship-section-heading">
+
+                                    <span className="scholarship-section-kicker">
+                                        Areas of study
+                                    </span>
+
+                                    <h2>
+                                        Eligible fields
+                                    </h2>
+
+                                </div>
+
+
+                                <div className="scholarship-items-grid">
+
+                                    {fields.map((field) => (
+
+                                        <div
+                                            className="scholarship-item-card"
+                                            key={field.id}
+                                        >
+
+                                            <div className="scholarship-item-icon">
+
+                                                <CheckCircle2 size={18} />
+
+                                            </div>
+
+                                            <span>
+                                                {field.name}
+                                            </span>
+
+                                        </div>
+
+                                    ))}
+
+                                </div>
+
+                            </section>
+
+                        )}
+
+
+                        {/* =================================================
+                            DEGREES
+                        ================================================= */}
+
+                        {degrees.length > 0 && (
+
+                            <section className="scholarship-content-section">
+
+                                <div className="scholarship-section-heading">
+
+                                    <span className="scholarship-section-kicker">
+                                        Academic level
+                                    </span>
+
+                                    <h2>
+                                        Eligible degrees
+                                    </h2>
+
+                                </div>
+
+
+                                <div className="scholarship-items-grid">
+
+                                    {degrees.map((degree) => (
+
+                                        <div
+                                            className="scholarship-item-card"
+                                            key={degree.id}
+                                        >
+
+                                            <div className="scholarship-item-icon">
+
+                                                <GraduationCap size={18} />
+
+                                            </div>
+
+                                            <span>
+
+                                                {degree.name}
+
+                                                {degree.code
+                                                    ? ` (${degree.code})`
+                                                    : ""}
+
+                                            </span>
+
+                                        </div>
+
+                                    ))}
+
+                                </div>
+
+                            </section>
+
+                        )}
+
+
+                        {/* =================================================
+                            ELIGIBILITY
+                        ================================================= */}
+
+                        <section className="scholarship-content-section">
+
+                            <div className="scholarship-section-heading">
+
+                                <span className="scholarship-section-kicker">
+                                    Eligibility
                                 </span>
 
                                 <h2>
@@ -437,88 +969,234 @@ function ScholarshipDetails() {
                             </div>
 
 
-                            <div className="eligibility-list">
+                            {nationalities.length > 0 ? (
 
-                                {scholarship.eligibility.map(
-                                    (item, index) => (
+                                <div className="scholarship-eligibility-list">
 
-                                        <div
-                                            className="eligibility-item"
-                                            key={index}
-                                        >
+                                    {nationalities.map(
+                                        (nationality, index) => (
 
-                                            <div className="eligibility-number">
-                                                {index + 1}
+                                            <div
+                                                className="scholarship-eligibility-item"
+                                                key={`${nationality.country_id}-${index}`}
+                                            >
+
+                                                <div className="scholarship-eligibility-number">
+                                                    {index + 1}
+                                                </div>
+
+                                                <div>
+
+                                                    <strong>
+                                                        {nationality.country_name}
+                                                    </strong>
+
+                                                    <span>
+
+                                                        {nationality.eligibility_type ===
+                                                            "eligible"
+                                                            ? "Eligible"
+                                                            : nationality.eligibility_type}
+
+                                                    </span>
+
+                                                </div>
+
                                             </div>
 
-                                            <p>
-                                                {item}
-                                            </p>
+                                        )
+                                    )}
 
-                                        </div>
+                                </div>
 
-                                    )
-                                )}
+                            ) : (
 
-                            </div>
+                                <div className="scholarship-empty-state">
+
+                                    <ShieldCheck size={24} />
+
+                                    <p>
+                                        No nationality eligibility
+                                        information is available.
+                                    </p>
+
+                                </div>
+
+                            )}
 
                         </section>
 
 
-                        {/* Documents */}
+                        {/* =================================================
+                            REQUIREMENTS
+                        ================================================= */}
 
-                        <section className="details-section">
+                        {requirements.length > 0 && (
 
-                            <div className="details-section-heading">
+                            <section className="scholarship-content-section">
 
-                                <span>
-                                    REQUIREMENTS
-                                </span>
+                                <div className="scholarship-section-heading">
 
-                                <h2>
-                                    Documents you may need
-                                </h2>
+                                    <span className="scholarship-section-kicker">
+                                        Requirements
+                                    </span>
 
-                            </div>
+                                    <h2>
+                                        Admission requirements
+                                    </h2>
+
+                                </div>
 
 
-                            <div className="documents-list">
+                                {mandatoryRequirements.length > 0 && (
 
-                                {scholarship.documents.map(
-                                    (document, index) => (
+                                    <div className="scholarship-requirements-group">
+
+                                        <h3>
+                                            Mandatory requirements
+                                        </h3>
+
+
+                                        <div className="scholarship-requirements-list">
+
+                                            {mandatoryRequirements.map(
+                                                (requirement) => (
+
+                                                    <div
+                                                        className="scholarship-requirement-item"
+                                                        key={requirement.id}
+                                                    >
+
+                                                        <CheckCircle2 size={17} />
+
+                                                        <span>
+                                                            {formatRequirement(
+                                                                requirement
+                                                            )}
+                                                        </span>
+
+                                                    </div>
+
+                                                )
+                                            )}
+
+                                        </div>
+
+                                    </div>
+
+                                )}
+
+
+                                {optionalRequirements.length > 0 && (
+
+                                    <div className="scholarship-requirements-group">
+
+                                        <h3>
+                                            Other requirements
+                                        </h3>
+
+
+                                        <div className="scholarship-requirements-list">
+
+                                            {optionalRequirements.map(
+                                                (requirement) => (
+
+                                                    <div
+                                                        className="scholarship-requirement-item"
+                                                        key={requirement.id}
+                                                    >
+
+                                                        <CheckCircle2 size={17} />
+
+                                                        <span>
+                                                            {formatRequirement(
+                                                                requirement
+                                                            )}
+                                                        </span>
+
+                                                    </div>
+
+                                                )
+                                            )}
+
+                                        </div>
+
+                                    </div>
+
+                                )}
+
+                            </section>
+
+                        )}
+
+
+                        {/* =================================================
+                            SKILLS
+                        ================================================= */}
+
+                        {skills.length > 0 && (
+
+                            <section className="scholarship-content-section">
+
+                                <div className="scholarship-section-heading">
+
+                                    <span className="scholarship-section-kicker">
+                                        Skills
+                                    </span>
+
+                                    <h2>
+                                        Required skills
+                                    </h2>
+
+                                </div>
+
+
+                                <div className="scholarship-items-grid">
+
+                                    {skills.map((skill) => (
 
                                         <div
-                                            className="document-item"
-                                            key={index}
+                                            className="scholarship-item-card"
+                                            key={skill.id}
                                         >
 
-                                            <CheckCircle2 size={16} />
+                                            <div className="scholarship-item-icon">
+
+                                                <CheckCircle2 size={18} />
+
+                                            </div>
 
                                             <span>
-                                                {document}
+
+                                                {skill.name}
+
+                                                {skill.is_mandatory
+                                                    ? " — Mandatory"
+                                                    : " — Preferred"}
+
                                             </span>
 
                                         </div>
 
-                                    )
-                                )}
+                                    ))}
 
-                            </div>
+                                </div>
 
-                        </section>
+                            </section>
+
+                        )}
 
 
-                        {/* Application */}
+                        {/* =================================================
+                            APPLICATION
+                        ================================================= */}
 
-                        <section
-                            className="details-section"
-                            id="apply"
-                        >
+                        <section className="scholarship-content-section">
 
-                            <div className="details-section-heading">
+                            <div className="scholarship-section-heading">
 
-                                <span>
-                                    APPLICATION
+                                <span className="scholarship-section-kicker">
+                                    Application
                                 </span>
 
                                 <h2>
@@ -528,67 +1206,52 @@ function ScholarshipDetails() {
                             </div>
 
 
-                            <div className="application-steps">
+                            <div className="scholarship-about-content">
 
-                                {scholarship.applicationSteps.map(
-                                    (step, index) => (
-
-                                        <div
-                                            className="application-step"
-                                            key={index}
-                                        >
-
-                                            <div className="step-number">
-                                                {index + 1}
-                                            </div>
-
-                                            <div className="step-content">
-
-                                                <strong>
-                                                    Step {index + 1}
-                                                </strong>
-
-                                                <p>
-                                                    {step}
-                                                </p>
-
-                                            </div>
-
-                                        </div>
-
-                                    )
-                                )}
+                                <p>
+                                    Submit your application through the
+                                    official application page provided for
+                                    this opportunity.
+                                </p>
 
                             </div>
 
 
-                            <div className="official-application">
+                            {scholarship.application_url && (
 
-                                <div>
+                                <div className="scholarship-official-application">
 
-                                    <strong>
-                                        Ready to apply?
-                                    </strong>
+                                    <div>
 
-                                    <p>
-                                        Continue to the official
-                                        university application page.
-                                    </p>
+                                        <strong>
+                                            Ready to apply?
+                                        </strong>
+
+                                        <p>
+                                            Continue to the official
+                                            application page.
+                                        </p>
+
+                                    </div>
+
+
+                                    <a
+                                        href={
+                                            scholarship.application_url
+                                        }
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="scholarship-official-button"
+                                    >
+                                        Official application
+
+                                        <ExternalLink size={14} />
+
+                                    </a>
 
                                 </div>
 
-
-                                <a
-                                    href="#"
-                                    className="official-application-button"
-                                >
-                                    Official application
-
-                                    <ExternalLink size={14} />
-
-                                </a>
-
-                            </div>
+                            )}
 
                         </section>
 
@@ -596,90 +1259,162 @@ function ScholarshipDetails() {
 
 
                     {/* =================================================
-                        Sidebar
+                        SIDEBAR
                     ================================================= */}
 
                     <aside className="scholarship-details-sidebar">
 
 
-                        {/* Deadline */}
+                        {/* =================================================
+                            APPLY
+                        ================================================= */}
 
-                        <div className="sidebar-card deadline-card">
+                        {scholarship.application_url && (
 
-                            <div className="sidebar-card-icon">
-                                <Clock3 size={19} />
+                            <div className="scholarship-action-card">
+
+                                <div className="scholarship-action-icon">
+
+                                    <ExternalLink size={21} />
+
+                                </div>
+
+
+                                <h3>
+                                    Apply for this scholarship
+                                </h3>
+
+
+                                <p>
+                                    Continue to the official application
+                                    page to submit your application.
+                                </p>
+
+
+                                <a
+                                    href={scholarship.application_url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="scholarship-action-button"
+                                >
+                                    Apply now
+
+                                    <ExternalLink size={16} />
+
+                                </a>
+
                             </div>
 
-                            <span>
+                        )}
+
+
+                        {/* =================================================
+                            DEADLINE
+                        ================================================= */}
+
+                        <div className="scholarship-sidebar-card">
+
+                            <div className="scholarship-sidebar-card-icon">
+
+                                <Clock3 size={20} />
+
+                            </div>
+
+
+                            <span className="scholarship-sidebar-label">
                                 Application deadline
                             </span>
 
-                            <strong>
-                                {scholarship.deadline}
+
+                            <strong className="scholarship-sidebar-deadline">
+                                {formatDate(
+                                    scholarship.deadline
+                                )}
                             </strong>
 
+
                             <p>
-                                Make sure your application is submitted
-                                before the deadline.
+
+                                {isDeadlinePassed
+                                    ? "This application deadline has passed."
+                                    : "Make sure your application is submitted before the deadline."}
+
                             </p>
 
                         </div>
 
 
-                        {/* University */}
+                        {/* =================================================
+                            UNIVERSITY
+                        ================================================= */}
 
-                        <div className="sidebar-card">
+                        {university && (
 
-                            <div className="sidebar-card-header">
+                            <div className="scholarship-sidebar-card">
 
-                                <span>
-                                    Offered by
-                                </span>
-
-                                <University size={17} />
-
-                            </div>
-
-
-                            <div className="sidebar-university">
-
-                                <div className="sidebar-university-icon">
-                                    <GraduationCap size={20} />
-                                </div>
-
-                                <div>
-
-                                    <strong>
-                                        {scholarship.university}
-                                    </strong>
+                                <div className="scholarship-sidebar-card-header">
 
                                     <span>
-                                        {scholarship.country}
+                                        Offered by
                                     </span>
+
+                                    <University size={17} />
 
                                 </div>
 
+
+                                <div className="scholarship-sidebar-university">
+
+                                    <div className="scholarship-sidebar-university-icon">
+
+                                        <GraduationCap size={20} />
+
+                                    </div>
+
+
+                                    <div>
+
+                                        <strong>
+                                            {university.name ||
+                                                "University not specified"}
+                                        </strong>
+
+                                        <span>
+                                            {country?.name ||
+                                                "Country not specified"}
+                                        </span>
+
+                                    </div>
+
+                                </div>
+
+
+                                {university.id && (
+
+                                    <Link
+                                        to={`/student/universities/${university.id}`}
+                                        className="scholarship-sidebar-link"
+                                    >
+                                        View university
+
+                                        <ArrowRight size={15} />
+
+                                    </Link>
+
+                                )}
+
                             </div>
 
-
-                            <Link
-                                to="/student/universities/1"
-                                className="sidebar-link"
-                            >
-                                View university
-
-                                <ArrowRight size={14} />
-
-                            </Link>
-
-                        </div>
+                        )}
 
 
-                        {/* Quick Facts */}
+                        {/* =================================================
+                            QUICK FACTS
+                        ================================================= */}
 
-                        <div className="sidebar-card">
+                        <div className="scholarship-sidebar-card">
 
-                            <div className="sidebar-card-header">
+                            <div className="scholarship-sidebar-card-header">
 
                                 <span>
                                     Quick facts
@@ -688,49 +1423,62 @@ function ScholarshipDetails() {
                             </div>
 
 
-                            <div className="quick-facts">
+                            <div className="scholarship-quick-facts">
+
 
                                 <div>
+
                                     <span>
                                         Study level
                                     </span>
 
                                     <strong>
-                                        {scholarship.degree}
+                                        {getDegreeNames(degrees) ||
+                                            "Not specified"}
                                     </strong>
+
                                 </div>
 
 
                                 <div>
-                                    <span>
-                                        Duration
-                                    </span>
 
-                                    <strong>
-                                        {scholarship.duration}
-                                    </strong>
-                                </div>
-
-
-                                <div>
                                     <span>
                                         Funding
                                     </span>
 
                                     <strong>
-                                        {scholarship.funding}
+                                        {fundingType?.name ||
+                                            "Not specified"}
                                     </strong>
+
                                 </div>
 
 
                                 <div>
+
                                     <span>
-                                        Amount
+                                        Opportunity type
                                     </span>
 
                                     <strong>
-                                        {scholarship.amount}
+                                        {opportunityType?.name ||
+                                            "Not specified"}
                                     </strong>
+
+                                </div>
+
+
+                                <div>
+
+                                    <span>
+                                        Status
+                                    </span>
+
+                                    <strong>
+                                        {scholarship.status ||
+                                            "Not specified"}
+                                    </strong>
+
                                 </div>
 
                             </div>
@@ -738,26 +1486,55 @@ function ScholarshipDetails() {
                         </div>
 
 
-                        {/* Save */}
+                        {/* =================================================
+                            VERIFICATION / SOURCE
+                        ================================================= */}
 
-                        <div className="sidebar-save-card">
+                        <div className="scholarship-ai-card">
 
-                            <Heart size={19} />
+                            <div className="scholarship-ai-card-icon">
 
-                            <strong>
-                                Interested in this scholarship?
-                            </strong>
+                                <ShieldCheck size={21} />
+
+                            </div>
+
+
+                            <span className="scholarship-ai-card-label">
+                                Opportunity status
+                            </span>
+
+
+                            <h3>
+                                {scholarship.is_verified
+                                    ? "Verified opportunity"
+                                    : "Unverified opportunity"}
+                            </h3>
+
 
                             <p>
-                                Save it to your profile and come back
-                                to it later.
+
+                                {scholarship.is_verified
+                                    ? "This opportunity has been verified."
+                                    : "This opportunity has not been verified."}
+
                             </p>
 
-                            <button>
-                                <Bookmark size={14} />
 
-                                Save scholarship
-                            </button>
+                            {scholarship.source_url && (
+
+                                <a
+                                    href={scholarship.source_url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="scholarship-ai-card-link"
+                                >
+                                    View source
+
+                                    <ExternalLink size={15} />
+
+                                </a>
+
+                            )}
 
                         </div>
 
@@ -768,7 +1545,9 @@ function ScholarshipDetails() {
             </main>
 
         </div>
+
     );
+
 }
 
 

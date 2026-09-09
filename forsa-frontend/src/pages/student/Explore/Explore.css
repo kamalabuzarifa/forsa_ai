@@ -7,7 +7,6 @@
     min-height: 100vh;
 
     background: #ffffff;
-
     color: #0f172a;
 
     overflow-x: hidden;
@@ -22,9 +21,7 @@
     min-height: 570px;
 
     display: grid;
-
-    grid-template-columns:
-        1.05fr 0.95fr;
+    grid-template-columns: 1.05fr 0.95fr;
 
     align-items: center;
 
@@ -56,7 +53,6 @@
     color: #0f9f8f;
 
     font-size: 10px;
-
     font-weight: 800;
 
     letter-spacing: 0.4px;
@@ -76,11 +72,9 @@
     color: #26302e;
 
     font-size: 53px;
-
     font-weight: 800;
 
     line-height: 1.04;
-
     letter-spacing: -2.4px;
 }
 
@@ -100,7 +94,6 @@
     color: #687572;
 
     font-size: 13px;
-
     line-height: 1.85;
 }
 
@@ -111,7 +104,6 @@
 
 .explore-search {
     max-width: 610px;
-
     height: 60px;
 
     display: flex;
@@ -124,7 +116,6 @@
     padding: 6px 6px 6px 18px;
 
     border: 1px solid #dce8e4;
-
     border-radius: 11px;
 
     background: #ffffff;
@@ -143,7 +134,6 @@
 
 .explore-search input {
     min-width: 0;
-
     flex: 1;
 
     height: 100%;
@@ -151,15 +141,12 @@
     padding: 0;
 
     border: 0;
-
     outline: 0;
 
     color: #303936;
-
     background: transparent;
 
     font-family: inherit;
-
     font-size: 11px;
 }
 
@@ -175,17 +162,13 @@
     padding: 0 24px;
 
     border: 0;
-
     border-radius: 8px;
 
     color: #ffffff;
-
     background: #0f9f8f;
 
     font-family: inherit;
-
     font-size: 10px;
-
     font-weight: 800;
 
     cursor: pointer;
@@ -210,7 +193,6 @@
 .explore-quick-search {
     display: flex;
     align-items: center;
-
     flex-wrap: wrap;
 
     gap: 8px;
@@ -232,15 +214,12 @@
     padding: 6px 9px;
 
     border: 1px solid #dce7e4;
-
     border-radius: 6px;
 
     color: #66726f;
-
     background: #ffffff;
 
     font-family: inherit;
-
     font-size: 8px;
 
     cursor: pointer;
@@ -271,16 +250,13 @@
     min-height: 440px;
 
     display: flex;
-
     align-items: center;
-
     justify-content: center;
 }
 
 
 .explore-hero-card {
     position: relative;
-
     z-index: 2;
 
     width: 385px;
@@ -288,7 +264,6 @@
     padding: 27px;
 
     border: 1px solid #dfe9e6;
-
     border-radius: 17px;
 
     background: #ffffff;
@@ -300,7 +275,6 @@
 
 .explore-hero-card-header {
     display: flex;
-
     align-items: center;
 
     gap: 12px;
@@ -312,7 +286,6 @@
     height: 46px;
 
     display: flex;
-
     align-items: center;
     justify-content: center;
 
@@ -321,7 +294,6 @@
     border-radius: 11px;
 
     color: #0f9f8f;
-
     background: #eaf8f5;
 }
 
@@ -349,10 +321,10 @@
 
 
 /* =========================================================
-   MATCH SCORE
+   HERO FEATURED PROGRAM
 ========================================================= */
 
-.explore-match-score {
+.explore-featured-program {
     margin-top: 27px;
 
     padding: 17px;
@@ -363,52 +335,40 @@
 }
 
 
-.explore-match-score>div:first-child {
-    display: flex;
-
-    align-items: center;
-
-    justify-content: space-between;
-}
-
-
-.explore-match-score span {
-    color: #6c7774;
-
-    font-size: 8px;
-}
-
-
-.explore-match-score strong {
-    color: #0f9f8f;
-
-    font-size: 19px;
-}
-
-
-.match-progress {
-    height: 6px;
-
-    margin-top: 12px;
-
-    overflow: hidden;
-
-    border-radius: 10px;
-
-    background: #dcebe7;
-}
-
-
-.match-progress span {
+.explore-featured-label {
     display: block;
 
-    width: 96%;
+    margin-bottom: 8px;
 
-    height: 100%;
+    color: #0f9f8f;
 
-    border-radius: inherit;
+    font-size: 8px;
+    font-weight: 800;
 
-    background: #0f9f8f;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+
+.explore-featured-program strong {
+    display: block;
+
+    color: #303936;
+
+    font-size: 13px;
+    line-height: 1.45;
+}
+
+
+.explore-featured-program span {
+    display: block;
+
+    margin-top: 5px;
+
+    color: #7b8783;
+
+    font-size: 8px;
+    line-height: 1.5;
 }
 
 
@@ -418,7 +378,6 @@
 
 .explore-match-program {
     display: flex;
-
     align-items: center;
 
     gap: 12px;
@@ -432,7 +391,6 @@
     height: 43px;
 
     display: flex;
-
     align-items: center;
     justify-content: center;
 
@@ -441,18 +399,26 @@
     border-radius: 10px;
 
     color: #0f9f8f;
-
     background: #eaf8f5;
 
     font-size: 10px;
-
     font-weight: 800;
+}
+
+
+.explore-match-program>div:last-child {
+    min-width: 0;
 }
 
 
 .explore-match-program strong,
 .explore-match-program span {
     display: block;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 
@@ -478,8 +444,8 @@
 
 .explore-card-footer {
     display: flex;
-
     align-items: center;
+    flex-wrap: wrap;
 
     gap: 18px;
 
@@ -493,7 +459,6 @@
 
 .explore-card-footer span {
     display: flex;
-
     align-items: center;
 
     gap: 5px;
@@ -521,7 +486,6 @@
     border-radius: 11px;
 
     color: #7d8985;
-
     background: #f7faf9;
 
     font-size: 9px;
@@ -536,11 +500,9 @@
 
 .explore-floating-card {
     position: absolute;
-
     z-index: 3;
 
     display: flex;
-
     align-items: center;
 
     gap: 9px;
@@ -548,7 +510,6 @@
     padding: 12px 15px;
 
     border: 1px solid #dfe9e6;
-
     border-radius: 10px;
 
     background: #ffffff;
@@ -560,14 +521,12 @@
 
 .explore-floating-top {
     top: 40px;
-
     right: 0;
 }
 
 
 .explore-floating-bottom {
     bottom: 35px;
-
     left: 0;
 }
 
@@ -577,7 +536,6 @@
     height: 34px;
 
     display: flex;
-
     align-items: center;
     justify-content: center;
 
@@ -586,7 +544,6 @@
     border-radius: 8px;
 
     color: #0f9f8f;
-
     background: #eaf8f5;
 }
 
@@ -624,7 +581,8 @@
 }
 
 
-.explore-categories {
+.explore-categories,
+.explore-destinations {
     background: #ffffff;
 }
 
@@ -634,16 +592,9 @@
 }
 
 
-.explore-destinations {
-    background: #ffffff;
-}
-
-
 .explore-section-heading {
     display: flex;
-
     align-items: end;
-
     justify-content: space-between;
 
     gap: 40px;
@@ -658,11 +609,9 @@
     color: #0f9f8f;
 
     font-size: 9px;
-
     font-weight: 800;
 
     letter-spacing: 0.8px;
-
     text-transform: uppercase;
 }
 
@@ -675,11 +624,9 @@
     color: #293330;
 
     font-size: 37px;
-
     font-weight: 800;
 
     line-height: 1.1;
-
     letter-spacing: -1.4px;
 }
 
@@ -699,7 +646,6 @@
     color: #77827f;
 
     font-size: 10px;
-
     line-height: 1.8;
 }
 
@@ -710,7 +656,6 @@
 
 .explore-view-all {
     display: inline-flex;
-
     align-items: center;
 
     gap: 5px;
@@ -722,7 +667,6 @@
     text-decoration: none;
 
     font-size: 9px;
-
     font-weight: 800;
 
     transition:
@@ -745,8 +689,7 @@
 .explore-category-grid {
     display: grid;
 
-    grid-template-columns:
-        repeat(4, 1fr);
+    grid-template-columns: repeat(4, 1fr);
 
     gap: 18px;
 }
@@ -756,17 +699,14 @@
     min-height: 245px;
 
     display: flex;
-
     flex-direction: column;
 
     padding: 25px;
 
     border: 1px solid #e1eae7;
-
     border-radius: 13px;
 
     color: inherit;
-
     background: #ffffff;
 
     text-decoration: none;
@@ -793,14 +733,12 @@
     height: 46px;
 
     display: flex;
-
     align-items: center;
     justify-content: center;
 
     border-radius: 11px;
 
     color: #0f9f8f;
-
     background: #eaf8f5;
 }
 
@@ -822,14 +760,12 @@
     color: #77827f;
 
     font-size: 9px;
-
     line-height: 1.8;
 }
 
 
 .explore-category-card>span {
     display: inline-flex;
-
     align-items: center;
 
     gap: 6px;
@@ -839,7 +775,6 @@
     color: #0f9f8f;
 
     font-size: 9px;
-
     font-weight: 800;
 }
 
@@ -853,7 +788,7 @@
 
 
 /* =========================================================
-   RECOMMENDED PROGRAM GRID
+   PROGRAM GRID
 ========================================================= */
 
 .explore-program-grid {
@@ -870,14 +805,12 @@
 
 /* =========================================================
    PROGRAM CARD
-   SAME DESIGN AS PROGRAMS PAGE
 ========================================================= */
 
 .explore-programs .program-card {
     min-width: 0;
 
     display: flex;
-
     flex-direction: column;
 
     overflow: hidden;
@@ -885,7 +818,6 @@
     background: #ffffff;
 
     border: 1px solid #e2e8f0;
-
     border-radius: 17px;
 
     box-shadow:
@@ -909,7 +841,7 @@
 
 
 /* =========================================================
-   CARD TOP
+   PROGRAM CARD TOP
 ========================================================= */
 
 .explore-programs .program-card-top {
@@ -925,16 +857,11 @@
     min-width: 0;
 
     display: flex;
-
     align-items: center;
 
     gap: 12px;
 }
 
-
-/* =========================================================
-   PROGRAM ICON
-========================================================= */
 
 .explore-programs .program-card-logo {
     width: 42px;
@@ -942,21 +869,14 @@
 
     flex: 0 0 42px;
 
-    border-radius: 12px;
-
-    background: #e8f7f5;
-
-    color: #0f9f8f;
-
     display: flex;
-
     align-items: center;
     justify-content: center;
-}
 
+    border-radius: 12px;
 
-.explore-programs .program-card-logo svg {
     color: #0f9f8f;
+    background: #e8f7f5;
 }
 
 
@@ -976,61 +896,49 @@
 }
 
 
-/* =========================================================
-   DEGREE + UNIVERSITY
-========================================================= */
-
 .explore-programs .program-card-degree-header {
     min-width: 0;
 
     display: flex;
-
     flex-direction: column;
 
     gap: 4px;
 }
 
 
-.explore-programs .program-card-degree-header strong {
-    display: block;
-
-    overflow: hidden;
-
-    color: #0f172a;
-
-    font-size: 14px;
-
-    line-height: 1.4;
-
-    font-weight: 750;
-
-    text-overflow: ellipsis;
-
-    white-space: nowrap;
-}
-
-
+.explore-programs .program-card-degree-header strong,
 .explore-programs .program-card-degree-header span {
     display: block;
 
     overflow: hidden;
 
-    color: #64748b;
-
-    font-size: 13px;
-
-    line-height: 1.4;
-
-    font-weight: 500;
-
     text-overflow: ellipsis;
-
     white-space: nowrap;
 }
 
 
+.explore-programs .program-card-degree-header strong {
+    color: #0f172a;
+
+    font-size: 14px;
+    line-height: 1.4;
+
+    font-weight: 750;
+}
+
+
+.explore-programs .program-card-degree-header span {
+    color: #64748b;
+
+    font-size: 13px;
+    line-height: 1.4;
+
+    font-weight: 500;
+}
+
+
 /* =========================================================
-   CARD BODY
+   PROGRAM CARD BODY
 ========================================================= */
 
 .explore-programs .program-card-body {
@@ -1042,10 +950,6 @@
 }
 
 
-/* =========================================================
-   FIELD
-========================================================= */
-
 .explore-programs .program-card-field {
     display: block;
 
@@ -1054,20 +958,14 @@
     color: #0f9f8f;
 
     font-size: 11px;
-
     line-height: 1.4;
 
     font-weight: 700;
 
     text-transform: uppercase;
-
     letter-spacing: 0.04em;
 }
 
-
-/* =========================================================
-   TITLE
-========================================================= */
 
 .explore-programs .program-card h2 {
     margin: 0;
@@ -1075,7 +973,6 @@
     color: #0f172a;
 
     font-size: 18px;
-
     line-height: 1.4;
 
     font-weight: 750;
@@ -1083,10 +980,6 @@
     letter-spacing: -0.2px;
 }
 
-
-/* =========================================================
-   DESCRIPTION
-========================================================= */
 
 .explore-programs .program-card-description {
     margin: 12px 0 0;
@@ -1098,17 +991,15 @@
     color: #64748b;
 
     font-size: 13px;
-
     line-height: 1.65;
 
     -webkit-line-clamp: 3;
-
     -webkit-box-orient: vertical;
 }
 
 
 /* =========================================================
-   META
+   PROGRAM META
 ========================================================= */
 
 .explore-programs .program-card-meta {
@@ -1117,11 +1008,7 @@
     padding: 14px 0;
 
     display: flex;
-
-    flex-direction: row;
-
     flex-wrap: wrap;
-
     align-items: center;
 
     gap: 7px;
@@ -1134,29 +1021,23 @@
     min-height: 27px;
 
     display: inline-flex;
-
     align-items: center;
-
     justify-content: center;
 
     width: fit-content;
-
     max-width: 100%;
 
     padding: 0 9px;
 
     box-sizing: border-box;
 
+    border: 1px solid #e2e8f0;
     border-radius: 7px;
 
+    color: #475569;
     background: #f8fafc;
 
-    border: 1px solid #e2e8f0;
-
-    color: #475569;
-
     font-size: 11px;
-
     line-height: 1.4;
 
     font-weight: 600;
@@ -1164,10 +1045,6 @@
     white-space: nowrap;
 }
 
-
-/*
-   First item = Program Type
-*/
 
 .explore-programs .program-card-meta span:first-child {
     color: #0f9f8f;
@@ -1178,17 +1055,8 @@
 }
 
 
-.explore-programs .program-card-meta span:not(:first-child) {
-    background: #f8fafc;
-
-    border-color: #e2e8f0;
-
-    color: #475569;
-}
-
-
 /* =========================================================
-   FOOTER
+   PROGRAM FOOTER
 ========================================================= */
 
 .explore-programs .program-card-footer {
@@ -1197,9 +1065,7 @@
     padding: 13px 18px;
 
     display: flex;
-
     align-items: center;
-
     justify-content: space-between;
 
     gap: 12px;
@@ -1209,10 +1075,6 @@
     background: #f8fafc;
 }
 
-
-/* =========================================================
-   DEADLINE
-========================================================= */
 
 .explore-programs .program-card-deadline {
     min-width: 0;
@@ -1227,7 +1089,6 @@
     color: #64748b;
 
     font-size: 11px;
-
     line-height: 1.4;
 
     font-weight: 600;
@@ -1242,20 +1103,14 @@
     color: #0f172a;
 
     font-size: 13px;
-
     line-height: 1.4;
 
     font-weight: 700;
 
     text-overflow: ellipsis;
-
     white-space: nowrap;
 }
 
-
-/* =========================================================
-   ARROW
-========================================================= */
 
 .explore-programs .program-card-arrow {
     width: 36px;
@@ -1264,18 +1119,14 @@
     flex: 0 0 36px;
 
     display: flex;
-
     align-items: center;
-
     justify-content: center;
 
+    border: 1px solid #c5ebe6;
     border-radius: 10px;
 
-    background: #ffffff;
-
-    border: 1px solid #c5ebe6;
-
     color: #0f9f8f;
+    background: #ffffff;
 
     text-decoration: none;
 
@@ -1287,9 +1138,8 @@
 
 
 .explore-programs .program-card-arrow:hover {
-    background: #0f9f8f;
-
     color: #ffffff;
+    background: #0f9f8f;
 
     transform: translateX(2px);
 }
@@ -1303,11 +1153,9 @@
     min-height: 180px;
 
     display: flex;
-
     flex-direction: column;
 
     align-items: center;
-
     justify-content: center;
 
     gap: 10px;
@@ -1315,11 +1163,9 @@
     padding: 30px;
 
     border: 1px dashed #d7e4e0;
-
     border-radius: 12px;
 
     color: #7b8783;
-
     background: #ffffff;
 
     text-align: center;
@@ -1354,11 +1200,9 @@
 
 .destination-card {
     min-height: 105px;
-
     min-width: 0;
 
     display: flex;
-
     align-items: center;
 
     gap: 12px;
@@ -1366,11 +1210,11 @@
     padding: 18px;
 
     border: 1px solid #e1eae7;
-
     border-radius: 12px;
 
     text-align: left;
 
+    color: inherit;
     background: #ffffff;
 
     cursor: pointer;
@@ -1399,7 +1243,6 @@
     height: 42px;
 
     display: flex;
-
     align-items: center;
     justify-content: center;
 
@@ -1408,7 +1251,6 @@
     border-radius: 10px;
 
     color: #0f9f8f;
-
     background: #eaf8f5;
 }
 
@@ -1417,7 +1259,6 @@
     min-width: 0;
 
     display: flex;
-
     flex-direction: column;
 }
 
@@ -1450,107 +1291,160 @@
 
 
 /* =========================================================
-   AI SECTION
+   AI ADVISOR SECTION
 ========================================================= */
 
 .explore-ai-section {
-    min-height: 360px;
+    padding: 35px 0 82px;
+}
+
+
+.explore-ai-card {
+    position: relative;
 
     display: grid;
 
     grid-template-columns:
-        1fr 0.7fr;
+        minmax(0, 1fr) 300px;
 
     align-items: center;
 
-    gap: 50px;
-
-    margin: 0 8% 90px;
-
-    padding: 55px 65px;
+    min-height: 300px;
 
     overflow: hidden;
 
-    border-radius: 17px;
+    padding: 45px 55px;
+
+    border-radius: 25px;
+
+    color: #ffffff;
 
     background:
         linear-gradient(135deg,
-            #eff9f6,
-            #f7fbfa);
+            #0f766e,
+            #0d9488);
 }
 
 
+.explore-ai-card::before {
+    content: "";
+
+    position: absolute;
+
+    width: 300px;
+    height: 300px;
+
+    top: -150px;
+    right: 120px;
+
+    border: 1px solid rgba(255, 255, 255, 0.12);
+
+    border-radius: 50%;
+}
+
+
+/* =========================================================
+   AI CONTENT
+========================================================= */
+
 .explore-ai-content {
-    max-width: 560px;
+    position: relative;
+    z-index: 2;
+
+    max-width: 650px;
+}
+
+
+.explore-ai-icon {
+    width: 45px;
+    height: 45px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin-bottom: 14px;
+
+    border-radius: 13px;
+
+    background: rgba(255, 255, 255, 0.14);
+}
+
+
+.explore-ai-label {
+    display: block;
+
+    margin-bottom: 7px;
+
+    color: #ccfbf1;
+
+    font-size: 11px;
+    font-weight: 800;
+
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
 
 .explore-ai-content h2 {
-    margin: 10px 0 15px;
+    max-width: 600px;
 
-    color: #293330;
+    margin: 0 0 12px;
 
-    font-size: 37px;
+    color: #ffffff;
 
-    line-height: 1.08;
+    font-size: 31px;
+    line-height: 1.25;
 
-    letter-spacing: -1.4px;
-}
+    letter-spacing: -0.8px;
 
-
-.explore-ai-content h2 span {
-    display: block;
-
-    color: #0f9f8f;
+    font-weight: 800;
 }
 
 
 .explore-ai-content p {
-    max-width: 500px;
+    max-width: 580px;
 
-    margin: 0;
+    margin: 0 0 23px;
 
-    color: #6f7b77;
+    color: rgba(255, 255, 255, 0.78);
 
-    font-size: 10px;
-
-    line-height: 1.9;
+    font-size: 13px;
+    line-height: 1.75;
 }
 
 
 .explore-ai-button {
     display: inline-flex;
-
     align-items: center;
 
-    gap: 7px;
+    gap: 8px;
 
-    margin-top: 25px;
+    min-height: 43px;
 
-    padding: 13px 20px;
+    padding: 0 17px;
 
-    border-radius: 8px;
+    border-radius: 10px;
 
-    color: #ffffff;
+    color: #0f766e;
+    background: #ffffff;
 
-    background: #0f9f8f;
+    font-size: 12px;
+    font-weight: 800;
 
     text-decoration: none;
 
-    font-size: 9px;
-
-    font-weight: 800;
-
     transition:
-        background 0.2s ease,
-        transform 0.2s ease;
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
 }
 
 
 .explore-ai-button:hover {
-    background: #0c887a;
-
     transform: translateY(-2px);
+
+    box-shadow:
+        0 10px 25px rgba(0, 0, 0, 0.15);
 }
 
 
@@ -1561,94 +1455,57 @@
 .explore-ai-visual {
     position: relative;
 
-    min-height: 250px;
+    width: 230px;
+    height: 230px;
 
-    display: flex;
-
-    align-items: center;
-
-    justify-content: center;
+    margin: 0 auto;
 }
 
 
-.ai-orb {
-    width: 120px;
-    height: 120px;
+.explore-ai-orbit {
+    position: absolute;
 
-    display: flex;
+    inset: 15px;
 
-    align-items: center;
-    justify-content: center;
+    border: 1px solid rgba(255, 255, 255, 0.18);
 
     border-radius: 50%;
 
-    color: #0f9f8f;
-
-    background: #ffffff;
-
-    box-shadow:
-        0 20px 55px rgba(20, 60, 55, 0.12);
+    transform: rotate(25deg);
 }
 
 
-.ai-result-card {
+.explore-ai-orbit-two {
+    inset: 40px;
+
+    transform: rotate(-35deg);
+}
+
+
+.explore-ai-center {
     position: absolute;
 
-    right: 0;
+    top: 50%;
+    left: 50%;
 
-    bottom: 15px;
+    width: 82px;
+    height: 82px;
 
-    width: 205px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
-    padding: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 25px;
 
-    border: 1px solid #dfe9e6;
+    color: #ffffff;
 
-    border-radius: 11px;
+    background: rgba(255, 255, 255, 0.13);
 
-    background: #ffffff;
+    transform:
+        translate(-50%, -50%) rotate(8deg);
 
-    box-shadow:
-        0 15px 35px rgba(20, 60, 55, 0.10);
-}
-
-
-.ai-result-card span {
-    display: block;
-
-    color: #0f9f8f;
-
-    font-size: 7px;
-
-    font-weight: 800;
-
-    text-transform: uppercase;
-
-    letter-spacing: 0.6px;
-}
-
-
-.ai-result-card strong {
-    display: block;
-
-    margin-top: 7px;
-
-    color: #303936;
-
-    font-size: 10px;
-
-    line-height: 1.4;
-}
-
-
-.ai-result-card small {
-    display: block;
-
-    margin-top: 5px;
-
-    color: #8a9491;
-
-    font-size: 7px;
+    backdrop-filter: blur(10px);
 }
 
 
@@ -1674,21 +1531,14 @@
     }
 
 
-    .explore-category-grid {
-        grid-template-columns:
-            repeat(2, 1fr);
-    }
-
-
+    .explore-category-grid,
     .destination-grid {
-        grid-template-columns:
-            repeat(2, 1fr);
+        grid-template-columns: repeat(2, 1fr);
     }
 
 
     .explore-ai-section {
         margin-left: 6%;
-
         margin-right: 6%;
     }
 
@@ -1705,7 +1555,6 @@
         grid-template-columns: 1fr;
 
         padding-top: 65px;
-
         padding-bottom: 75px;
     }
 
@@ -1736,15 +1585,15 @@
     }
 
 
-    .explore-ai-section {
+    .explore-ai-card {
         grid-template-columns: 1fr;
 
-        padding: 50px;
+        padding: 40px;
     }
 
 
     .explore-ai-visual {
-        min-height: 230px;
+        display: none;
     }
 
 }
@@ -1811,14 +1660,12 @@
 
     .explore-floating-top {
         top: 10px;
-
         right: 0;
     }
 
 
     .explore-floating-bottom {
         bottom: 10px;
-
         left: 0;
     }
 
@@ -1932,14 +1779,6 @@
 
         padding: 13px 0;
 
-        display: flex;
-
-        flex-direction: row;
-
-        flex-wrap: wrap;
-
-        align-items: center;
-
         gap: 6px;
     }
 
@@ -1947,15 +1786,9 @@
     .explore-programs .program-card-meta span {
         min-height: 26px;
 
-        width: fit-content;
-
-        max-width: 100%;
-
         padding: 0 8px;
 
         font-size: 10px;
-
-        white-space: nowrap;
     }
 
 
@@ -1986,26 +1819,31 @@
     }
 
 
+    /* =====================================================
+       AI SECTION
+    ===================================================== */
+
     .explore-ai-section {
-        grid-template-columns: 1fr;
-
-        gap: 30px;
-
         margin: 0 20px 65px;
 
-        padding: 45px 22px;
+        padding: 0;
+    }
 
-        border-radius: 15px;
+
+    .explore-ai-card {
+        padding: 30px 24px;
+
+        border-radius: 20px;
     }
 
 
     .explore-ai-content h2 {
-        font-size: 30px;
+        font-size: 25px;
     }
 
 
     .explore-ai-content p {
-        font-size: 9px;
+        font-size: 10px;
     }
 
 
@@ -2013,20 +1851,6 @@
         width: 100%;
 
         justify-content: center;
-    }
-
-
-    .explore-ai-visual {
-        min-height: 220px;
-    }
-
-
-    .ai-result-card {
-        right: 0;
-
-        bottom: 0;
-
-        width: 190px;
     }
 
 }
@@ -2077,29 +1901,18 @@
     }
 
 
-    /* FIXED:
-       كان الاسم القديم explore-program-card
-       والصحيح program-card
-    */
-
     .explore-programs .program-card {
         padding: 0;
     }
 
 
+    .explore-ai-card {
+        padding: 28px 20px;
+    }
+
+
     .explore-ai-content h2 {
-        font-size: 28px;
-    }
-
-
-    .ai-orb {
-        width: 95px;
-        height: 95px;
-    }
-
-
-    .ai-result-card {
-        width: 175px;
+        font-size: 23px;
     }
 
 }

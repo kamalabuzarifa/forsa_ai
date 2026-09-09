@@ -4,7 +4,6 @@ import {
     Sparkles,
     GraduationCap,
     MapPin,
-    Clock3,
     ChevronRight,
     Building2,
     Award,
@@ -70,12 +69,12 @@ const normalizeUniversitiesResponse = (response) => {
         return response.data;
     }
 
-    if (Array.isArray(response)) {
-        return response;
-    }
-
     if (Array.isArray(response.items)) {
         return response.items;
+    }
+
+    if (Array.isArray(response)) {
+        return response;
     }
 
     return [];
@@ -112,12 +111,12 @@ const normalizeProgramsResponse = (response) => {
         return response.data;
     }
 
-    if (Array.isArray(response)) {
-        return response;
-    }
-
     if (Array.isArray(response.items)) {
         return response.items;
+    }
+
+    if (Array.isArray(response)) {
+        return response;
     }
 
     return [];
@@ -230,31 +229,13 @@ const getCountry = (program) => {
 };
 
 
-const getCountryId = (program) => {
-
-    if (
-        typeof program?.country === "object" &&
-        program?.country?.id
-    ) {
-        return program.country.id;
-    }
-
-    return (
-        program?.country_id ??
-        ""
-    );
-};
-
-
 /* =========================================================
    FIELDS
 ========================================================= */
 
 const getFields = (program) => {
 
-    if (
-        Array.isArray(program?.fields)
-    ) {
+    if (Array.isArray(program?.fields)) {
         return program.fields;
     }
 
@@ -266,23 +247,17 @@ const getFields = (program) => {
 };
 
 
-const getFieldName = (field) => {
+const getFieldNames = (program) => {
 
-    return getTextValue(field);
+    return getFields(program)
+        .map(getTextValue)
+        .filter(Boolean);
 };
 
 
 const getField = (program) => {
 
-    const fields =
-        getFields(program);
-
-    return (
-        fields
-            .map(getFieldName)
-            .filter(Boolean)[0] ||
-        ""
-    );
+    return getFieldNames(program)[0] || "";
 };
 
 
@@ -292,9 +267,7 @@ const getField = (program) => {
 
 const getDegrees = (program) => {
 
-    if (
-        Array.isArray(program?.degrees)
-    ) {
+    if (Array.isArray(program?.degrees)) {
         return program.degrees
             .map(getTextValue)
             .filter(Boolean);
@@ -302,9 +275,7 @@ const getDegrees = (program) => {
 
     if (program?.degree) {
         return [
-            getTextValue(
-                program.degree
-            ),
+            getTextValue(program.degree),
         ].filter(Boolean);
     }
 
@@ -314,10 +285,7 @@ const getDegrees = (program) => {
 
 const getDegree = (program) => {
 
-    return (
-        getDegrees(program)[0] ||
-        ""
-    );
+    return getDegrees(program)[0] || "";
 };
 
 
@@ -357,11 +325,10 @@ const getFunding = (program) => {
 
 const getStudyMode = (program) => {
 
-    const value =
-        getTextValue(
-            program?.study_mode ??
-            program?.studyMode
-        );
+    const value = getTextValue(
+        program?.study_mode ??
+        program?.studyMode
+    );
 
     if (!value) {
         return "";
@@ -371,22 +338,8 @@ const getStudyMode = (program) => {
         .replaceAll("_", " ")
         .replace(
             /\b\w/g,
-            (letter) =>
-                letter.toUpperCase()
+            (letter) => letter.toUpperCase()
         );
-};
-
-
-/* =========================================================
-   DURATION
-========================================================= */
-
-const getDuration = (program) => {
-
-    return getTextValue(
-        program?.duration ??
-        program?.duration_text
-    );
 };
 
 
@@ -415,14 +368,9 @@ const formatDate = (value) => {
         return "";
     }
 
-    const date =
-        new Date(value);
+    const date = new Date(value);
 
-    if (
-        Number.isNaN(
-            date.getTime()
-        )
-    ) {
+    if (Number.isNaN(date.getTime())) {
         return "";
     }
 
@@ -434,57 +382,6 @@ const formatDate = (value) => {
             day: "numeric",
         }
     );
-};
-
-
-/* =========================================================
-   MATCH
-========================================================= */
-
-const getMatch = (program) => {
-
-    const value =
-        program?.match_percentage ??
-        program?.match_score ??
-        program?.matching_score ??
-        program?.match;
-
-    if (
-        value === null ||
-        value === undefined ||
-        value === ""
-    ) {
-        return null;
-    }
-
-    if (
-        typeof value === "object"
-    ) {
-        return null;
-    }
-
-    const numericValue =
-        Number(value);
-
-    if (
-        Number.isNaN(
-            numericValue
-        )
-    ) {
-        return null;
-    }
-
-    if (
-        numericValue <= 1
-    ) {
-        return `${Math.round(
-            numericValue * 100
-        )}%`;
-    }
-
-    return `${Math.round(
-        numericValue
-    )}%`;
 };
 
 
@@ -501,10 +398,7 @@ const getUniversityInitials = (name) => {
     return name
         .split(" ")
         .filter(Boolean)
-        .map(
-            (word) =>
-                word[0]
-        )
+        .map((word) => word[0])
         .slice(0, 2)
         .join("")
         .toUpperCase();
@@ -517,17 +411,20 @@ const getUniversityInitials = (name) => {
 
 function Explore() {
 
-    const navigate =
-        useNavigate();
+    const navigate = useNavigate();
+
 
     const [search, setSearch] =
         useState("");
 
+
     const [programs, setPrograms] =
         useState([]);
 
+
     const [loading, setLoading] =
         useState(true);
+
 
     const [error, setError] =
         useState("");
@@ -568,9 +465,7 @@ function Explore() {
                     );
 
 
-                if (
-                    universities.length === 0
-                ) {
+                if (universities.length === 0) {
 
                     setPrograms([]);
 
@@ -578,65 +473,75 @@ function Explore() {
                 }
 
 
+                /*
+                 * Only load programs from universities
+                 * that actually have opportunities.
+                 */
+
+                const universitiesWithPrograms =
+                    universities.filter(
+                        (university) =>
+                            university?.id &&
+                            Number(
+                                university?.opportunities_count ?? 0
+                            ) > 0
+                    );
+
+
                 const universityRequests =
-                    universities
-                        .filter(
-                            (university) =>
-                                university?.id
-                        )
-                        .map(
-                            async (university) => {
+                    universitiesWithPrograms.map(
+                        async (university) => {
 
-                                try {
+                            try {
 
-                                    const response =
-                                        await getUniversityPrograms(
+                                const response =
+                                    await getUniversityPrograms(
+                                        university.id,
+                                        {
+                                            per_page: 100,
+                                        }
+                                    );
+
+
+                                const universityPrograms =
+                                    normalizeProgramsResponse(
+                                        response
+                                    );
+
+
+                                return universityPrograms.map(
+                                    (program) => ({
+
+                                        ...program,
+
+                                        university:
+                                            program?.university ||
+                                            university,
+
+                                        university_id:
+                                            program?.university_id ??
                                             university.id,
-                                            {
-                                                per_page: 100,
-                                            }
-                                        );
 
+                                        country:
+                                            program?.country ||
+                                            university?.country ||
+                                            null,
 
-                                    const universityPrograms =
-                                        normalizeProgramsResponse(
-                                            response
-                                        );
+                                    })
+                                );
 
+                            } catch (universityError) {
 
-                                    return universityPrograms.map(
-                                        (program) => ({
+                                console.error(
+                                    `Failed to load programs for university ${university.id}`,
+                                    universityError
+                                );
 
-                                            ...program,
-
-                                            university:
-                                                program?.university ||
-                                                university,
-
-                                            university_id:
-                                                program?.university_id ??
-                                                university.id,
-
-                                            country:
-                                                program?.country ||
-                                                university?.country ||
-                                                null,
-
-                                        })
-                                    );
-
-                                } catch (universityError) {
-
-                                    console.error(
-                                        `Failed to load programs for university ${university.id}`,
-                                        universityError
-                                    );
-
-                                    return [];
-                                }
-
+                                return [];
                             }
-                        );
+
+                        }
+                    );
 
 
                 const universityResults =
@@ -653,6 +558,10 @@ function Explore() {
                 const allPrograms =
                     universityResults.flat();
 
+
+                /* =================================================
+                   REMOVE DUPLICATES
+                ================================================= */
 
                 const uniqueProgramsMap =
                     new Map();
@@ -685,6 +594,10 @@ function Explore() {
                 );
 
 
+                /* =================================================
+                   FILTER PROGRAMS
+                ================================================= */
+
                 let results =
                     Array.from(
                         uniqueProgramsMap.values()
@@ -704,27 +617,14 @@ function Explore() {
 
 
                             if (
-                                program?.status &&
-                                typeof program.status === "string"
+                                typeof program?.status === "string"
                             ) {
 
-                                const status =
+                                return (
                                     program.status
                                         .toLowerCase()
-                                        .trim();
-
-
-                                if (
-                                    [
-                                        "draft",
-                                        "inactive",
-                                        "archived",
-                                        "closed",
-                                        "rejected",
-                                    ].includes(status)
-                                ) {
-                                    return false;
-                                }
+                                        .trim() === "published"
+                                );
 
                             }
 
@@ -734,27 +634,50 @@ function Explore() {
                     );
 
 
+                /* =================================================
+                   SORT NEWEST PROGRAMS
+                ================================================= */
+
                 results.sort(
                     (a, b) => {
 
-                        const aId =
-                            Number(
-                                getId(a)
-                            );
+                        const aDate =
+                            a?.created_at
+                                ? new Date(
+                                    a.created_at
+                                ).getTime()
+                                : 0;
 
-                        const bId =
+
+                        const bDate =
+                            b?.created_at
+                                ? new Date(
+                                    b.created_at
+                                ).getTime()
+                                : 0;
+
+
+                        if (
+                            aDate !== bDate
+                        ) {
+                            return bDate - aDate;
+                        }
+
+
+                        return (
                             Number(
                                 getId(b)
-                            );
+                            ) -
+                            Number(
+                                getId(a)
+                            )
+                        );
 
-                        return bId - aId;
                     }
                 );
 
 
-                setPrograms(
-                    results
-                );
+                setPrograms(results);
 
             } catch (err) {
 
@@ -770,6 +693,7 @@ function Explore() {
 
 
                 setPrograms([]);
+
 
                 setError(
                     err?.response?.data?.message ||
@@ -866,10 +790,7 @@ function Explore() {
     const featuredPrograms =
         useMemo(
             () =>
-                programs.slice(
-                    0,
-                    3
-                ),
+                programs.slice(0, 3),
             [programs]
         );
 
@@ -898,15 +819,12 @@ function Explore() {
                         }
 
 
-                        const current =
-                            countryMap.get(
-                                country
-                            ) || 0;
-
-
                         countryMap.set(
                             country,
-                            current + 1
+                            (
+                                countryMap.get(country) ||
+                                0
+                            ) + 1
                         );
 
                     }
@@ -941,7 +859,6 @@ function Explore() {
     return (
 
         <div className="explore-page">
-
 
             {/* =================================================
                 HERO
@@ -1080,11 +997,11 @@ function Explore() {
                             <div>
 
                                 <strong>
-                                    AI Matching
+                                    Latest Program
                                 </strong>
 
                                 <span>
-                                    Based on your profile
+                                    From available opportunities
                                 </span>
 
                             </div>
@@ -1096,26 +1013,33 @@ function Explore() {
 
                             <>
 
-                                <div className="explore-match-score">
+                                <div className="explore-featured-program">
 
-                                    <div>
-
-                                        <span>
-                                            Featured program
-                                        </span>
-
-                                        <strong>
-                                            {getMatch(
-                                                featuredPrograms[0]
-                                            ) || "—"}
-                                        </strong>
-
-                                    </div>
+                                    <span className="explore-featured-label">
+                                        Featured opportunity
+                                    </span>
 
 
-                                    <div className="match-progress">
-                                        <span />
-                                    </div>
+                                    <strong>
+                                        {getTitle(
+                                            featuredPrograms[0]
+                                        )}
+                                    </strong>
+
+
+                                    {getDegree(
+                                        featuredPrograms[0]
+                                    ) && (
+
+                                            <span>
+                                                {
+                                                    getDegree(
+                                                        featuredPrograms[0]
+                                                    )
+                                                }
+                                            </span>
+
+                                        )}
 
                                 </div>
 
@@ -1136,14 +1060,14 @@ function Explore() {
                                     <div>
 
                                         <strong>
-                                            {getTitle(
+                                            {getUniversity(
                                                 featuredPrograms[0]
                                             )}
                                         </strong>
 
 
                                         <span>
-                                            {getUniversity(
+                                            {getCountry(
                                                 featuredPrograms[0]
                                             )}
                                         </span>
@@ -1172,15 +1096,13 @@ function Explore() {
                                         )}
 
 
-                                    {getDuration(
+                                    {getStudyMode(
                                         featuredPrograms[0]
                                     ) && (
 
                                             <span>
 
-                                                <Clock3 size={12} />
-
-                                                {getDuration(
+                                                {getStudyMode(
                                                     featuredPrograms[0]
                                                 )}
 
@@ -1292,10 +1214,8 @@ function Explore() {
 
 
                     <p>
-
                         Explore programs, universities
                         and scholarships in one place.
-
                     </p>
 
                 </div>
@@ -1312,15 +1232,18 @@ function Explore() {
                             <GraduationCap size={21} />
                         </div>
 
+
                         <h3>
                             Study Programs
                         </h3>
+
 
                         <p>
                             Find bachelor's, master's
                             and doctoral programs that
                             match your goals.
                         </p>
+
 
                         <span>
                             Explore programs
@@ -1339,15 +1262,18 @@ function Explore() {
                             <Building2 size={21} />
                         </div>
 
+
                         <h3>
                             Universities
                         </h3>
+
 
                         <p>
                             Discover universities and
                             learn about their programs
                             and requirements.
                         </p>
+
 
                         <span>
                             Explore universities
@@ -1366,14 +1292,17 @@ function Explore() {
                             <Award size={21} />
                         </div>
 
+
                         <h3>
                             Scholarships
                         </h3>
+
 
                         <p>
                             Find scholarships and funding
                             options for your study plans.
                         </p>
+
 
                         <span>
                             Find scholarships
@@ -1392,14 +1321,17 @@ function Explore() {
                             <Sparkles size={21} />
                         </div>
 
+
                         <h3>
                             AI Advisor
                         </h3>
+
 
                         <p>
                             Get personalized recommendations
                             based on your academic profile.
                         </p>
+
 
                         <span>
                             Talk to AI Advisor
@@ -1414,7 +1346,7 @@ function Explore() {
 
 
             {/* =================================================
-                RECOMMENDED PROGRAMS
+                PROGRAMS
             ================================================= */}
 
             <section className="explore-programs">
@@ -1424,7 +1356,7 @@ function Explore() {
                     <div>
 
                         <span className="section-label">
-                            Recommended for you
+                            Latest Programs
                         </span>
 
 
@@ -1554,9 +1486,9 @@ function Explore() {
                                         key={id}
                                     >
 
-                                        {/* =========================
+                                        {/* =================================================
                                             CARD TOP
-                                        ========================= */}
+                                        ================================================= */}
 
                                         <div className="program-card-top">
 
@@ -1592,9 +1524,7 @@ function Explore() {
                                                     }}
                                                     onKeyDown={(event) => {
 
-                                                        if (
-                                                            !universityId
-                                                        ) {
+                                                        if (!universityId) {
                                                             return;
                                                         }
 
@@ -1624,20 +1554,16 @@ function Explore() {
                                                 <div className="program-card-degree-header">
 
                                                     {degree && (
-
                                                         <strong>
                                                             {degree}
                                                         </strong>
-
                                                     )}
 
 
                                                     {university && (
-
                                                         <span>
                                                             {university}
                                                         </span>
-
                                                     )}
 
                                                 </div>
@@ -1647,9 +1573,9 @@ function Explore() {
                                         </div>
 
 
-                                        {/* =========================
+                                        {/* =================================================
                                             CARD BODY
-                                        ========================= */}
+                                        ================================================= */}
 
                                         <div className="program-card-body">
 
@@ -1682,9 +1608,9 @@ function Explore() {
                                         </div>
 
 
-                                        {/* =========================
-                                            PROGRAM META
-                                        ========================= */}
+                                        {/* =================================================
+                                            META
+                                        ================================================= */}
 
                                         {(
                                             opportunityType ||
@@ -1725,9 +1651,9 @@ function Explore() {
                                             )}
 
 
-                                        {/* =========================
+                                        {/* =================================================
                                             FOOTER
-                                        ========================= */}
+                                        ================================================= */}
 
                                         <div className="program-card-footer">
 
@@ -1743,11 +1669,9 @@ function Explore() {
 
 
                                                         <strong>
-
                                                             {formatDate(
                                                                 deadline
                                                             )}
-
                                                         </strong>
 
                                                     </>
@@ -1913,95 +1837,66 @@ function Explore() {
 
 
             {/* =================================================
-                AI CTA
+                AI ADVISOR CTA
             ================================================= */}
 
             <section className="explore-ai-section">
 
-                <div className="explore-ai-content">
+                <div className="explore-ai-card">
 
-                    <span className="section-label">
-                        EduMatch AI
-                    </span>
+                    <div className="explore-ai-content">
+
+                        <div className="explore-ai-icon">
+
+                            <Sparkles size={24} />
+
+                        </div>
 
 
-                    <h2>
-
-                        Not sure what to study?
-
-                        <span>
-                            Let AI help you.
+                        <span className="explore-ai-label">
+                            Forsa-AI Advisor
                         </span>
 
-                    </h2>
+
+                        <h2>
+                            Not sure which opportunity
+                            is right for you?
+                        </h2>
 
 
-                    <p>
-
-                        Tell us about your education,
-                        interests and goals. EduMatch AI
-                        can help you discover programs that
-                        fit your profile.
-
-                    </p>
+                        <p>
+                            Use the AI Advisor to analyze your
+                            academic profile and help you discover
+                            opportunities that match your goals.
+                        </p>
 
 
-                    <Link
-                        to={STUDENT_ROUTES.aiAdvisor}
-                        className="explore-ai-button"
-                    >
+                        <Link
+                            to={STUDENT_ROUTES.aiAdvisor}
+                            className="explore-ai-button"
+                        >
 
-                        Start with AI Advisor
+                            Open AI Advisor
 
-                        <ArrowRight size={15} />
+                            <ArrowRight size={17} />
 
-                    </Link>
-
-                </div>
-
-
-                <div className="explore-ai-visual">
-
-                    <div className="ai-orb">
-
-                        <Sparkles size={31} />
+                        </Link>
 
                     </div>
 
 
-                    <div className="ai-result-card">
+                    <div className="explore-ai-visual">
 
-                        <span>
-                            AI Recommendation
-                        </span>
+                        <div className="explore-ai-orbit" />
 
-
-                        <strong>
-
-                            {featuredPrograms[0]
-                                ? getTitle(
-                                    featuredPrograms[0]
-                                )
-                                : "No recommendation yet"
-                            }
-
-                        </strong>
+                        <div className="explore-ai-orbit explore-ai-orbit-two" />
 
 
-                        <small>
+                        <div className="explore-ai-center">
 
-                            {featuredPrograms[0]
-                                ? (
-                                    getMatch(
-                                        featuredPrograms[0]
-                                    )
-                                    ||
-                                    "Profile match pending"
-                                )
-                                : "Use AI Advisor to get recommendations"
-                            }
+                            <Sparkles size={34} />
 
-                        </small>
+                        </div>
 
                     </div>
 

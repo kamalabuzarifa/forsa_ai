@@ -1,6 +1,6 @@
 /* =========================================================
    PROGRAMS PAGE
-   ========================================================= */
+========================================================= */
 
 .programs-page {
     width: 100%;
@@ -8,7 +8,7 @@
 
     padding-bottom: 72px;
 
-    background: #f8fafc;
+    background: #ffffff;
     color: #0f172a;
 
     overflow-x: hidden;
@@ -17,14 +17,18 @@
 
 /* =========================================================
    HEADER
-   ========================================================= */
+========================================================= */
 
 .programs-header {
     width: 100%;
 
-    background: #ffffff;
+    background:
+        linear-gradient(135deg,
+            #f3faf8 0%,
+            #ffffff 58%,
+            #f5faf9 100%);
 
-    border-bottom: 1px solid #e2e8f0;
+    border-bottom: 1px solid #e1eae7;
 }
 
 
@@ -33,7 +37,7 @@
 
     margin: 0 auto;
 
-    padding: 54px 0 24px;
+    padding: 75px 0 24px;
 }
 
 
@@ -47,47 +51,49 @@
 
     color: #0f9f8f;
 
-    font-size: 12px;
-    font-weight: 700;
+    font-size: 10px;
+    font-weight: 800;
 
     text-transform: uppercase;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.4px;
 }
 
 
 .programs-eyebrow svg {
-    flex: 0 0 auto;
+    flex-shrink: 0;
 }
 
 
 .programs-header h1 {
-    margin: 0;
+    max-width: 650px;
 
-    color: #0f172a;
+    margin: 17px 0 20px;
 
-    font-size: clamp(34px, 4vw, 46px);
-    line-height: 1.1;
+    color: #26302e;
+
+    font-size: clamp(38px, 4vw, 53px);
     font-weight: 800;
 
-    letter-spacing: -0.8px;
+    line-height: 1.04;
+    letter-spacing: -2.4px;
 }
 
 
 .programs-header p {
-    max-width: 620px;
+    max-width: 560px;
 
-    margin: 14px 0 0;
+    margin: 0;
 
-    color: #64748b;
+    color: #687572;
 
-    font-size: 15px;
-    line-height: 1.75;
+    font-size: 13px;
+    line-height: 1.85;
 }
 
 
 /* =========================================================
    SEARCH SECTION
-   ========================================================= */
+========================================================= */
 
 .programs-search-section {
     width: min(1180px, calc(100% - 48px));
@@ -105,31 +111,32 @@
 
 /* =========================================================
    SEARCH
-   ========================================================= */
+========================================================= */
 
 .programs-search {
-    min-height: 48px;
-
-    flex: 1;
     min-width: 0;
+    flex: 1;
+
+    height: 60px;
 
     box-sizing: border-box;
 
     display: flex;
     align-items: center;
 
-    gap: 11px;
+    gap: 12px;
 
-    padding: 0 15px;
+    padding: 6px 18px;
 
-    border: 1px solid #e2e8f0;
+    border: 1px solid #dce8e4;
     border-radius: 11px;
 
     background: #ffffff;
-    color: #64748b;
+
+    color: #8a9692;
 
     box-shadow:
-        0 4px 14px rgba(15, 23, 42, 0.025);
+        0 15px 35px rgba(20, 60, 55, 0.08);
 
     transition:
         border-color 0.2s ease,
@@ -138,45 +145,49 @@
 
 
 .programs-search:focus-within {
-    border-color: #7acdc4;
+    border-color: #b9ded8;
 
     box-shadow:
-        0 0 0 3px rgba(15, 159, 143, 0.08);
+        0 0 0 3px rgba(15, 159, 143, 0.07),
+        0 15px 35px rgba(20, 60, 55, 0.08);
 }
 
 
 .programs-search>svg {
-    flex: 0 0 auto;
+    flex-shrink: 0;
 
-    color: #64748b;
+    color: #8a9692;
 }
 
 
 .programs-search input {
+    min-width: 0;
+    flex: 1;
+
     width: 100%;
-    height: 46px;
+    height: 100%;
 
     padding: 0;
 
-    border: none;
-    outline: none;
+    border: 0;
+    outline: 0;
 
+    color: #303936;
     background: transparent;
-    color: #0f172a;
 
     font-family: inherit;
-    font-size: 13px;
+    font-size: 11px;
 }
 
 
 .programs-search input::placeholder {
-    color: #94a3b8;
+    color: #9aa4a1;
 }
 
 
 /* =========================================================
-   FILTER BUTTON
-   ========================================================= */
+   FILTER
+========================================================= */
 
 .programs-filter-wrapper {
     position: relative;
@@ -186,7 +197,7 @@
 
 
 .programs-filter-button {
-    min-height: 48px;
+    height: 60px;
 
     display: inline-flex;
     align-items: center;
@@ -194,34 +205,34 @@
 
     gap: 7px;
 
-    padding: 0 15px;
+    padding: 0 20px;
 
-    border: 1px solid #e2e8f0;
+    border: 1px solid #dce8e4;
     border-radius: 10px;
 
+    color: #66726f;
     background: #ffffff;
-    color: #475569;
 
     font-family: inherit;
-    font-size: 12px;
-    font-weight: 650;
+    font-size: 10px;
+    font-weight: 800;
 
     cursor: pointer;
 
     transition:
-        background 0.2s ease,
+        color 0.2s ease,
         border-color 0.2s ease,
-        color 0.2s ease;
+        background 0.2s ease;
 }
 
 
 .programs-filter-button:hover,
 .programs-filter-button.is-active {
-    background: #f0fdfa;
-
-    border-color: #a7ddd7;
-
     color: #0f9f8f;
+
+    border-color: #b9ded8;
+
+    background: #eaf8f5;
 }
 
 
@@ -232,7 +243,7 @@
 
 /* =========================================================
    FILTER DROPDOWN
-   ========================================================= */
+========================================================= */
 
 .programs-filter-dropdown {
     position: absolute;
@@ -246,21 +257,17 @@
 
     box-sizing: border-box;
 
-    padding: 17px;
+    padding: 20px;
+
+    border: 1px solid #dfe9e6;
+    border-radius: 15px;
 
     background: #ffffff;
 
-    border: 1px solid #e2e8f0;
-    border-radius: 15px;
-
     box-shadow:
-        0 12px 30px rgba(15, 23, 42, 0.10);
+        0 20px 45px rgba(20, 60, 55, 0.10);
 }
 
-
-/* =========================================================
-   FILTER DROPDOWN HEADER
-   ========================================================= */
 
 .programs-filter-dropdown-header {
     display: flex;
@@ -280,27 +287,23 @@
 
     color: #0f9f8f;
 
-    font-size: 10px;
-    font-weight: 700;
+    font-size: 9px;
+    font-weight: 800;
 
     text-transform: uppercase;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.5px;
 }
 
 
 .programs-filter-dropdown-header h3 {
     margin: 0;
 
-    color: #0f172a;
+    color: #293330;
 
     font-size: 16px;
-    font-weight: 750;
+    font-weight: 800;
 }
 
-
-/* =========================================================
-   FILTER CLOSE
-   ========================================================= */
 
 .programs-filter-dropdown-close {
     width: 30px;
@@ -314,33 +317,33 @@
 
     padding: 0;
 
-    border: 1px solid #e2e8f0;
+    border: 1px solid #dce7e4;
     border-radius: 8px;
 
+    color: #78837f;
     background: #ffffff;
-    color: #64748b;
 
     cursor: pointer;
 
     transition:
-        background 0.2s ease,
+        color 0.2s ease,
         border-color 0.2s ease,
-        color 0.2s ease;
+        background 0.2s ease;
 }
 
 
 .programs-filter-dropdown-close:hover {
-    background: #f0fdfa;
-
-    border-color: #a7ddd7;
-
     color: #0f9f8f;
+
+    border-color: #b9ded8;
+
+    background: #eaf8f5;
 }
 
 
 /* =========================================================
    FILTER GROUP
-   ========================================================= */
+========================================================= */
 
 .program-filter-group {
     display: flex;
@@ -348,7 +351,7 @@
 
     gap: 7px;
 
-    margin-bottom: 12px;
+    margin-bottom: 13px;
 }
 
 
@@ -358,10 +361,10 @@
 
 
 .program-filter-group label {
-    color: #475569;
+    color: #66726f;
 
-    font-size: 12px;
-    font-weight: 650;
+    font-size: 10px;
+    font-weight: 700;
 }
 
 
@@ -373,23 +376,23 @@
 
     padding: 0 10px;
 
-    border: 1px solid #e2e8f0;
-    border-radius: 9px;
+    border: 1px solid #dce7e4;
+    border-radius: 8px;
 
     outline: none;
 
+    color: #47534f;
     background: #ffffff;
-    color: #475569;
 
     font-family: inherit;
-    font-size: 12px;
+    font-size: 10px;
 
     cursor: pointer;
 }
 
 
 .program-filter-group select:focus {
-    border-color: #7acdc4;
+    border-color: #b9ded8;
 
     box-shadow:
         0 0 0 3px rgba(15, 159, 143, 0.07);
@@ -398,7 +401,7 @@
 
 /* =========================================================
    CLEAR FILTERS
-   ========================================================= */
+========================================================= */
 
 .programs-clear-filters {
     width: 100%;
@@ -414,37 +417,37 @@
 
     padding: 0 10px;
 
-    border: 1px solid #e2e8f0;
-    border-radius: 9px;
+    border: 1px solid #dce7e4;
+    border-radius: 8px;
 
+    color: #66726f;
     background: #ffffff;
-    color: #64748b;
 
     font-family: inherit;
-    font-size: 11px;
-    font-weight: 650;
+    font-size: 10px;
+    font-weight: 700;
 
     cursor: pointer;
 
     transition:
-        background 0.2s ease,
+        color 0.2s ease,
         border-color 0.2s ease,
-        color 0.2s ease;
+        background 0.2s ease;
 }
 
 
 .programs-clear-filters:hover {
-    background: #f0fdfa;
-
-    border-color: #a7ddd7;
-
     color: #0f9f8f;
+
+    border-color: #b9ded8;
+
+    background: #eaf8f5;
 }
 
 
 /* =========================================================
    MAIN
-   ========================================================= */
+========================================================= */
 
 .programs-main {
     width: min(1180px, calc(100% - 48px));
@@ -455,83 +458,87 @@
 
 /* =========================================================
    TOOLBAR
-   ========================================================= */
+========================================================= */
 
 .programs-toolbar {
     display: flex;
     align-items: flex-end;
     justify-content: space-between;
 
-    gap: 20px;
+    gap: 40px;
 
-    padding: 28px 0 18px;
+    padding: 55px 0 35px;
 }
 
 
 .programs-result-label {
-    display: block;
-
-    margin-bottom: 5px;
+    display: inline-block;
 
     color: #0f9f8f;
 
-    font-size: 11px;
-    font-weight: 700;
+    font-size: 9px;
+    font-weight: 800;
 
+    letter-spacing: 0.8px;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
 }
 
 
 .programs-toolbar h2 {
-    margin: 0;
+    margin: 10px 0 0;
 
-    color: #0f172a;
+    color: #293330;
 
-    font-size: 22px;
-    line-height: 1.3;
-    font-weight: 750;
+    font-size: 32px;
+    font-weight: 800;
 
-    letter-spacing: -0.3px;
+    line-height: 1.1;
+    letter-spacing: -1px;
 }
 
 
 .programs-results-top {
     min-height: 28px;
+
+    display: flex;
+    align-items: center;
 }
 
 
 .programs-results-top p {
     margin: 0;
 
-    color: #64748b;
+    color: #77827f;
 
-    font-size: 12px;
+    font-size: 10px;
 }
 
 
 .programs-results-top strong {
-    color: #0f172a;
+    color: #303936;
 
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 800;
 }
 
 
 /* =========================================================
    RESULTS
-   ========================================================= */
+========================================================= */
 
 .programs-results {
+    width: 100%;
     min-width: 0;
 }
 
 
 /* =========================================================
-   GRID
-   ========================================================= */
+   PROGRAM GRID
+========================================================= */
 
 .programs-grid {
+    width: 100%;
+
     display: grid;
 
     grid-template-columns:
@@ -543,7 +550,7 @@
 
 /* =========================================================
    PROGRAM CARD
-   ========================================================= */
+========================================================= */
 
 .program-card {
     min-width: 0;
@@ -580,10 +587,10 @@
 
 /* =========================================================
    CARD TOP
-   ========================================================= */
+========================================================= */
 
 .program-card-top {
-    padding: 18px;
+    padding: 18px 18px 17px;
 
     border-bottom: 1px solid #e2e8f0;
 
@@ -601,35 +608,8 @@
 }
 
 
-/* =========================================================
-   PROGRAM ICON
-   ========================================================= */
-
-.program-card-icon {
-    width: 44px;
-    height: 44px;
-
-    flex: 0 0 44px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    border-radius: 12px;
-
-    background: #e8f7f5;
-    color: #0f9f8f;
-}
-
-
-/* =========================================================
-   HEADING
-   ========================================================= */
-
-.program-card-heading {
+.program-card-degree-header {
     min-width: 0;
-
-    flex: 1;
 
     display: flex;
     flex-direction: column;
@@ -638,45 +618,40 @@
 }
 
 
-.program-card-university {
+.program-card-degree-header strong,
+.program-card-degree-header span {
+    display: block;
+
     overflow: hidden;
 
-    color: #0f9f8f;
-
-    font-size: 10px;
-    line-height: 1.4;
-    font-weight: 700;
-
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-
-    white-space: nowrap;
     text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 
-.program-card h3 {
-    margin: 0;
-
-    overflow: hidden;
-
+.program-card-degree-header strong {
     color: #0f172a;
 
-    font-size: 17px;
+    font-size: 14px;
     line-height: 1.4;
+
     font-weight: 750;
+}
 
-    letter-spacing: -0.2px;
 
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
+.program-card-degree-header span {
+    color: #64748b;
+
+    font-size: 13px;
+    line-height: 1.4;
+
+    font-weight: 500;
 }
 
 
 /* =========================================================
-   BODY
-   ========================================================= */
+   CARD BODY
+========================================================= */
 
 .program-card-body {
     min-width: 0;
@@ -687,8 +662,39 @@
 }
 
 
-.program-card-description {
+.program-card-field {
+    display: block;
+
+    margin-bottom: 7px;
+
+    color: #0f9f8f;
+
+    font-size: 11px;
+    line-height: 1.4;
+
+    font-weight: 700;
+
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+
+.program-card h2 {
     margin: 0;
+
+    color: #0f172a;
+
+    font-size: 18px;
+    line-height: 1.4;
+
+    font-weight: 750;
+
+    letter-spacing: -0.2px;
+}
+
+
+.program-card-description {
+    margin: 12px 0 0;
 
     display: -webkit-box;
 
@@ -705,58 +711,70 @@
 
 
 /* =========================================================
-   META
-   ========================================================= */
+   PROGRAM META
+========================================================= */
 
 .program-card-meta {
+    margin: 0 18px;
+
+    padding: 14px 0;
+
     display: flex;
-    flex-direction: row;
     flex-wrap: wrap;
     align-items: center;
 
     gap: 7px;
-
-    margin: 0 18px;
-
-    padding: 14px 0;
 
     border-top: 1px solid #e2e8f0;
 }
 
 
 .program-card-meta span {
-    width: fit-content;
-    max-width: 100%;
     min-height: 27px;
-
-    box-sizing: border-box;
 
     display: inline-flex;
     align-items: center;
     justify-content: center;
 
+    width: fit-content;
+    max-width: 100%;
+
     padding: 0 9px;
 
-    border: 1px solid #c5ebe6;
+    box-sizing: border-box;
+
+    border: 1px solid #e2e8f0;
     border-radius: 7px;
 
-    background: #e8f7f5;
-    color: #0f9f8f;
+    color: #475569;
+    background: #f8fafc;
 
     font-size: 11px;
     line-height: 1.4;
+
     font-weight: 600;
 
     white-space: nowrap;
 }
 
 
+.program-card-meta span:first-child {
+    color: #0f9f8f;
+
+    background: #e8f7f5;
+
+    border-color: #c5ebe6;
+}
+
+
 /* =========================================================
    FOOTER
-   ========================================================= */
+========================================================= */
 
 .program-card-footer {
     min-height: 68px;
+
+    padding: 13px 18px;
 
     box-sizing: border-box;
 
@@ -766,183 +784,191 @@
 
     gap: 12px;
 
-    padding: 13px 18px;
-
     border-top: 1px solid #e2e8f0;
 
     background: #f8fafc;
 }
 
 
-.program-card-footer-info {
+.program-card-deadline {
     min-width: 0;
 
     display: flex;
     flex-direction: column;
 
-    gap: 4px;
+    gap: 3px;
 }
 
 
-.program-card-footer-info span {
+.program-card-deadline span {
+    display: block;
+
     color: #64748b;
 
-    font-size: 10px;
+    font-size: 11px;
     line-height: 1.4;
+
     font-weight: 600;
 }
 
 
-.program-card-deadline {
-    color: #475569 !important;
+.program-card-deadline strong {
+    display: block;
+
+    overflow: hidden;
+
+    color: #0f172a;
+
+    font-size: 13px;
+    line-height: 1.4;
+
+    font-weight: 700;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 
 /* =========================================================
    VIEW PROGRAM
-   ========================================================= */
+========================================================= */
 
-.program-card-view {
-    min-width: 0;
+.program-card-arrow {
+    width: 36px;
+    height: 36px;
 
-    display: inline-flex;
+    flex: 0 0 36px;
+
+    display: flex;
     align-items: center;
+    justify-content: center;
 
-    gap: 7px;
+    border: 1px solid #c5ebe6;
+    border-radius: 10px;
 
     color: #0f9f8f;
+    background: #ffffff;
 
     text-decoration: none;
 
-    font-size: 13px;
-    line-height: 1.4;
-    font-weight: 700;
-
-    white-space: nowrap;
-
     transition:
+        background 0.2s ease,
         color 0.2s ease,
-        gap 0.2s ease;
+        transform 0.2s ease;
 }
 
 
-.program-card-view:hover {
-    gap: 9px;
+.program-card-arrow:hover {
+    color: #ffffff;
 
-    color: #0c897b;
-}
+    background: #0f9f8f;
 
-
-.program-card-view svg {
-    flex: 0 0 auto;
+    transform: translateX(2px);
 }
 
 
 /* =========================================================
    EMPTY STATE
-   ========================================================= */
+========================================================= */
 
 .programs-empty {
     min-height: 280px;
 
-    box-sizing: border-box;
-
     display: flex;
     flex-direction: column;
+
     align-items: center;
     justify-content: center;
 
-    padding: 40px 24px;
+    gap: 10px;
 
-    border: 1px dashed #cbd5e1;
-    border-radius: 16px;
+    padding: 30px;
 
+    border: 1px dashed #d7e4e0;
+    border-radius: 12px;
+
+    color: #7b8783;
     background: #ffffff;
-
-    color: #64748b;
 
     text-align: center;
 }
 
 
 .programs-empty-icon {
-    width: 46px;
-    height: 46px;
-
     display: flex;
     align-items: center;
     justify-content: center;
 
-    margin-bottom: 14px;
+    width: 46px;
+    height: 46px;
 
-    border-radius: 13px;
+    border-radius: 11px;
 
-    background: #e8f7f5;
     color: #0f9f8f;
+    background: #eaf8f5;
 }
 
 
 .programs-empty h3 {
     margin: 0;
 
-    color: #0f172a;
+    color: #293330;
 
     font-size: 17px;
-    font-weight: 750;
+    font-weight: 800;
 }
 
 
 .programs-empty p {
     max-width: 430px;
 
-    margin: 8px 0 0;
+    margin: 0;
 
-    color: #64748b;
+    color: #7b8783;
 
-    font-size: 13px;
-    line-height: 1.6;
+    font-size: 10px;
+    line-height: 1.7;
 }
 
 
 .programs-empty button {
-    min-height: 40px;
+    min-height: 38px;
 
-    margin-top: 16px;
+    margin-top: 6px;
 
     padding: 0 15px;
 
     border: 1px solid #c5ebe6;
-    border-radius: 9px;
+    border-radius: 8px;
 
-    background: #e8f7f5;
     color: #0f9f8f;
+    background: #eaf8f5;
 
     font-family: inherit;
-    font-size: 12px;
-    font-weight: 700;
+    font-size: 10px;
+    font-weight: 800;
 
     cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease;
+}
+
+
+.programs-empty button:hover {
+    border-color: #a7ddd7;
+
+    background: #dff3ef;
 }
 
 
 /* =========================================================
    SKELETON
-   ========================================================= */
+========================================================= */
 
 .program-card-skeleton {
     pointer-events: none;
-}
-
-
-.skeleton-program-icon {
-    width: 44px;
-    height: 44px;
-
-    flex: 0 0 44px;
-
-    border-radius: 12px;
-
-    background: #e2e8f0;
 }
 
 
@@ -976,14 +1002,11 @@
 }
 
 
-.skeleton-line.location {
-    width: 50%;
-    height: 9px;
-}
+.skeleton-line.field {
+    width: 90px;
+    height: 10px;
 
-
-.program-card-skeleton .program-card-body {
-    min-height: 100px;
+    margin-bottom: 10px;
 }
 
 
@@ -1028,8 +1051,8 @@
 
 
 /* =========================================================
-   RESPONSIVE — 1100px
-   ========================================================= */
+   LARGE TABLET
+========================================================= */
 
 @media (max-width: 1100px) {
 
@@ -1038,49 +1061,80 @@
     .programs-main {
         width: calc(100% - 40px);
     }
+
 }
 
 
 /* =========================================================
-   RESPONSIVE — 900px
-   ========================================================= */
+   TABLET
+========================================================= */
 
 @media (max-width: 900px) {
+
     .programs-grid {
         grid-template-columns:
             repeat(2, minmax(0, 1fr));
     }
+
+
+    .programs-toolbar h2 {
+        font-size: 29px;
+    }
+
 }
 
 
 /* =========================================================
-   RESPONSIVE — 750px
-   ========================================================= */
+   MOBILE
+========================================================= */
 
-@media (max-width: 750px) {
+@media (max-width: 650px) {
+
     .programs-header-content {
-        padding-top: 46px;
+        padding-top: 55px;
         padding-bottom: 20px;
     }
 
 
     .programs-header h1 {
-        font-size: 36px;
+        font-size: 39px;
+
+        letter-spacing: -1.7px;
+    }
+
+
+    .programs-header p {
+        font-size: 11px;
     }
 
 
     .programs-search-section {
+        flex-direction: column;
+
         align-items: stretch;
+
+        padding-top: 18px;
+        padding-bottom: 25px;
     }
 
 
-    .programs-filter-wrapper {
+    .programs-search {
+        width: 100%;
+
+        height: 55px;
+
+        padding-left: 14px;
+    }
+
+
+    .programs-filter-wrapper,
+    .programs-filter-button {
         width: 100%;
     }
 
 
     .programs-filter-button {
-        width: 100%;
+        height: 48px;
     }
 
 
@@ -1093,105 +1147,30 @@
 
 
     .programs-toolbar {
+        flex-direction: column;
+
         align-items: flex-start;
 
-        flex-direction: column;
+        gap: 18px;
+
+        padding-top: 55px;
+        padding-bottom: 32px;
+    }
+
+
+    .programs-toolbar h2 {
+        font-size: 30px;
     }
 
 
     .programs-grid {
         grid-template-columns: 1fr;
     }
-}
 
 
-/* =========================================================
-   RESPONSIVE — 600px
-   ========================================================= */
-
-@media (max-width: 600px) {
-    .programs-page {
-        padding-bottom: 50px;
-    }
-
-
-    .programs-header-content,
-    .programs-search-section,
-    .programs-main {
-        width: calc(100% - 28px);
-    }
-
-
-    .programs-header-content {
-        padding-top: 38px;
-        padding-bottom: 18px;
-    }
-
-
-    .programs-eyebrow {
-        font-size: 10px;
-    }
-
-
-    .programs-header h1 {
-        font-size: 30px;
-
-        letter-spacing: -0.5px;
-    }
-
-
-    .programs-header p {
-        margin-top: 11px;
-
-        font-size: 13px;
-    }
-
-
-    .programs-search-section {
-        flex-direction: column;
-
-        padding-top: 18px;
-        padding-bottom: 25px;
-    }
-
-
-    .programs-search {
-        width: 100%;
-
-        min-height: 46px;
-
-        padding: 0 13px;
-    }
-
-
-    .programs-search input {
-        height: 44px;
-
-        font-size: 11px;
-    }
-
-
-    .programs-filter-wrapper,
-    .programs-filter-button {
-        width: 100%;
-    }
-
-
-    .programs-filter-dropdown {
-        width: 100%;
-    }
-
-
-    .programs-toolbar {
-        padding-top: 22px;
-        padding-bottom: 15px;
-    }
-
-
-    .programs-toolbar h2 {
-        font-size: 19px;
-    }
-
+    /* =====================================================
+       MOBILE PROGRAM CARD
+    ===================================================== */
 
     .program-card {
         border-radius: 15px;
@@ -1203,18 +1182,13 @@
     }
 
 
-    .program-card-icon {
-        width: 40px;
-        height: 40px;
-
-        flex-basis: 40px;
-
-        border-radius: 11px;
+    .program-card-degree-header strong {
+        font-size: 13px;
     }
 
 
-    .program-card h3 {
-        font-size: 17px;
+    .program-card-degree-header span {
+        font-size: 12px;
     }
 
 
@@ -1223,7 +1197,19 @@
     }
 
 
+    .program-card-field {
+        font-size: 10px;
+    }
+
+
+    .program-card h2 {
+        font-size: 17px;
+    }
+
+
     .program-card-description {
+        margin-top: 10px;
+
         font-size: 12px;
     }
 
@@ -1253,8 +1239,23 @@
     }
 
 
-    .program-card-view {
+    .program-card-deadline span {
+        font-size: 10px;
+    }
+
+
+    .program-card-deadline strong {
         font-size: 12px;
+    }
+
+
+    .program-card-arrow {
+        width: 34px;
+        height: 34px;
+
+        flex-basis: 34px;
+
+        border-radius: 9px;
     }
 
 
@@ -1263,12 +1264,13 @@
 
         padding: 30px 20px;
     }
+
 }
 
 
 /* =========================================================
-   RESPONSIVE — 420px
-   ========================================================= */
+   SMALL MOBILE
+========================================================= */
 
 @media (max-width: 420px) {
 
@@ -1280,12 +1282,22 @@
 
 
     .programs-header h1 {
-        font-size: 27px;
+        font-size: 35px;
     }
 
 
     .programs-header p {
-        font-size: 12px;
+        font-size: 10px;
+    }
+
+
+    .programs-search input {
+        font-size: 9px;
+    }
+
+
+    .programs-toolbar h2 {
+        font-size: 28px;
     }
 
 
@@ -1294,21 +1306,28 @@
     }
 
 
-    .program-card-icon {
-        width: 38px;
-        height: 38px;
-
-        flex-basis: 38px;
+    .program-card-degree-header strong {
+        font-size: 13px;
     }
 
 
-    .program-card h3 {
-        font-size: 16px;
+    .program-card-degree-header span {
+        font-size: 11px;
     }
 
 
     .program-card-body {
         padding: 15px 14px;
+    }
+
+
+    .program-card-field {
+        font-size: 9px;
+    }
+
+
+    .program-card h2 {
+        font-size: 16px;
     }
 
 
@@ -1334,4 +1353,5 @@
         padding-right: 14px;
         padding-left: 14px;
     }
+
 }

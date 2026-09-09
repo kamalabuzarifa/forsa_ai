@@ -1,13 +1,14 @@
 import {
+    ArrowRight,
+    CalendarDays,
+    CheckCircle2,
+    DollarSign,
+    Globe2,
+    GraduationCap,
+    Heart,
+    RotateCcw,
     Search,
     SlidersHorizontal,
-    Heart,
-    ArrowRight,
-    GraduationCap,
-    Globe2,
-    CalendarDays,
-    DollarSign,
-    CheckCircle2,
     X,
 } from "lucide-react";
 
@@ -16,368 +17,1316 @@ import {
 } from "react-router-dom";
 
 import {
+    useEffect,
     useMemo,
     useState,
 } from "react";
 
+import {
+    getScholarships,
+    checkScholarshipMatch,
+} from "../../../api/scholarships";
+
 import "./Scholarships.css";
 
 
-/*
-|----------------------------------------------------------------------
-| Helpers
-|----------------------------------------------------------------------
-*/
+/* =========================================================
+   INITIAL FILTERS
+   ========================================================= */
 
-const normalizeValue = (value) =>
-    String(value || "").trim().toLowerCase();
-
-
-/*
-|----------------------------------------------------------------------
-| Scholarships Page
-|----------------------------------------------------------------------
-*/
-
-function Scholarships() {
-
-    const scholarships = [
-        {
-            id: 1,
-            title: "Global Excellence Scholarship",
-            university: "University of Oxford",
-            country: "United Kingdom",
-            degree: "Master's",
-            funding: "Fully Funded",
-            deadline: "15 Jan 2027",
-            amount: "£25,000",
-            description:
-                "Scholarship for international students with strong academic performance and leadership experience.",
-            match: 96,
-        },
-        {
-            id: 2,
-            title: "International Student Scholarship",
-            university: "University of Melbourne",
-            country: "Australia",
-            degree: "Master's",
-            funding: "Partial Funding",
-            deadline: "30 Nov 2026",
-            amount: "$20,000",
-            description:
-                "Financial support for international students applying to postgraduate programs.",
-            match: 91,
-        },
-        {
-            id: 3,
-            title: "International Excellence Award",
-            university: "University of Toronto",
-            country: "Canada",
-            degree: "Master's",
-            funding: "Partial Funding",
-            deadline: "20 Dec 2026",
-            amount: "$15,000",
-            description:
-                "Merit-based funding for international graduate students with strong academic records.",
-            match: 88,
-        },
-        {
-            id: 4,
-            title: "Academic Merit Scholarship",
-            university: "University of Edinburgh",
-            country: "United Kingdom",
-            degree: "Master's",
-            funding: "Partial Funding",
-            deadline: "10 Feb 2027",
-            amount: "£12,000",
-            description:
-                "Funding opportunity for international students with academic excellence.",
-            match: 84,
-        },
-        {
-            id: 5,
-            title: "Graduate Research Scholarship",
-            university: "University of Sydney",
-            country: "Australia",
-            degree: "Master's / PhD",
-            funding: "Fully Funded",
-            deadline: "05 Dec 2026",
-            amount: "$30,000",
-            description:
-                "Research-focused scholarship for international postgraduate students.",
-            match: 82,
-        },
-        {
-            id: 6,
-            title: "International Graduate Award",
-            university: "University of British Columbia",
-            country: "Canada",
-            degree: "Master's",
-            funding: "Partial Funding",
-            deadline: "18 Jan 2027",
-            amount: "$18,000",
-            description:
-                "Award for international graduate students with strong academic potential.",
-            match: 79,
-        },
-    ];
+const INITIAL_FILTERS = {
+    country: "",
+    degree: "",
+    funding: "",
+};
 
 
-    /*
-    |----------------------------------------------------------------------
-    | State
-    |----------------------------------------------------------------------
-    */
+/* =========================================================
+   HELPERS
+   ========================================================= */
 
-    const [search, setSearch] = useState("");
+const normalizeValue = (
+    value
+) => {
 
-    const [studyLevel, setStudyLevel] = useState("all");
+    if (
+        value === null ||
+        value === undefined
+    ) {
+        return "";
+    }
 
-    const [fundingType, setFundingType] = useState("all");
+    if (
+        typeof value === "string" ||
+        typeof value === "number"
+    ) {
+        return String(value);
+    }
 
-    const [destination, setDestination] = useState("all");
+    if (
+        typeof value === "object"
+    ) {
 
-    const [showFilters, setShowFilters] = useState(false);
+        return (
+            value.name ??
+            value.title ??
+            value.label ??
+            value.value ??
+            value.code ??
+            value.id ??
+            ""
+        ).toString();
 
-    const [sortBy, setSortBy] = useState("recommended");
+    }
+
+    return "";
+};
 
 
-    /*
-    |----------------------------------------------------------------------
-    | Filter Options
-    |----------------------------------------------------------------------
-    */
+const getDisplayValue = (
+    value
+) => {
 
-    const countries = useMemo(() => {
-        return [
-            ...new Set(
-                scholarships
-                    .map((scholarship) => scholarship.country)
-                    .filter(Boolean)
-            ),
-        ].sort((a, b) =>
-            a.localeCompare(
-                b,
+    if (
+        value === null ||
+        value === undefined
+    ) {
+        return "";
+    }
+
+    if (
+        typeof value === "string" ||
+        typeof value === "number"
+    ) {
+        return String(value);
+    }
+
+    if (
+        typeof value === "object"
+    ) {
+
+        return (
+            value.name ??
+            value.title ??
+            value.label ??
+            value.code ??
+            value.value ??
+            ""
+        ).toString();
+
+    }
+
+    return "";
+};
+
+
+const getObjectId = (
+    value
+) => {
+
+    if (
+        value === null ||
+        value === undefined
+    ) {
+        return "";
+    }
+
+    if (
+        typeof value === "string" ||
+        typeof value === "number"
+    ) {
+        return String(value);
+    }
+
+    if (
+        typeof value === "object"
+    ) {
+
+        return (
+            value.id !== undefined &&
+            value.id !== null
+        )
+            ? String(value.id)
+            : "";
+
+    }
+
+    return "";
+};
+
+
+const uniqueById = (
+    items
+) => {
+
+    const seen = new Set();
+
+    return items.filter(
+        (item) => {
+
+            const id =
+                item.id !== undefined &&
+                    item.id !== null
+                    ? String(item.id)
+                    : getDisplayValue(item);
+
+            if (
+                seen.has(id)
+            ) {
+                return false;
+            }
+
+            seen.add(id);
+
+            return true;
+        }
+    );
+};
+
+
+const sortByName = (
+    items
+) => {
+
+    return [
+        ...items,
+    ].sort(
+        (a, b) =>
+            getDisplayValue(a).localeCompare(
+                getDisplayValue(b),
                 undefined,
                 {
                     sensitivity: "base",
                 }
             )
-        );
-    }, [scholarships]);
+    );
+};
 
 
-    /*
-    |----------------------------------------------------------------------
-    | Filtered Scholarships
-    |----------------------------------------------------------------------
-    */
+/* =========================================================
+   NORMALIZE API RESPONSE
+   ========================================================= */
 
-    const filteredScholarships = useMemo(() => {
+const normalizeResponse = (
+    response
+) => {
 
-        const query =
-            normalizeValue(search);
+    if (
+        Array.isArray(response)
+    ) {
+        return response;
+    }
 
+    if (
+        response &&
+        Array.isArray(response.data)
+    ) {
+        return response.data;
+    }
 
-        const results = scholarships.filter(
-            (scholarship) => {
+    if (
+        response &&
+        response.data &&
+        Array.isArray(response.data.data)
+    ) {
+        return response.data.data;
+    }
 
-                const title =
-                    normalizeValue(
-                        scholarship.title
-                    );
-
-                const university =
-                    normalizeValue(
-                        scholarship.university
-                    );
-
-                const country =
-                    normalizeValue(
-                        scholarship.country
-                    );
-
-                const degree =
-                    normalizeValue(
-                        scholarship.degree
-                    );
-
-                const funding =
-                    normalizeValue(
-                        scholarship.funding
-                    );
+    return [];
+};
 
 
-                const matchesSearch =
-                    !query ||
-                    title.includes(query) ||
-                    university.includes(query) ||
-                    country.includes(query);
+/* =========================================================
+   SCHOLARSHIP HELPERS
+   ========================================================= */
+
+const getScholarshipCountry = (
+    scholarship
+) => {
+
+    return (
+        scholarship?.country ??
+        scholarship?.destination ??
+        scholarship?.countries ??
+        ""
+    );
+};
 
 
-                const matchesStudyLevel =
-                    studyLevel === "all" ||
-                    degree.includes(
-                        normalizeValue(studyLevel)
-                    );
+const getScholarshipCountryId = (
+    scholarship
+) => {
 
-
-                const matchesFunding =
-                    fundingType === "all" ||
-                    funding ===
-                    normalizeValue(fundingType);
-
-
-                const matchesDestination =
-                    destination === "all" ||
-                    scholarship.country === destination;
-
-
-                return (
-                    matchesSearch &&
-                    matchesStudyLevel &&
-                    matchesFunding &&
-                    matchesDestination
-                );
-            }
+    const country =
+        getScholarshipCountry(
+            scholarship
         );
 
-
-        return [...results].sort(
-            (a, b) => {
-
-                if (sortBy === "deadline") {
-                    return (
-                        new Date(a.deadline) -
-                        new Date(b.deadline)
-                    );
-                }
+    return getObjectId(
+        country
+    );
+};
 
 
-                if (sortBy === "highest-funding") {
+const getScholarshipFunding = (
+    scholarship
+) => {
 
-                    const amountA =
-                        Number(
-                            String(a.amount)
-                                .replace(/[^0-9.]/g, "")
+    return (
+        scholarship?.funding_type ??
+        scholarship?.funding ??
+        scholarship?.fundingType ??
+        ""
+    );
+};
+
+
+const getScholarshipFundingId = (
+    scholarship
+) => {
+
+    const funding =
+        getScholarshipFunding(
+            scholarship
+        );
+
+    return getObjectId(
+        funding
+    );
+};
+
+
+const getScholarshipDegrees = (
+    scholarship
+) => {
+
+    if (
+        Array.isArray(
+            scholarship?.degrees
+        )
+    ) {
+        return scholarship.degrees;
+    }
+
+    if (
+        scholarship?.degree
+    ) {
+        return [
+            scholarship.degree,
+        ];
+    }
+
+    if (
+        scholarship?.study_level
+    ) {
+        return [
+            scholarship.study_level,
+        ];
+    }
+
+    if (
+        scholarship?.studyLevel
+    ) {
+        return [
+            scholarship.studyLevel,
+        ];
+    }
+
+    return [];
+};
+
+
+const getDegreeName = (
+    degree
+) => {
+
+    return getDisplayValue(
+        degree
+    );
+};
+
+
+const getScholarshipDegreeNames = (
+    scholarship
+) => {
+
+    return getScholarshipDegrees(
+        scholarship
+    )
+        .map(
+            getDegreeName
+        )
+        .filter(Boolean);
+};
+
+
+const getScholarshipTitle = (
+    scholarship
+) => {
+
+    return (
+        scholarship?.title ??
+        scholarship?.name ??
+        "Untitled Scholarship"
+    );
+};
+
+
+const getScholarshipUniversity = (
+    scholarship
+) => {
+
+    const university =
+        scholarship?.university;
+
+    if (
+        typeof university === "object" &&
+        university !== null
+    ) {
+
+        return (
+            university.name ??
+            university.title ??
+            "University"
+        );
+
+    }
+
+    return (
+        university ??
+        scholarship?.university_name ??
+        "University"
+    );
+};
+
+
+const getScholarshipDescription = (
+    scholarship
+) => {
+
+    return (
+        scholarship?.description ??
+        scholarship?.summary ??
+        "No description available."
+    );
+};
+
+
+const getScholarshipDeadline = (
+    scholarship
+) => {
+
+    return (
+        scholarship?.deadline ??
+        scholarship?.application_deadline ??
+        scholarship?.applicationDeadline ??
+        null
+    );
+};
+
+
+/* =========================================================
+   DATE FORMATTER
+   ========================================================= */
+
+const formatDate = (
+    date
+) => {
+
+    if (!date) {
+        return "No deadline";
+    }
+
+    const parsedDate =
+        new Date(date);
+
+    if (
+        Number.isNaN(
+            parsedDate.getTime()
+        )
+    ) {
+        return "No deadline";
+    }
+
+    return parsedDate.toLocaleDateString(
+        "en-US",
+        {
+            month: "short",
+            day: "numeric",
+            year: "numeric",
+        }
+    );
+};
+
+
+/* =========================================================
+   NORMALIZE SCHOLARSHIP
+   ========================================================= */
+
+const normalizeScholarship = (
+    scholarship
+) => {
+
+    const country =
+        getScholarshipCountry(
+            scholarship
+        );
+
+    const funding =
+        getScholarshipFunding(
+            scholarship
+        );
+
+    const degrees =
+        getScholarshipDegreeNames(
+            scholarship
+        );
+
+    const deadline =
+        getScholarshipDeadline(
+            scholarship
+        );
+
+    return {
+        ...scholarship,
+
+        id:
+            scholarship?.id ??
+            scholarship?.slug ??
+            "",
+
+        title:
+            getScholarshipTitle(
+                scholarship
+            ),
+
+        university:
+            getScholarshipUniversity(
+                scholarship
+            ),
+
+        country:
+            getDisplayValue(
+                country
+            ),
+
+        countryId:
+            getScholarshipCountryId(
+                scholarship
+            ),
+
+        funding:
+            getDisplayValue(
+                funding
+            ),
+
+        fundingId:
+            getScholarshipFundingId(
+                scholarship
+            ),
+
+        degrees,
+
+        degree:
+            degrees.length > 0
+                ? degrees.join(", ")
+                : "Not specified",
+
+        description:
+            getScholarshipDescription(
+                scholarship
+            ),
+
+        deadline,
+
+        deadlineFormatted:
+            formatDate(
+                deadline
+            ),
+
+        isVerified:
+            Boolean(
+                scholarship?.is_verified ??
+                scholarship?.isVerified ??
+                false
+            ),
+
+        opportunityType:
+            getDisplayValue(
+                scholarship?.opportunity_type
+            ),
+
+        matchScore: null,
+    };
+};
+
+
+/* =========================================================
+   MATCH SCORE HELPER
+   ========================================================= */
+
+const getMatchScoreFromResponse = (
+    response
+) => {
+
+    const rawMatchScore =
+        response?.data?.match_score ??
+        response?.match_score ??
+        response?.data?.data?.match_score ??
+        null;
+
+    if (
+        rawMatchScore === null ||
+        rawMatchScore === undefined ||
+        rawMatchScore === ""
+    ) {
+        return null;
+    }
+
+    const matchScore =
+        Number(
+            rawMatchScore
+        );
+
+    if (
+        !Number.isFinite(
+            matchScore
+        )
+    ) {
+        return null;
+    }
+
+    return matchScore;
+};
+
+
+/* =========================================================
+   BUILD COUNTRY OPTIONS
+   ========================================================= */
+
+const buildCountryOptions = (
+    scholarships
+) => {
+
+    const options =
+        scholarships
+            .map(
+                (scholarship) => {
+
+                    const country =
+                        getScholarshipCountry(
+                            scholarship
                         );
 
-                    const amountB =
-                        Number(
-                            String(b.amount)
-                                .replace(/[^0-9.]/g, "")
+                    const name =
+                        getDisplayValue(
+                            country
                         );
 
-                    return amountB - amountA;
+                    const id =
+                        getObjectId(
+                            country
+                        ) || name;
+
+                    if (!name) {
+                        return null;
+                    }
+
+                    return {
+                        id,
+                        name,
+                    };
                 }
+            )
+            .filter(Boolean);
+
+    return sortByName(
+        uniqueById(
+            options
+        )
+    );
+};
 
 
-                return b.match - a.match;
-            }
+/* =========================================================
+   BUILD DEGREE OPTIONS
+   ========================================================= */
+
+const buildDegreeOptions = (
+    scholarships
+) => {
+
+    const options = [];
+
+    scholarships.forEach(
+        (scholarship) => {
+
+            getScholarshipDegrees(
+                scholarship
+            ).forEach(
+                (degree) => {
+
+                    const name =
+                        getDegreeName(
+                            degree
+                        );
+
+                    const id =
+                        getObjectId(
+                            degree
+                        ) || name;
+
+                    if (name) {
+
+                        options.push({
+                            id,
+                            name,
+                        });
+
+                    }
+                }
+            );
+
+        }
+    );
+
+    return sortByName(
+        uniqueById(
+            options
+        )
+    );
+};
+
+
+/* =========================================================
+   BUILD FUNDING OPTIONS
+   ========================================================= */
+
+const buildFundingOptions = (
+    scholarships
+) => {
+
+    const options =
+        scholarships
+            .map(
+                (scholarship) => {
+
+                    const funding =
+                        getScholarshipFunding(
+                            scholarship
+                        );
+
+                    const name =
+                        getDisplayValue(
+                            funding
+                        );
+
+                    const id =
+                        getObjectId(
+                            funding
+                        ) || name;
+
+                    if (!name) {
+                        return null;
+                    }
+
+                    return {
+                        id,
+                        name,
+                    };
+                }
+            )
+            .filter(Boolean);
+
+    return sortByName(
+        uniqueById(
+            options
+        )
+    );
+};
+
+
+/* =========================================================
+   MATCH SELECTED ITEM
+   ========================================================= */
+
+const matchesSelectedItem = (
+    value,
+    selectedValue
+) => {
+
+    if (!selectedValue) {
+        return true;
+    }
+
+    const objectId =
+        getObjectId(
+            value
         );
 
-    }, [
+    const displayValue =
+        getDisplayValue(
+            value
+        );
+
+    return (
+        objectId === selectedValue ||
+        displayValue === selectedValue
+    );
+};
+
+
+/* =========================================================
+   COMPONENT
+   ========================================================= */
+
+export default function Scholarships() {
+
+    const [
         scholarships,
+        setScholarships,
+    ] = useState([]);
+
+
+    const [
+        loading,
+        setLoading,
+    ] = useState(true);
+
+
+    const [
+        error,
+        setError,
+    ] = useState("");
+
+
+    const [
         search,
-        studyLevel,
-        fundingType,
-        destination,
+        setSearch,
+    ] = useState("");
+
+
+    const [
+        filters,
+        setFilters,
+    ] = useState(
+        INITIAL_FILTERS
+    );
+
+
+    const [
+        showFilters,
+        setShowFilters,
+    ] = useState(false);
+
+
+    const [
         sortBy,
-    ]);
+        setSortBy,
+    ] = useState(
+        "recommended"
+    );
 
 
-    /*
-    |----------------------------------------------------------------------
-    | Filters
-    |----------------------------------------------------------------------
-    */
+    /* =====================================================
+       LOAD SCHOLARSHIPS
+    ===================================================== */
 
-    const hasFilters =
-        Boolean(search.trim()) ||
-        studyLevel !== "all" ||
-        fundingType !== "all" ||
-        destination !== "all";
+    useEffect(() => {
+
+        let mounted = true;
 
 
-    const clearFilters = () => {
+        const loadScholarships =
+            async () => {
 
-        setSearch("");
+                try {
 
-        setStudyLevel("all");
+                    setLoading(true);
+                    setError("");
 
-        setFundingType("all");
 
-        setDestination("all");
+                    const response =
+                        await getScholarships();
+
+
+                    if (!mounted) {
+                        return;
+                    }
+
+
+                    const rawScholarships =
+                        normalizeResponse(
+                            response
+                        );
+
+
+                    const scholarshipOnly =
+                        rawScholarships.filter(
+                            (item) => {
+
+                                const type =
+                                    getDisplayValue(
+                                        item?.opportunity_type
+                                    );
+
+                                if (!type) {
+                                    return true;
+                                }
+
+                                return (
+                                    type.toLowerCase() ===
+                                    "scholarship"
+                                );
+                            }
+                        );
+
+
+                    const normalized =
+                        scholarshipOnly.map(
+                            normalizeScholarship
+                        );
+
+
+                    const valid =
+                        normalized.filter(
+                            (item) =>
+                                item.id !== ""
+                        );
+
+
+                    const unique =
+                        uniqueById(
+                            valid
+                        );
+
+
+                    const scholarshipsWithMatch =
+                        await Promise.all(
+                            unique.map(
+                                async (
+                                    scholarship
+                                ) => {
+
+                                    try {
+
+                                        const matchResponse =
+                                            await checkScholarshipMatch(
+                                                scholarship.id
+                                            );
+
+
+                                        const matchScore =
+                                            getMatchScoreFromResponse(
+                                                matchResponse
+                                            );
+
+
+                                        return {
+                                            ...scholarship,
+
+                                            matchScore,
+                                        };
+
+                                    } catch (
+                                    matchError
+                                    ) {
+
+                                        console.error(
+                                            `Failed to load match for scholarship ${scholarship.id}:`,
+                                            matchError
+                                        );
+
+
+                                        return {
+                                            ...scholarship,
+
+                                            matchScore:
+                                                null,
+                                        };
+                                    }
+
+                                }
+                            )
+                        );
+
+
+                    if (!mounted) {
+                        return;
+                    }
+
+
+                    setScholarships(
+                        scholarshipsWithMatch
+                    );
+
+                } catch (
+                requestError
+                ) {
+
+                    if (!mounted) {
+                        return;
+                    }
+
+
+                    console.error(
+                        "Failed to load scholarships:",
+                        requestError
+                    );
+
+
+                    setError(
+                        "Unable to load scholarships. Please try again."
+                    );
+
+
+                    setScholarships([]);
+
+                } finally {
+
+                    if (mounted) {
+                        setLoading(false);
+                    }
+
+                }
+
+            };
+
+
+        loadScholarships();
+
+
+        return () => {
+            mounted = false;
+        };
+
+    }, []);
+
+
+    /* =====================================================
+       FILTER OPTIONS
+    ===================================================== */
+
+    const countries =
+        useMemo(
+            () =>
+                buildCountryOptions(
+                    scholarships
+                ),
+            [
+                scholarships,
+            ]
+        );
+
+
+    const degrees =
+        useMemo(
+            () =>
+                buildDegreeOptions(
+                    scholarships
+                ),
+            [
+                scholarships,
+            ]
+        );
+
+
+    const fundingOptions =
+        useMemo(
+            () =>
+                buildFundingOptions(
+                    scholarships
+                ),
+            [
+                scholarships,
+            ]
+        );
+
+
+    /* =====================================================
+       FILTERED SCHOLARSHIPS
+    ===================================================== */
+
+    const filteredScholarships =
+        useMemo(() => {
+
+            const query =
+                search
+                    .trim()
+                    .toLowerCase();
+
+
+            const filtered =
+                scholarships.filter(
+                    (scholarship) => {
+
+                        if (query) {
+
+                            const searchableText =
+                                [
+                                    scholarship.title,
+                                    scholarship.university,
+                                    scholarship.country,
+                                    scholarship.degree,
+                                    scholarship.funding,
+                                    scholarship.description,
+                                ]
+                                    .filter(Boolean)
+                                    .join(" ")
+                                    .toLowerCase();
+
+
+                            if (
+                                !searchableText.includes(
+                                    query
+                                )
+                            ) {
+                                return false;
+                            }
+
+                        }
+
+
+                        if (
+                            filters.country &&
+                            !matchesSelectedItem(
+                                getScholarshipCountry(
+                                    scholarship
+                                ),
+                                filters.country
+                            )
+                        ) {
+                            return false;
+                        }
+
+
+                        if (
+                            filters.degree
+                        ) {
+
+                            const degreeMatches =
+                                getScholarshipDegrees(
+                                    scholarship
+                                ).some(
+                                    (degree) =>
+                                        matchesSelectedItem(
+                                            degree,
+                                            filters.degree
+                                        )
+                                );
+
+
+                            if (
+                                !degreeMatches
+                            ) {
+                                return false;
+                            }
+
+                        }
+
+
+                        if (
+                            filters.funding &&
+                            !matchesSelectedItem(
+                                getScholarshipFunding(
+                                    scholarship
+                                ),
+                                filters.funding
+                            )
+                        ) {
+                            return false;
+                        }
+
+
+                        return true;
+
+                    }
+                );
+
+
+            return [
+                ...filtered,
+            ].sort(
+                (a, b) => {
+
+                    if (
+                        sortBy === "title_az"
+                    ) {
+
+                        return a.title.localeCompare(
+                            b.title,
+                            undefined,
+                            {
+                                sensitivity: "base",
+                            }
+                        );
+
+                    }
+
+
+                    if (
+                        sortBy === "deadline_soon"
+                    ) {
+
+                        const aDate =
+                            a.deadline
+                                ? new Date(
+                                    a.deadline
+                                ).getTime()
+                                : Infinity;
+
+
+                        const bDate =
+                            b.deadline
+                                ? new Date(
+                                    b.deadline
+                                ).getTime()
+                                : Infinity;
+
+
+                        return aDate - bDate;
+
+                    }
+
+
+                    return 0;
+
+                }
+            );
+
+        }, [
+            scholarships,
+            search,
+            filters,
+            sortBy,
+        ]);
+
+
+    /* =====================================================
+       FILTER HANDLERS
+    ===================================================== */
+
+    const handleFilterChange = (
+        event
+    ) => {
+
+        const {
+            name,
+            value,
+        } = event.target;
+
+
+        setFilters(
+            (previous) => ({
+                ...previous,
+                [name]: value,
+            })
+        );
 
     };
 
 
-    /*
-    |----------------------------------------------------------------------
-    | Render
-    |----------------------------------------------------------------------
-    */
+    const resetFilters = () => {
+
+        setFilters(
+            INITIAL_FILTERS
+        );
+
+        setSearch("");
+
+        setSortBy(
+            "recommended"
+        );
+
+    };
+
+
+    const hasFilters =
+        Boolean(
+            filters.country ||
+            filters.degree ||
+            filters.funding ||
+            search.trim()
+        );
+
+
+    /* =====================================================
+       RENDER
+    ===================================================== */
 
     return (
+
         <div className="scholarships-page">
 
-            {/* =====================================================
+
+            {/* =================================================
                 HERO
-            ====================================================== */}
+            ================================================= */}
 
             <section className="scholarships-hero">
 
                 <div className="scholarships-hero-content">
 
+
                     <span className="scholarships-eyebrow">
 
-                        <GraduationCap size={15} />
+                        <GraduationCap
+                            size={15}
+                        />
 
-                        Explore Scholarships
+                        Find your opportunity
 
                     </span>
 
 
                     <h1>
 
-                        Find scholarships
+                        Discover
 
                         <span>
-                            that support your goals.
+                            Scholarships
                         </span>
 
                     </h1>
 
 
                     <p>
-                        Explore scholarships and funding
-                        opportunities from universities and
-                        organizations around the world.
+
+                        Explore scholarship opportunities
+                        from universities around the world
+                        and find the right opportunity for
+                        your academic journey.
+
                     </p>
 
 
-                    {/* Search + Filters */}
+                    {/* SEARCH + FILTER */}
 
                     <div className="scholarships-toolbar">
 
+
                         <div className="scholarships-search">
 
-                            <Search size={20} />
+                            <Search
+                                size={18}
+                            />
+
 
                             <input
-                                type="search"
+                                type="text"
                                 value={search}
                                 onChange={(event) =>
                                     setSearch(
                                         event.target.value
                                     )
                                 }
-                                placeholder="Search scholarships, universities or countries..."
+                                placeholder="Search scholarships, universities..."
                                 aria-label="Search scholarships"
                             />
 
 
                             {search && (
+
                                 <button
                                     type="button"
                                     className="scholarships-search-clear"
@@ -386,22 +1335,25 @@ function Scholarships() {
                                     }
                                     aria-label="Clear search"
                                 >
-                                    <X size={16} />
+
+                                    <X
+                                        size={16}
+                                    />
+
                                 </button>
+
                             )}
 
                         </div>
 
-
-                        {/* Filter */}
 
                         <div className="scholarships-filter-wrapper">
 
                             <button
                                 type="button"
                                 className={`scholarships-filter-button ${showFilters
-                                        ? "is-active"
-                                        : ""
+                                    ? "is-active"
+                                    : ""
                                     }`}
                                 onClick={() =>
                                     setShowFilters(
@@ -425,6 +1377,7 @@ function Scholarships() {
 
 
                             {showFilters && (
+
                                 <div
                                     id="scholarships-filters"
                                     className="scholarships-filter-dropdown"
@@ -455,120 +1408,149 @@ function Scholarships() {
                                             }
                                             aria-label="Close filters"
                                         >
-                                            <X size={17} />
+
+                                            <X
+                                                size={17}
+                                            />
+
                                         </button>
 
                                     </div>
 
 
-                                    {/* Study Level */}
-
                                     <div className="scholarship-filter-group">
 
-                                        <label htmlFor="study-level-filter">
-                                            Study level
+                                        <label htmlFor="scholarship-country">
+                                            Country
                                         </label>
 
+
                                         <select
-                                            id="study-level-filter"
-                                            value={studyLevel}
-                                            onChange={(event) =>
-                                                setStudyLevel(
-                                                    event.target.value
-                                                )
+                                            id="scholarship-country"
+                                            name="country"
+                                            value={
+                                                filters.country
+                                            }
+                                            onChange={
+                                                handleFilterChange
                                             }
                                         >
 
-                                            <option value="all">
-                                                All study levels
+                                            <option value="">
+                                                All countries
                                             </option>
 
-                                            <option value="Bachelor's">
-                                                Bachelor's
-                                            </option>
-
-                                            <option value="Master's">
-                                                Master's
-                                            </option>
-
-                                            <option value="PhD">
-                                                PhD
-                                            </option>
-
-                                        </select>
-
-                                    </div>
-
-
-                                    {/* Funding */}
-
-                                    <div className="scholarship-filter-group">
-
-                                        <label htmlFor="funding-filter">
-                                            Funding type
-                                        </label>
-
-                                        <select
-                                            id="funding-filter"
-                                            value={fundingType}
-                                            onChange={(event) =>
-                                                setFundingType(
-                                                    event.target.value
-                                                )
-                                            }
-                                        >
-
-                                            <option value="all">
-                                                All funding types
-                                            </option>
-
-                                            <option value="Fully Funded">
-                                                Fully funded
-                                            </option>
-
-                                            <option value="Partial Funding">
-                                                Partial funding
-                                            </option>
-
-                                            <option value="Tuition Waiver">
-                                                Tuition waiver
-                                            </option>
-
-                                        </select>
-
-                                    </div>
-
-
-                                    {/* Destination */}
-
-                                    <div className="scholarship-filter-group">
-
-                                        <label htmlFor="destination-filter">
-                                            Destination
-                                        </label>
-
-                                        <select
-                                            id="destination-filter"
-                                            value={destination}
-                                            onChange={(event) =>
-                                                setDestination(
-                                                    event.target.value
-                                                )
-                                            }
-                                        >
-
-                                            <option value="all">
-                                                All destinations
-                                            </option>
 
                                             {countries.map(
                                                 (country) => (
+
                                                     <option
-                                                        key={country}
-                                                        value={country}
+                                                        key={
+                                                            country.id
+                                                        }
+                                                        value={
+                                                            country.id
+                                                        }
                                                     >
-                                                        {country}
+                                                        {
+                                                            country.name
+                                                        }
                                                     </option>
+
+                                                )
+                                            )}
+
+                                        </select>
+
+                                    </div>
+
+
+                                    <div className="scholarship-filter-group">
+
+                                        <label htmlFor="scholarship-degree">
+                                            Degree
+                                        </label>
+
+
+                                        <select
+                                            id="scholarship-degree"
+                                            name="degree"
+                                            value={
+                                                filters.degree
+                                            }
+                                            onChange={
+                                                handleFilterChange
+                                            }
+                                        >
+
+                                            <option value="">
+                                                All degrees
+                                            </option>
+
+
+                                            {degrees.map(
+                                                (degree) => (
+
+                                                    <option
+                                                        key={
+                                                            degree.id
+                                                        }
+                                                        value={
+                                                            degree.id
+                                                        }
+                                                    >
+                                                        {
+                                                            degree.name
+                                                        }
+                                                    </option>
+
+                                                )
+                                            )}
+
+                                        </select>
+
+                                    </div>
+
+
+                                    <div className="scholarship-filter-group">
+
+                                        <label htmlFor="scholarship-funding">
+                                            Funding Type
+                                        </label>
+
+
+                                        <select
+                                            id="scholarship-funding"
+                                            name="funding"
+                                            value={
+                                                filters.funding
+                                            }
+                                            onChange={
+                                                handleFilterChange
+                                            }
+                                        >
+
+                                            <option value="">
+                                                All funding types
+                                            </option>
+
+
+                                            {fundingOptions.map(
+                                                (funding) => (
+
+                                                    <option
+                                                        key={
+                                                            funding.id
+                                                        }
+                                                        value={
+                                                            funding.id
+                                                        }
+                                                    >
+                                                        {
+                                                            funding.name
+                                                        }
+                                                    </option>
+
                                                 )
                                             )}
 
@@ -578,18 +1560,27 @@ function Scholarships() {
 
 
                                     {hasFilters && (
+
                                         <button
                                             type="button"
                                             className="scholarships-clear-filters"
                                             onClick={
-                                                clearFilters
+                                                resetFilters
                                             }
                                         >
+
+                                            <RotateCcw
+                                                size={14}
+                                            />
+
                                             Clear all filters
+
                                         </button>
+
                                     )}
 
                                 </div>
+
                             )}
 
                         </div>
@@ -601,24 +1592,24 @@ function Scholarships() {
             </section>
 
 
-            {/* =====================================================
+            {/* =================================================
                 MAIN
-            ====================================================== */}
+            ================================================= */}
 
             <main className="scholarships-main">
 
-                {/* Results Toolbar */}
 
                 <div className="scholarships-results-toolbar">
 
                     <div>
 
                         <span className="scholarships-result-label">
-                            Scholarships
+                            Scholarship opportunities
                         </span>
 
+
                         <h2>
-                            Scholarships for you
+                            Find your next opportunity
                         </h2>
 
                     </div>
@@ -626,229 +1617,101 @@ function Scholarships() {
 
                     <div className="scholarships-results-right">
 
-                        <p>
+                        {!loading && !error && (
 
-                            <strong>
-                                {filteredScholarships.length}
-                            </strong>
+                            <p>
 
-                            {" "}
+                                <strong>
+                                    {
+                                        filteredScholarships.length
+                                    }
+                                </strong>
 
-                            {filteredScholarships.length === 1
-                                ? "opportunity"
-                                : "opportunities"}
+                                {" "}
 
-                            {" found"}
+                                {
+                                    filteredScholarships.length === 1
+                                        ? "scholarship"
+                                        : "scholarships"
+                                }
 
-                        </p>
+                            </p>
 
-
-                        <select
-                            value={sortBy}
-                            onChange={(event) =>
-                                setSortBy(
-                                    event.target.value
-                                )
-                            }
-                            aria-label="Sort scholarships"
-                        >
-
-                            <option value="recommended">
-                                Recommended
-                            </option>
-
-                            <option value="deadline">
-                                Deadline
-                            </option>
-
-                            <option value="highest-funding">
-                                Highest funding
-                            </option>
-
-                        </select>
-
+                        )}
                     </div>
 
                 </div>
 
 
-                {/* Results */}
+                {/* =================================================
+                    LOADING SKELETON
+                ================================================= */}
 
-                {filteredScholarships.length === 0 ? (
+                {loading && (
 
-                    <div className="scholarships-empty">
+                    <div
+                        className="scholarships-grid"
+                        aria-label="Loading scholarships"
+                    >
 
-                        <div className="scholarships-empty-icon">
-
-                            <Search size={24} />
-
-                        </div>
-
-
-                        <h3>
-                            No scholarships found
-                        </h3>
-
-
-                        <p>
-                            Try changing your search or
-                            removing some filters.
-                        </p>
-
-
-                        {hasFilters && (
-                            <button
-                                type="button"
-                                onClick={clearFilters}
-                            >
-                                Clear filters
-                            </button>
-                        )}
-
-                    </div>
-
-                ) : (
-
-                    <div className="scholarships-grid">
-
-                        {filteredScholarships.map(
-                            (scholarship) => (
+                        {Array.from({
+                            length: 6,
+                        }).map(
+                            (_, index) => (
 
                                 <article
-                                    className="scholarship-card"
-                                    key={scholarship.id}
+                                    className="scholarship-card scholarship-card-skeleton"
+                                    key={index}
                                 >
 
-                                    {/* Card Top */}
+                                    {/* CARD TOP */}
 
                                     <div className="scholarship-card-top">
 
-                                        <div className="scholarship-icon">
+                                        <div className="scholarship-card-top-main">
 
-                                            <GraduationCap
-                                                size={21}
-                                            />
+                                            <div className="skeleton-scholarship-icon" />
 
-                                        </div>
+                                            <div className="skeleton-top-content">
 
+                                                <div className="skeleton-line small" />
 
-                                        <button
-                                            type="button"
-                                            className="save-scholarship"
-                                            aria-label={`Save ${scholarship.title}`}
-                                        >
+                                                <div className="skeleton-line title" />
 
-                                            <Heart size={17} />
+                                                <div className="skeleton-line university" />
 
-                                        </button>
-
-                                    </div>
-
-
-                                    {/* Match */}
-
-                                    <div className="scholarship-match">
-
-                                        <CheckCircle2
-                                            size={13}
-                                        />
-
-                                        {scholarship.match}% match
-
-                                    </div>
-
-
-                                    {/* Content */}
-
-                                    <h2>
-                                        {scholarship.title}
-                                    </h2>
-
-
-                                    <p className="scholarship-university">
-                                        {scholarship.university}
-                                    </p>
-
-
-                                    <p className="scholarship-description">
-                                        {scholarship.description}
-                                    </p>
-
-
-                                    {/* Meta */}
-
-                                    <div className="scholarship-meta">
-
-                                        <span>
-
-                                            <Globe2 size={14} />
-
-                                            {scholarship.country}
-
-                                        </span>
-
-
-                                        <span>
-
-                                            <GraduationCap
-                                                size={14}
-                                            />
-
-                                            {scholarship.degree}
-
-                                        </span>
-
-
-                                        <span>
-
-                                            <CalendarDays
-                                                size={14}
-                                            />
-
-                                            {scholarship.deadline}
-
-                                        </span>
-
-                                    </div>
-
-
-                                    {/* Footer */}
-
-                                    <div className="scholarship-footer">
-
-                                        <div>
-
-                                            <small>
-                                                Funding
-                                            </small>
-
-                                            <strong>
-
-                                                <DollarSign
-                                                    size={14}
-                                                />
-
-                                                {scholarship.amount}
-
-                                            </strong>
+                                            </div>
 
                                         </div>
 
+                                    </div>
 
-                                        <Link
-                                            to={`/student/scholarships/${scholarship.id}`}
-                                            className="scholarship-view"
-                                        >
 
-                                            <span>
-                                                View scholarship
-                                            </span>
+                                    {/* CARD BODY */}
 
-                                            <ArrowRight
-                                                size={14}
-                                            />
+                                    <div className="scholarship-card-body">
 
-                                        </Link>
+                                        <div className="skeleton-line description" />
+
+                                        <div className="skeleton-line description short" />
+
+                                    </div>
+
+
+                                    {/* META */}
+
+                                    <div className="scholarship-card-meta">
+
+                                        <div className="skeleton-meta" />
+
+                                    </div>
+
+
+                                    {/* FOOTER */}
+
+                                    <div className="scholarship-card-footer">
+
+                                        <div className="skeleton-footer-line" />
 
                                     </div>
 
@@ -861,11 +1724,323 @@ function Scholarships() {
 
                 )}
 
+
+                {/* =================================================
+                    ERROR
+                ================================================= */}
+
+                {!loading && error && (
+
+                    <div className="scholarships-empty">
+
+                        <div className="scholarships-empty-icon">
+
+                            <X
+                                size={26}
+                            />
+
+                        </div>
+
+
+                        <h3>
+                            Unable to load scholarships
+                        </h3>
+
+
+                        <p>
+                            {error}
+                        </p>
+
+
+                        <button
+                            type="button"
+                            onClick={() =>
+                                window.location.reload()
+                            }
+                        >
+                            Try again
+                        </button>
+
+                    </div>
+
+                )}
+
+
+                {/* =================================================
+                    EMPTY
+                ================================================= */}
+
+                {!loading &&
+                    !error &&
+                    filteredScholarships.length === 0 && (
+
+                        <div className="scholarships-empty">
+
+                            <div className="scholarships-empty-icon">
+
+                                <GraduationCap
+                                    size={28}
+                                />
+
+                            </div>
+
+
+                            <h3>
+                                No scholarships found
+                            </h3>
+
+
+                            <p>
+                                Try changing your search
+                                or filters to find more
+                                opportunities.
+                            </p>
+
+
+                            {hasFilters && (
+
+                                <button
+                                    type="button"
+                                    onClick={
+                                        resetFilters
+                                    }
+                                >
+
+                                    <RotateCcw
+                                        size={14}
+                                    />
+
+                                    Clear filters
+
+                                </button>
+
+                            )}
+
+                        </div>
+
+                    )}
+
+
+                {/* =================================================
+                    SCHOLARSHIPS
+                ================================================= */}
+
+                {!loading &&
+                    !error &&
+                    filteredScholarships.length > 0 && (
+
+                        <div className="scholarships-grid">
+
+                            {filteredScholarships.map(
+                                (scholarship) => (
+
+                                    <article
+                                        key={
+                                            scholarship.id
+                                        }
+                                        className="scholarship-card"
+                                    >
+
+                                        {/* CARD TOP */}
+
+                                        <div className="scholarship-card-top">
+
+                                            <div className="scholarship-icon">
+
+                                                <GraduationCap
+                                                    size={22}
+                                                />
+
+                                            </div>
+
+
+                                            <div className="scholarship-card-actions">
+
+                                                {Number.isFinite(
+                                                    Number(
+                                                        scholarship.matchScore
+                                                    )
+                                                ) && (
+
+                                                        <div
+                                                            className="scholarship-match"
+                                                            title="Your match score"
+                                                            aria-label={`Match score ${Math.round(
+                                                                Number(
+                                                                    scholarship.matchScore
+                                                                )
+                                                            )}%`}
+                                                        >
+
+                                                            <CheckCircle2
+                                                                size={14}
+                                                            />
+
+                                                            <span>
+
+                                                                {
+                                                                    Math.round(
+                                                                        Number(
+                                                                            scholarship.matchScore
+                                                                        )
+                                                                    )
+                                                                }%
+
+                                                            </span>
+
+                                                        </div>
+
+                                                    )}
+
+
+                                                <button
+                                                    type="button"
+                                                    className="save-scholarship"
+                                                    aria-label="Save scholarship"
+                                                >
+
+                                                    <Heart
+                                                        size={18}
+                                                    />
+
+                                                </button>
+
+                                            </div>
+
+                                        </div>
+
+
+                                        {/* TITLE */}
+
+                                        <h2>
+                                            {
+                                                scholarship.title
+                                            }
+                                        </h2>
+
+
+                                        {/* UNIVERSITY */}
+
+                                        <p className="scholarship-university">
+
+                                            <GraduationCap
+                                                size={15}
+                                            />
+
+                                            {
+                                                scholarship.university
+                                            }
+
+                                        </p>
+
+
+                                        {/* DESCRIPTION */}
+
+                                        <p className="scholarship-description">
+
+                                            {
+                                                scholarship.description
+                                            }
+
+                                        </p>
+
+
+                                        {/* META */}
+
+                                        <div className="scholarship-meta">
+
+                                            <span>
+
+                                                <Globe2
+                                                    size={15}
+                                                />
+
+                                                {
+                                                    scholarship.country ||
+                                                    "Not specified"
+                                                }
+
+                                            </span>
+
+
+                                            <span>
+
+                                                <GraduationCap
+                                                    size={15}
+                                                />
+
+                                                {
+                                                    scholarship.degree
+                                                }
+
+                                            </span>
+
+
+                                            <span>
+
+                                                <DollarSign
+                                                    size={15}
+                                                />
+
+                                                {
+                                                    scholarship.funding ||
+                                                    "Not specified"
+                                                }
+
+                                            </span>
+
+                                        </div>
+
+
+                                        {/* FOOTER */}
+
+                                        <div className="scholarship-footer">
+
+                                            <span className="scholarship-deadline">
+
+                                                <CalendarDays
+                                                    size={15}
+                                                />
+
+                                                Deadline:{" "}
+
+                                                {
+                                                    scholarship.deadlineFormatted
+                                                }
+
+                                            </span>
+
+
+                                            <Link
+                                                to={`/student/scholarships/${scholarship.id}`}
+                                                className="scholarship-view"
+                                            >
+
+                                                <span>
+                                                    View scholarship
+                                                </span>
+
+
+                                                <ArrowRight
+                                                    size={14}
+                                                />
+
+                                            </Link>
+
+                                        </div>
+
+                                    </article>
+
+                                )
+                            )}
+
+                        </div>
+
+                    )}
+
             </main>
 
         </div>
+
     );
 }
-
-
-export default Scholarships;

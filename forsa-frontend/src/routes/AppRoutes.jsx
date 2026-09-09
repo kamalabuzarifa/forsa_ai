@@ -45,6 +45,7 @@ import UniversityDetails from "../pages/student/Universities/UniversityDetails";
 
 // Scholarships
 import Scholarships from "../pages/student/Scholarships/Scholarships";
+import ScholarshipDetails from "../pages/student/Scholarships/ScholarshipDetails";
 
 // AI Advisor
 import AIAdvisor from "../pages/student/AIAdvisor/AIAdvisor";
@@ -247,6 +248,11 @@ function AppRoutes() {
                         element={<Scholarships />}
                     />
 
+                    <Route
+                        path="/student/scholarships/:id"
+                        element={<ScholarshipDetails />}
+                    />
+
 
                     {/* =================================================
                         AI Advisor
@@ -318,7 +324,9 @@ function AppRoutes() {
                 >
 
 
-                    {/* Dashboard */}
+                    {/* =================================================
+                        Dashboard
+                    ================================================= */}
 
                     <Route
                         path="/admin"
@@ -326,7 +334,9 @@ function AppRoutes() {
                     />
 
 
-                    {/* Opportunities */}
+                    {/* =================================================
+                        Opportunities
+                    ================================================= */}
 
                     <Route
                         path="/admin/opportunities"
@@ -349,7 +359,9 @@ function AppRoutes() {
                     />
 
 
-                    {/* Applications */}
+                    {/* =================================================
+                        Applications
+                    ================================================= */}
 
                     <Route
                         path="/admin/applications"
@@ -362,7 +374,9 @@ function AppRoutes() {
                     />
 
 
-                    {/* Universities */}
+                    {/* =================================================
+                        Universities
+                    ================================================= */}
 
                     <Route
                         path="/admin/universities"
@@ -370,7 +384,9 @@ function AppRoutes() {
                     />
 
 
-                    {/* Countries */}
+                    {/* =================================================
+                        Countries
+                    ================================================= */}
 
                     <Route
                         path="/admin/countries"
