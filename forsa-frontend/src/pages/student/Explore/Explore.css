@@ -1916,3 +1916,112 @@
     }
 
 }
+
+:root {
+    --explore-container: 1180px;
+    --explore-page-padding: clamp(20px, 4vw, 48px);
+}
+
+.explore-page {
+    width: 100%;
+    max-width: 100%;
+}
+
+.explore-hero,
+.explore-categories,
+.explore-programs,
+.explore-destinations {
+    padding-inline: var(--explore-page-padding);
+}
+
+.explore-hero {
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+    gap: clamp(36px, 5vw, 70px);
+}
+
+.explore-hero-content,
+.explore-hero-visual,
+.explore-section-heading,
+.explore-category-grid,
+.explore-program-grid,
+.destination-grid,
+.explore-ai-card {
+    width: min(100%, var(--explore-container));
+    max-width: var(--explore-container);
+    margin-inline: auto;
+}
+
+.explore-hero-content,
+.explore-hero-visual {
+    min-width: 0;
+}
+
+.explore-hero h1 {
+    font-size: clamp(38px, 4vw, 53px);
+}
+
+.explore-category-grid,
+.destination-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.explore-program-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.explore-ai-section {
+    padding-inline: var(--explore-page-padding);
+}
+
+@media (max-width: 1100px) {
+
+    .explore-hero,
+    .explore-categories,
+    .explore-programs,
+    .explore-destinations {
+        padding-inline: 6%;
+    }
+
+    .explore-ai-section {
+        margin-inline: 0;
+        padding-inline: 6%;
+    }
+}
+
+@media (max-width: 900px) {
+    .explore-hero {
+        grid-template-columns: 1fr;
+    }
+
+    .explore-hero-content,
+    .explore-hero-visual {
+        max-width: 720px;
+    }
+
+    .explore-category-grid,
+    .destination-grid,
+    .explore-program-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 650px) {
+
+    .explore-hero,
+    .explore-categories,
+    .explore-programs,
+    .explore-destinations {
+        padding-inline: 20px;
+    }
+
+    .explore-ai-section {
+        margin-inline: 20px;
+        padding-inline: 0;
+    }
+
+    .explore-category-grid,
+    .destination-grid,
+    .explore-program-grid {
+        grid-template-columns: 1fr;
+    }
+}

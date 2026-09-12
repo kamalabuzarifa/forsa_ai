@@ -25,6 +25,7 @@ import {
 } from "../../../api/universities";
 
 import "./Universities.css";
+import LoadingScreen from "../../../components/LoadingScreen";
 
 
 /*
@@ -252,6 +253,10 @@ function Universities() {
         setSearch("");
         setCountry("all");
     };
+
+    if (loading) {
+        return <LoadingScreen />;
+    }
 
 
     /*

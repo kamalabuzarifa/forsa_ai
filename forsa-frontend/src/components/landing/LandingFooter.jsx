@@ -1,10 +1,15 @@
 import {
+    ArrowUpRight,
     GraduationCap,
 } from "lucide-react";
 
-import { Link } from "react-router-dom";
+import {
+    Link,
+} from "react-router-dom";
 
 function LandingFooter() {
+    const currentYear = new Date().getFullYear();
+
     return (
         <footer className="landing-footer">
 
@@ -16,38 +21,32 @@ function LandingFooter() {
                         to="/"
                         className="landing-logo"
                     >
-
                         <span className="logo-mark">
-
                             <GraduationCap
                                 size={22}
                                 strokeWidth={2.2}
                             />
-
                         </span>
 
                         <span>
                             EduMatch
                         </span>
-
                     </Link>
-
 
                     <p>
                         AI-powered educational opportunity
-                        matching for students.
+                        matching that helps students discover
+                        programs and opportunities aligned with
+                        their goals.
                     </p>
 
-
-                    <div className="footer-status">
-
-                        <span className="status-dot" />
-
-                        <span>
-                            Helping students discover opportunities
-                        </span>
-
-                    </div>
+                    <a
+                        href="#get-started"
+                        className="footer-brand-link"
+                    >
+                        Start your journey
+                        <ArrowUpRight size={15} />
+                    </a>
 
                 </div>
 
@@ -58,8 +57,16 @@ function LandingFooter() {
                         Platform
                     </h3>
 
+                    <Link to="/student/explore">
+                        Explore
+                    </Link>
+
                     <Link to="/student/opportunities">
                         Opportunities
+                    </Link>
+
+                    <Link to="/student/universities">
+                        Universities
                     </Link>
 
                     <a href="#how-it-works">
@@ -68,10 +75,6 @@ function LandingFooter() {
 
                     <a href="#why-edumatch">
                         Why EduMatch
-                    </a>
-
-                    <a href="#faq">
-                        FAQ
                     </a>
 
                 </div>
@@ -88,7 +91,7 @@ function LandingFooter() {
                     </Link>
 
                     <Link to="/register">
-                        Student Sign Up
+                        Create an Account
                     </Link>
 
                     <Link to="/student/profile">
@@ -105,19 +108,23 @@ function LandingFooter() {
                 <div className="footer-column">
 
                     <h3>
-                        Support
+                        Resources
                     </h3>
+
+                    <a href="#faq">
+                        FAQ
+                    </a>
+
+                    <a href="#resources">
+                        Learning Resources
+                    </a>
+
+                    <a href="#institutions">
+                        For Institutions
+                    </a>
 
                     <a href="#contact">
                         Contact Us
-                    </a>
-
-                    <a href="#faq">
-                        Frequently Asked Questions
-                    </a>
-
-                    <a href="#contact">
-                        Help Center
                     </a>
 
                 </div>
@@ -131,10 +138,8 @@ function LandingFooter() {
             <div className="footer-bottom">
 
                 <p>
-                    © {new Date().getFullYear()} EduMatch.
-                    All rights reserved.
+                    © {currentYear} EduMatch. All rights reserved.
                 </p>
-
 
                 <div className="footer-bottom-links">
 
@@ -144,10 +149,6 @@ function LandingFooter() {
 
                     <Link to="/terms-of-use">
                         Terms of Use
-                    </Link>
-
-                    <Link to="/security">
-                        Security
                     </Link>
 
                 </div>

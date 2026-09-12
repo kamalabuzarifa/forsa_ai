@@ -1,87 +1,133 @@
 import {
+    ArrowRight,
+    BookOpen,
+    Globe2,
     Handshake,
     Users,
-    Globe2,
-    BookOpen,
 } from "lucide-react";
 
+import { Link } from "react-router-dom";
+
 function PartnersSection() {
-    const partners = [
+    const ecosystem = [
         {
             icon: Handshake,
-            title: "Education Partners",
-            text: "Working with organisations that support students and institutions.",
+            title: "Education organizations",
+            text:
+                "Organizations supporting students can use EduMatch to help them discover relevant educational opportunities.",
         },
         {
             icon: Users,
-            title: "Student Communities",
-            text: "Building connections with communities that help students plan their future.",
+            title: "Student communities",
+            text:
+                "Communities can give students a simpler way to explore programs, scholarships and opportunities.",
         },
         {
             icon: Globe2,
-            title: "Global Networks",
-            text: "Connecting education opportunities across countries and regions.",
+            title: "Global networks",
+            text:
+                "EduMatch is designed to make opportunities easier to discover across countries and education systems.",
         },
         {
             icon: BookOpen,
-            title: "Academic Networks",
-            text: "Supporting institutions and academic communities through technology.",
+            title: "Academic communities",
+            text:
+                "Academic organizations can help students connect their educational goals with suitable programs.",
         },
     ];
 
     return (
-        <section className="partners-section">
-
+        <section
+            className="partners-section"
+            id="ecosystem"
+        >
             <div className="section-heading">
 
                 <span className="section-label">
-                    OUR PARTNERS
+                    EDUMATCH ECOSYSTEM
                 </span>
 
                 <h2>
-                    Building an education
-                    <span>network together</span>
+                    Education works better
+                    <span>when everyone is connected</span>
                 </h2>
 
                 <p>
-                    We collaborate with educational organisations,
-                    universities, communities, and academic networks
-                    to make education discovery easier.
+                    EduMatch is built to bring students, universities,
+                    educational organizations and academic communities
+                    closer together through one discovery platform.
                 </p>
 
             </div>
 
             <div className="partners-grid">
 
-                {partners.map((partner, index) => {
-                    const Icon = partner.icon;
+                {ecosystem.map((item) => {
+                    const Icon = item.icon;
 
                     return (
-                        <div
+                        <article
                             className="partner-card"
-                            key={index}
+                            key={item.title}
                         >
                             <div className="partner-icon">
-                                <Icon size={23} />
+                                <Icon
+                                    size={23}
+                                    strokeWidth={1.8}
+                                />
                             </div>
 
                             <h3>
-                                {partner.title}
+                                {item.title}
                             </h3>
 
                             <p>
-                                {partner.text}
+                                {item.text}
                             </p>
 
-                            <a href="#contact">
-                                Meet our partners
-                            </a>
-                        </div>
+                            <Link
+                                to="#contact"
+                                className="partner-link"
+                            >
+                                Learn more
+                                <ArrowRight size={14} />
+                            </Link>
+                        </article>
                     );
                 })}
 
             </div>
 
+            <div className="partners-bottom">
+
+                <div className="partners-bottom-content">
+
+                    <div className="partners-bottom-icon">
+                        <Globe2 size={18} />
+                    </div>
+
+                    <div>
+                        <strong>
+                            Built for a connected education ecosystem
+                        </strong>
+
+                        <span>
+                            Students discover. Institutions connect.
+                            Opportunities move forward.
+                        </span>
+                    </div>
+
+                </div>
+
+                <Link
+                    to="#contact"
+                    className="partners-bottom-link"
+                >
+                    Partner with EduMatch
+                    <ArrowRight size={15} />
+                </Link>
+
+            </div>
         </section>
     );
 }

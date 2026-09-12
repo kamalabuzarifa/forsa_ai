@@ -9,7 +9,9 @@ function LoadingScreen() {
                 <div className="loading-spinner"></div>
 
                 <div className="loading-logo">
-                    <span className="loading-logo-inner"></span>
+                    <span className="loading-logo-inner">
+                        E
+                    </span>
                 </div>
 
             </div>

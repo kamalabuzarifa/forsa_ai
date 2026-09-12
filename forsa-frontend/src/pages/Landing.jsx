@@ -23,53 +23,43 @@ import LandingFooter from "../components/landing/LandingFooter";
 function Landing() {
     return (
         <div className="landing-page">
+            <LandingNavbar />
 
-            <div className="landing-background">
+            <main>
 
-                <div className="landing-shape landing-shape-1" />
-                <div className="landing-shape landing-shape-2" />
-                <div className="landing-shape landing-shape-3" />
+                <HeroSection />
 
-                <main className="landing-container">
+                <StatsSection />
 
-                    <LandingNavbar />
+                <HowItWorks />
 
-                    <HeroSection />
+                <WhyEduMatch />
 
-                    <StatsSection />
+                <FeaturedOpportunities />
 
-                    <HowItWorks />
+                <AISection />
 
-                    <WhyEduMatch />
+                <ForInstitutions />
 
-                    <FeaturedOpportunities />
+                <TrustedInstitutions />
 
-                    <AISection />
+                <CaseStudies />
 
-                    <ForInstitutions />
+                <PartnersSection />
 
-                    <TrustedInstitutions />
+                <BeyondEduMatch />
 
-                    <CaseStudies />
+                <ResourcesSection />
 
-                    <PartnersSection />
+                <FAQSection />
 
-                    <BeyondEduMatch />
+                <ContactSection />
 
-                    <ResourcesSection />
+                <CTASection />
 
-                    <FAQSection />
+            </main>
 
-                    <ContactSection />
-
-                    <CTASection />
-
-                    <LandingFooter />
-
-                </main>
-
-            </div>
-
+            <LandingFooter />
         </div>
     );
 }

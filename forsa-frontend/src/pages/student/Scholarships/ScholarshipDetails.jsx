@@ -24,6 +24,7 @@ import {
 } from "react";
 
 import "./ScholarshipDetails.css";
+import LoadingScreen from "../../../components/LoadingScreen";
 
 
 /* =========================================================
@@ -318,24 +319,7 @@ function ScholarshipDetails() {
        ===================================================== */
 
     if (loading) {
-
-        return (
-
-            <div className="scholarship-details-page">
-
-                <div className="scholarship-details-loading">
-
-                    <div className="scholarship-loading-spinner" />
-
-                    <p>
-                        Loading scholarship...
-                    </p>
-
-                </div>
-
-            </div>
-
-        );
+        return <LoadingScreen />;
 
     }
 

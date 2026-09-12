@@ -26,6 +26,7 @@ import {
 } from "react";
 
 import api from "../../../api/axios";
+import LoadingScreen from "../../../components/LoadingScreen";
 
 import "./Profile.css";
 
@@ -1629,22 +1630,7 @@ function Profile() {
     // =========================================================
 
     if (loading) {
-
-        return (
-            <div className="profile-page">
-
-                <div className="profile-loading">
-
-                    <div className="profile-loading-spinner" />
-
-                    <p>
-                        Loading your profile...
-                    </p>
-
-                </div>
-
-            </div>
-        );
+        return <LoadingScreen />;
     }
 
 

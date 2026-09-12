@@ -9,6 +9,7 @@ import {
 } from "react-router-dom";
 
 import { useAuth } from "../context/AuthContext";
+import LoadingScreen from "../components/LoadingScreen";
 
 import {
     getStudentProfile,
@@ -138,18 +139,7 @@ function ProtectedRoute({
         loading ||
         profileLoading
     ) {
-
-        return (
-            <div className="route-loading">
-
-                <div className="route-loading-spinner" />
-
-                <p>
-                    Loading...
-                </p>
-
-            </div>
-        );
+        return <LoadingScreen />;
     }
 
 

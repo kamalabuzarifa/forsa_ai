@@ -29,6 +29,8 @@ import {
     getOpportunity,
 } from "../../../api/opportunities";
 
+import LoadingScreen from "../../../components/LoadingScreen";
+
 import "./ApplicationDetails.css";
 
 
@@ -464,24 +466,7 @@ function ApplicationDetails() {
     ===================================================== */
 
     if (loading) {
-
-        return (
-
-            <div className="application-details-page">
-
-                <div className="application-details-loading">
-
-                    <div className="application-loading-spinner" />
-
-                    <p>
-                        Loading application details...
-                    </p>
-
-                </div>
-
-            </div>
-
-        );
+        return <LoadingScreen />;
 
     }
 
@@ -1378,8 +1363,8 @@ function ApplicationDetails() {
 
                                 <div
                                     className={`timeline-item ${statusClass === "pending"
-                                            ? ""
-                                            : "active"
+                                        ? ""
+                                        : "active"
                                         }`}
                                 >
 
@@ -1406,10 +1391,10 @@ function ApplicationDetails() {
 
                                 <div
                                     className={`timeline-item ${statusClass === "accepted" ||
-                                            statusClass === "rejected" ||
-                                            statusClass === "withdrawn"
-                                            ? "active"
-                                            : ""
+                                        statusClass === "rejected" ||
+                                        statusClass === "withdrawn"
+                                        ? "active"
+                                        : ""
                                         }`}
                                 >
 

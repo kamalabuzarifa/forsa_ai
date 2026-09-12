@@ -1,6 +1,7 @@
 import {
     Bell,
     Bookmark,
+    CheckCheck,
     Building2,
     ChevronDown,
     GraduationCap,
@@ -28,6 +29,11 @@ import {
 } from "react";
 
 import StudentFooter from "./StudentFooter";
+import {
+    getNotifications,
+    markAllNotificationsAsRead,
+    markNotificationAsRead,
+} from "../../api/notifications";
 
 import "./StudentLayout.css";
 
@@ -38,8 +44,35 @@ function StudentLayout() {
 
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [profileOpen, setProfileOpen] = useState(false);
+    const [notificationsOpen, setNotificationsOpen] = useState(false);
+    const [notifications, setNotifications] = useState([]);
+    const [unreadNotifications, setUnreadNotifications] = useState(0);
+    const [notificationsLoading, setNotificationsLoading] = useState(false);
 
     const profileRef = useRef(null);
+    const notificationRef = useRef(null);
+
+    const loadNotifications = async () => {
+        try {
+            setNotificationsLoading(true);
+
+            const response = await getNotifications();
+
+            setNotifications(
+                Array.isArray(response?.data)
+                    ? response.data
+                    : []
+            );
+
+            setUnreadNotifications(
+                Number(response?.unread_count) || 0
+            );
+        } catch (error) {
+            console.error("Failed to load notifications:", error);
+        } finally {
+            setNotificationsLoading(false);
+        }
+    };
 
 
     // =========================================================
@@ -55,6 +88,13 @@ function StudentLayout() {
                 !profileRef.current.contains(event.target)
             ) {
                 setProfileOpen(false);
+            }
+
+            if (
+                notificationRef.current &&
+                !notificationRef.current.contains(event.target)
+            ) {
+                setNotificationsOpen(false);
             }
 
         }
@@ -74,6 +114,68 @@ function StudentLayout() {
         };
 
     }, []);
+
+    useEffect(() => {
+        loadNotifications();
+
+        const interval = window.setInterval(
+            loadNotifications,
+            30000
+        );
+
+        return () => window.clearInterval(interval);
+    }, []);
+
+    const handleNotificationsToggle = () => {
+        const nextOpen = !notificationsOpen;
+
+        setNotificationsOpen(nextOpen);
+
+        if (nextOpen) {
+            loadNotifications();
+        }
+    };
+
+    const handleNotificationClick = async (notification) => {
+        if (notification.read_at) {
+            return;
+        }
+
+        try {
+            await markNotificationAsRead(notification.id);
+
+            setNotifications((current) =>
+                current.map((item) =>
+                    item.id === notification.id
+                        ? { ...item, read_at: new Date().toISOString() }
+                        : item
+                )
+            );
+
+            setUnreadNotifications((current) =>
+                Math.max(0, current - 1)
+            );
+        } catch (error) {
+            console.error("Failed to mark notification as read:", error);
+        }
+    };
+
+    const handleMarkAllNotificationsRead = async () => {
+        try {
+            await markAllNotificationsAsRead();
+
+            setNotifications((current) =>
+                current.map((item) => ({
+                    ...item,
+                    read_at: item.read_at || new Date().toISOString(),
+                }))
+            );
+
+            setUnreadNotifications(0);
+        } catch (error) {
+            console.error("Failed to mark notifications as read:", error);
+        }
+    };
 
 
     // =========================================================
@@ -302,17 +404,99 @@ function StudentLayout() {
 
                         {/* Notifications */}
 
-                        <button
-                            type="button"
-                            className="student-header-icon notification-button"
-                            title="Notifications"
+                        <div
+                            className="student-notification-wrapper"
+                            ref={notificationRef}
                         >
 
-                            <Bell size={18} />
+                            <button
+                                type="button"
+                                className="student-header-icon notification-button"
+                                title="Notifications"
+                                aria-label="Notifications"
+                                aria-expanded={notificationsOpen}
+                                onClick={handleNotificationsToggle}
+                            >
 
-                            <span className="notification-dot" />
+                                <Bell size={18} />
 
-                        </button>
+                                {unreadNotifications > 0 && (
+                                    <span className="notification-dot">
+                                        {unreadNotifications > 9
+                                            ? "9+"
+                                            : unreadNotifications}
+                                    </span>
+                                )}
+
+                            </button>
+
+                            {notificationsOpen && (
+                                <div className="student-notifications-dropdown">
+
+                                    <div className="student-notifications-header">
+
+                                        <div>
+                                            <strong>Notifications</strong>
+                                            <span>
+                                                {unreadNotifications > 0
+                                                    ? `${unreadNotifications} unread`
+                                                    : "You are all caught up"}
+                                            </span>
+                                        </div>
+
+                                        {unreadNotifications > 0 && (
+                                            <button
+                                                type="button"
+                                                className="student-notifications-read-all"
+                                                onClick={handleMarkAllNotificationsRead}
+                                            >
+                                                <CheckCheck size={14} />
+                                                Mark all read
+                                            </button>
+                                        )}
+
+                                    </div>
+
+                                    <div className="student-notifications-list">
+
+                                        {notificationsLoading && (
+                                            <div className="student-notifications-state">
+                                                Loading notifications...
+                                            </div>
+                                        )}
+
+                                        {!notificationsLoading && notifications.length === 0 && (
+                                            <div className="student-notifications-state">
+                                                No notifications yet.
+                                            </div>
+                                        )}
+
+                                        {!notificationsLoading && notifications.map((notification) => (
+                                            <button
+                                                type="button"
+                                                className={`student-notification-item ${notification.read_at ? "read" : "unread"}`}
+                                                key={notification.id}
+                                                onClick={() => handleNotificationClick(notification)}
+                                            >
+                                                <span className="student-notification-indicator" />
+                                                <span className="student-notification-content">
+                                                    <strong>{notification.title}</strong>
+                                                    <span>{notification.message}</span>
+                                                    <small>
+                                                        {notification.created_at
+                                                            ? new Date(notification.created_at).toLocaleDateString()
+                                                            : ""}
+                                                    </small>
+                                                </span>
+                                            </button>
+                                        ))}
+
+                                    </div>
+
+                                </div>
+                            )}
+
+                        </div>
 
 
                         {/* Profile */}
@@ -470,8 +654,8 @@ function StudentLayout() {
 
             <div
                 className={`student-mobile-navigation ${mobileMenuOpen
-                        ? "open"
-                        : ""
+                    ? "open"
+                    : ""
                     }`}
             >
 

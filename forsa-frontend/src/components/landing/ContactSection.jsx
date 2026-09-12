@@ -1,60 +1,48 @@
 import {
+    ArrowRight,
     Clock3,
     Mail,
     MessageCircle,
     Send,
 } from "lucide-react";
 
+import { useState } from "react";
+
 function ContactSection() {
+    const [submitted, setSubmitted] = useState(false);
 
     const handleSubmit = (event) => {
         event.preventDefault();
 
-        const form = event.currentTarget;
-
-        const data = {
-            name: form.name.value.trim(),
-            email: form.email.value.trim(),
-            subject: form.subject.value.trim(),
-            message: form.message.value.trim(),
-        };
-
-        console.log("Contact form data", data);
-
-        form.reset();
+        setSubmitted(true);
+        event.currentTarget.reset();
     };
-
 
     return (
         <section
             className="contact-section"
             id="contact"
         >
-
             <div className="contact-card">
 
                 <div className="contact-info">
 
                     <span className="section-label">
-                        CONTACT US
+                        CONTACT
                     </span>
-
 
                     <h2>
                         Have a question?
-
                         <span>
-                            Talk to us.
+                            We would love to hear from you.
                         </span>
                     </h2>
 
-
                     <p>
-                        Need help with your account or have a
-                        question about an opportunity? Our team
-                        is here to help.
+                        Whether you need help understanding EduMatch,
+                        have a question about an opportunity, or want
+                        to explore working with us, send us a message.
                     </p>
-
 
                     <div className="contact-details">
 
@@ -65,19 +53,16 @@ function ContactSection() {
                             </div>
 
                             <div>
-
                                 <strong>
                                     Email
                                 </strong>
 
                                 <span>
-                                    support@edumatch.com
+                                    Get in touch with our team
                                 </span>
-
                             </div>
 
                         </div>
-
 
                         <div className="contact-detail">
 
@@ -86,19 +71,16 @@ function ContactSection() {
                             </div>
 
                             <div>
-
                                 <strong>
                                     Support
                                 </strong>
 
                                 <span>
-                                    We are here to help you
+                                    Questions about using EduMatch
                                 </span>
-
                             </div>
 
                         </div>
-
 
                         <div className="contact-detail">
 
@@ -107,15 +89,13 @@ function ContactSection() {
                             </div>
 
                             <div>
-
                                 <strong>
-                                    Response time
+                                    Send us a message
                                 </strong>
 
                                 <span>
-                                    Within 1–2 business days
+                                    We will get back to you as soon as possible
                                 </span>
-
                             </div>
 
                         </div>
@@ -124,96 +104,124 @@ function ContactSection() {
 
                 </div>
 
+                <div className="contact-form-wrapper">
 
-                <form
-                    className="contact-form"
-                    onSubmit={handleSubmit}
-                >
+                    {submitted ? (
+                        <div className="contact-success">
 
-                    <div className="contact-row">
+                            <div className="contact-success-icon">
+                                <Send size={21} />
+                            </div>
 
-                        <div className="contact-field">
+                            <h3>
+                                Thanks for reaching out.
+                            </h3>
 
-                            <label htmlFor="contact-name">
-                                Name
-                            </label>
+                            <p>
+                                Your message is ready to send. The contact
+                                endpoint is not connected in this environment,
+                                so no message has been submitted yet.
+                            </p>
 
-                            <input
-                                id="contact-name"
-                                name="name"
-                                type="text"
-                                placeholder="Your name"
-                                required
-                            />
-
-                        </div>
-
-
-                        <div className="contact-field">
-
-                            <label htmlFor="contact-email">
-                                Email
-                            </label>
-
-                            <input
-                                id="contact-email"
-                                name="email"
-                                type="email"
-                                placeholder="you@example.com"
-                                required
-                            />
+                            <button
+                                type="button"
+                                className="contact-reset"
+                                onClick={() => setSubmitted(false)}
+                            >
+                                Send another message
+                                <ArrowRight size={15} />
+                            </button>
 
                         </div>
+                    ) : (
+                        <form
+                            className="contact-form"
+                            onSubmit={handleSubmit}
+                        >
+                            <div className="contact-row">
 
-                    </div>
+                                <div className="contact-field">
 
+                                    <label htmlFor="contact-name">
+                                        Name
+                                    </label>
 
-                    <div className="contact-field">
+                                    <input
+                                        id="contact-name"
+                                        name="name"
+                                        type="text"
+                                        placeholder="Your name"
+                                        autoComplete="name"
+                                        required
+                                    />
 
-                        <label htmlFor="contact-subject">
-                            Subject
-                        </label>
+                                </div>
 
-                        <input
-                            id="contact-subject"
-                            name="subject"
-                            type="text"
-                            placeholder="How can we help?"
-                            required
-                        />
+                                <div className="contact-field">
 
-                    </div>
+                                    <label htmlFor="contact-email">
+                                        Email
+                                    </label>
 
+                                    <input
+                                        id="contact-email"
+                                        name="email"
+                                        type="email"
+                                        placeholder="you@example.com"
+                                        autoComplete="email"
+                                        required
+                                    />
 
-                    <div className="contact-field">
+                                </div>
 
-                        <label htmlFor="contact-message">
-                            Message
-                        </label>
+                            </div>
 
-                        <textarea
-                            id="contact-message"
-                            name="message"
-                            rows="5"
-                            placeholder="Write your message..."
-                            required
-                        />
+                            <div className="contact-field">
 
-                    </div>
+                                <label htmlFor="contact-subject">
+                                    Subject
+                                </label>
 
+                                <input
+                                    id="contact-subject"
+                                    name="subject"
+                                    type="text"
+                                    placeholder="What can we help you with?"
+                                    required
+                                />
 
-                    <button
-                        type="submit"
-                        className="contact-submit"
-                    >
-                        Send Message
-                        <Send size={17} />
-                    </button>
+                            </div>
 
-                </form>
+                            <div className="contact-field">
+
+                                <label htmlFor="contact-message">
+                                    Message
+                                </label>
+
+                                <textarea
+                                    id="contact-message"
+                                    name="message"
+                                    rows="5"
+                                    placeholder="Tell us how we can help..."
+                                    required
+                                />
+
+                            </div>
+
+                            <button
+                                type="submit"
+                                className="contact-submit"
+                            >
+                                Send message
+                                <Send size={17} />
+                            </button>
+
+                        </form>
+                    )}
+
+                </div>
 
             </div>
-
         </section>
     );
 }

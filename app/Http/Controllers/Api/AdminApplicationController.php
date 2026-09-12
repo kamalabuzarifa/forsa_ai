@@ -48,12 +48,39 @@ class AdminApplicationController extends Controller
     ): ApplicationResource {
         $data = $request->validated();
 
+        $application->loadMissing([
+            'status',
+            'user',
+            'opportunity',
+        ]);
+
+        $previousStatusId = $application->status_id;
+
         $application->update([
             'status_id' => $data['status_id'],
             'notes' => array_key_exists('notes', $data)
                 ? $data['notes']
                 : $application->notes,
         ]);
+
+        if ($previousStatusId !== $application->status_id) {
+            $application->load('status');
+
+            $statusLabel = $application->status?->name
+                ?? $application->status?->code
+                ?? 'updated';
+
+            $application->user?->notifications()->create([
+                'type' => 'application_status_updated',
+                'title' => 'Application status updated',
+                'message' => sprintf(
+                    'Your application for %s is now %s.',
+                    $application->opportunity?->title
+                        ?? 'your opportunity',
+                    str_replace('_', ' ', $statusLabel)
+                ),
+            ]);
+        }
 
         $application->load([
             'user',

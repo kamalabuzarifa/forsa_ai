@@ -8,12 +8,41 @@ import {
 import { Link } from "react-router-dom";
 
 function HowItWorks() {
+    const steps = [
+        {
+            number: "01",
+            icon: FileCheck,
+            title: "Build your profile",
+            description:
+                "Tell EduMatch about your education, skills, languages, experience and goals.",
+            link: "/register",
+            linkText: "Create your profile",
+        },
+        {
+            number: "02",
+            icon: Brain,
+            title: "Get matched",
+            description:
+                "Our matching system compares your profile with opportunities and highlights the ones that fit you.",
+            link: "/student/explore",
+            linkText: "Explore matches",
+        },
+        {
+            number: "03",
+            icon: GraduationCap,
+            title: "Apply with confidence",
+            description:
+                "Review eligibility, requirements, funding and deadlines before you apply.",
+            link: "/student/opportunities",
+            linkText: "Explore opportunities",
+        },
+    ];
+
     return (
         <section
             className="how-section"
             id="how-it-works"
         >
-
             <div className="section-heading">
 
                 <span className="section-label">
@@ -21,119 +50,86 @@ function HowItWorks() {
                 </span>
 
                 <h2>
-                    From profile to opportunity
+                    Your path to the right opportunity
                 </h2>
 
                 <p>
-                    A simple process designed to help you spend
-                    less time searching and more time applying.
+                    EduMatch turns your profile into personalized
+                    opportunities you can explore and apply for.
                 </p>
 
             </div>
 
+            <div className="steps-wrapper">
 
-            <div className="steps-grid">
+                <div className="steps-line" />
 
-                <div className="step-card">
+                <div className="steps-grid">
 
-                    <div className="step-top">
+                    {steps.map((step) => {
+                        const Icon = step.icon;
 
-                        <span className="step-number">
-                            01
-                        </span>
+                        return (
+                            <article
+                                className="step-card"
+                                key={step.number}
+                            >
+                                <div className="step-top">
 
-                        <div className="step-icon">
-                            <FileCheck size={25} />
-                        </div>
+                                    <span className="step-number">
+                                        {step.number}
+                                    </span>
 
-                    </div>
+                                    <div className="step-icon">
+                                        <Icon size={24} />
+                                    </div>
 
-                    <h3>
-                        Complete your profile
-                    </h3>
+                                </div>
 
-                    <p>
-                        Add your education, skills, languages,
-                        experience and other information.
-                    </p>
+                                <h3>
+                                    {step.title}
+                                </h3>
 
-                    <Link
-                        to="/register"
-                        className="step-link"
-                    >
-                        Build your profile
-                        <ArrowRight size={15} />
-                    </Link>
+                                <p>
+                                    {step.description}
+                                </p>
 
-                </div>
+                                <Link
+                                    to={step.link}
+                                    className="step-link"
+                                >
+                                    {step.linkText}
 
+                                    <ArrowRight size={15} />
+                                </Link>
 
-                <div className="step-card">
-
-                    <div className="step-top">
-
-                        <span className="step-number">
-                            02
-                        </span>
-
-                        <div className="step-icon">
-                            <Brain size={25} />
-                        </div>
-
-                    </div>
-
-                    <h3>
-                        Get AI-powered matches
-                    </h3>
-
-                    <p>
-                        EduMatch analyzes your profile and finds
-                        opportunities that fit your background.
-                    </p>
-
-                    <Link
-                        to="/student/opportunities"
-                        className="step-link"
-                    >
-                        Discover matches
-                        <ArrowRight size={15} />
-                    </Link>
+                            </article>
+                        );
+                    })}
 
                 </div>
 
+            </div>
 
-                <div className="step-card">
+            <div className="how-bottom">
 
-                    <div className="step-top">
+                <div className="how-bottom-content">
 
-                        <span className="step-number">
-                            03
-                        </span>
+                    <Brain size={18} />
 
-                        <div className="step-icon">
-                            <GraduationCap size={25} />
-                        </div>
-
-                    </div>
-
-                    <h3>
-                        Apply with confidence
-                    </h3>
-
-                    <p>
-                        Compare requirements, funding and deadlines
-                        before starting your application.
-                    </p>
-
-                    <Link
-                        to="/student/opportunities"
-                        className="step-link"
-                    >
-                        Start applying
-                        <ArrowRight size={15} />
-                    </Link>
+                    <span>
+                        Your profile powers every recommendation
+                    </span>
 
                 </div>
+
+                <Link
+                    to="/register"
+                    className="how-bottom-link"
+                >
+                    Get started
+                    <ArrowRight size={16} />
+                </Link>
 
             </div>
 

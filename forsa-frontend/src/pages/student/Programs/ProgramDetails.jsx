@@ -37,6 +37,7 @@ import {
 } from "../../../api/programs";
 
 import "./ProgramDetails.css";
+import LoadingScreen from "../../../components/LoadingScreen";
 
 
 function ProgramDetails() {
@@ -389,26 +390,7 @@ function ProgramDetails() {
     // =========================================================
 
     if (loading) {
-
-        return (
-            <div className="program-details-page">
-
-                <div className="program-details-state">
-
-                    <div className="program-loading-spinner" />
-
-                    <h2>
-                        Loading programme
-                    </h2>
-
-                    <p>
-                        Please wait while we load the programme details.
-                    </p>
-
-                </div>
-
-            </div>
-        );
+        return <LoadingScreen />;
 
     }
 

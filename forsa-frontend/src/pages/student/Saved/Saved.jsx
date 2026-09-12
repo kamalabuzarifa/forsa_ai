@@ -1,15 +1,17 @@
 import {
+    ArrowRight,
     Bookmark,
     Building2,
+    CalendarDays,
+    ExternalLink,
     GraduationCap,
     MapPin,
-    ArrowRight,
-    Trash2,
     Search,
-    ExternalLink,
-    CalendarDays,
+    Trash2,
+    X,
     Loader2,
     AlertCircle,
+    Sparkles,
 } from "lucide-react";
 
 import {
@@ -28,24 +30,275 @@ import {
 } from "../../../api/saved";
 
 import "./Saved.css";
+import LoadingScreen from "../../../components/LoadingScreen";
+
+
+const getDisplayValue = (
+    value,
+    keys = [
+        "name",
+        "title",
+        "label",
+        "value",
+    ]
+) => {
+
+    if (
+        value === undefined ||
+        value === null
+    ) {
+        return "";
+    }
+
+    if (
+        typeof value === "string" ||
+        typeof value === "number" ||
+        typeof value === "boolean"
+    ) {
+        return String(value);
+    }
+
+    if (Array.isArray(value)) {
+
+        return value
+            .map(
+                item =>
+                    getDisplayValue(
+                        item,
+                        keys
+                    )
+            )
+            .filter(Boolean)
+            .join(", ");
+    }
+
+    if (typeof value === "object") {
+
+        for (const key of keys) {
+
+            if (
+                value[key] !== undefined &&
+                value[key] !== null &&
+                value[key] !== ""
+            ) {
+                return String(
+                    value[key]
+                );
+            }
+        }
+
+    }
+
+    return "";
+};
+
+
+const getProgramTitle = (
+    opportunity
+) =>
+    getDisplayValue(
+        opportunity?.title ||
+        opportunity?.name,
+        [
+            "title",
+            "name",
+        ]
+    );
+
+
+const getUniversityName = (
+    opportunity
+) =>
+    getDisplayValue(
+        opportunity?.university ||
+        opportunity?.university_name,
+        [
+            "name",
+            "title",
+        ]
+    );
+
+
+const getCountryName = (
+    opportunity
+) =>
+    getDisplayValue(
+        opportunity?.country ||
+        opportunity?.university?.country,
+        [
+            "name",
+            "title",
+        ]
+    );
+
+
+const getOpportunityType = (
+    opportunity
+) =>
+    getDisplayValue(
+        opportunity?.opportunity_type ||
+        opportunity?.opportunityType ||
+        opportunity?.type,
+        [
+            "name",
+            "title",
+            "label",
+            "value",
+        ]
+    );
+
+
+const getFundingType = (
+    opportunity
+) =>
+    getDisplayValue(
+        opportunity?.funding_type ||
+        opportunity?.fundingType ||
+        opportunity?.funding,
+        [
+            "name",
+            "title",
+            "label",
+            "value",
+        ]
+    );
+
+
+const getStudyMode = (
+    opportunity
+) => {
+
+    const value =
+        opportunity?.study_mode ||
+        opportunity?.studyMode ||
+        "";
+
+    if (!value) {
+        return "";
+    }
+
+    return getDisplayValue(value)
+        .replace(/_/g, " ")
+        .replace(/\s+/g, " ")
+        .trim()
+        .replace(
+            /\b\w/g,
+            char =>
+                char.toUpperCase()
+        );
+};
+
+
+const getDegrees = (
+    opportunity
+) => {
+
+    if (
+        !Array.isArray(
+            opportunity?.degrees
+        )
+    ) {
+        return [];
+    }
+
+    return opportunity.degrees
+        .map(
+            degree =>
+                getDisplayValue(
+                    degree,
+                    [
+                        "name",
+                        "title",
+                    ]
+                )
+        )
+        .filter(Boolean);
+};
+
+
+const getFields = (
+    opportunity
+) => {
+
+    if (
+        !Array.isArray(
+            opportunity?.fields
+        )
+    ) {
+        return [];
+    }
+
+    return opportunity.fields
+        .map(
+            field =>
+                getDisplayValue(
+                    field,
+                    [
+                        "name",
+                        "title",
+                    ]
+                )
+        )
+        .filter(Boolean);
+};
+
+
+const getDeadline = (
+    opportunity
+) =>
+    opportunity?.deadline ||
+    opportunity?.application_deadline ||
+    opportunity?.deadline_date ||
+    null;
+
+
+const formatDate = (
+    value
+) => {
+
+    if (!value) {
+        return "Not specified";
+    }
+
+    const date =
+        new Date(value);
+
+    if (
+        Number.isNaN(
+            date.getTime()
+        )
+    ) {
+        return "Not specified";
+    }
+
+    return new Intl.DateTimeFormat(
+        "en-GB",
+        {
+            day: "2-digit",
+            month: "short",
+            year: "numeric",
+        }
+    ).format(date);
+};
 
 
 function Saved() {
 
-    const [savedItems, setSavedItems] = useState([]);
+    const [savedItems, setSavedItems] =
+        useState([]);
 
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] =
+        useState(true);
 
-    const [error, setError] = useState("");
+    const [error, setError] =
+        useState("");
 
-    const [searchTerm, setSearchTerm] = useState("");
+    const [searchTerm, setSearchTerm] =
+        useState("");
 
-    const [removingId, setRemovingId] = useState(null);
+    const [removingId, setRemovingId] =
+        useState(null);
 
-
-    // =========================================================
-    // Load Saved Opportunities
-    // =========================================================
 
     useEffect(() => {
 
@@ -57,7 +310,6 @@ function Saved() {
             try {
 
                 setLoading(true);
-
                 setError("");
 
 
@@ -71,13 +323,18 @@ function Saved() {
 
 
                 const data =
-                    Array.isArray(response?.data)
+                    Array.isArray(
+                        response?.data
+                    )
                         ? response.data
-                        : [];
+                        : Array.isArray(
+                            response?.data?.data
+                        )
+                            ? response.data.data
+                            : [];
 
 
                 setSavedItems(data);
-
 
             } catch (err) {
 
@@ -96,7 +353,6 @@ function Saved() {
                     err?.response?.data?.message ||
                     "Unable to load your saved opportunities."
                 );
-
 
             } finally {
 
@@ -119,10 +375,6 @@ function Saved() {
     }, []);
 
 
-    // =========================================================
-    // Remove Saved Opportunity
-    // =========================================================
-
     const handleRemove = async (
         opportunityId,
         savedId
@@ -139,7 +391,6 @@ function Saved() {
         try {
 
             setRemovingId(savedId);
-
             setError("");
 
 
@@ -148,13 +399,13 @@ function Saved() {
             );
 
 
-            setSavedItems(current =>
-                current.filter(
-                    item =>
-                        item.id !== savedId
-                )
+            setSavedItems(
+                current =>
+                    current.filter(
+                        item =>
+                            item.id !== savedId
+                    )
             );
-
 
         } catch (err) {
 
@@ -169,320 +420,158 @@ function Saved() {
                 "Unable to remove this opportunity."
             );
 
-
         } finally {
 
             setRemovingId(null);
+
         }
 
     };
 
 
-    // =========================================================
-    // Search
-    // =========================================================
+    const filteredItems =
+        useMemo(() => {
 
-    const filteredItems = useMemo(() => {
-
-        const query =
-            searchTerm
-                .trim()
-                .toLowerCase();
+            const query =
+                searchTerm
+                    .trim()
+                    .toLowerCase();
 
 
-        if (!query) {
-            return savedItems;
-        }
-
-
-        return savedItems.filter(
-            item => {
-
-                const opportunity =
-                    item?.opportunity;
-
-
-                if (!opportunity) {
-                    return false;
-                }
-
-
-                const title =
-                    opportunity.title ||
-                    "";
-
-
-                const university =
-                    opportunity.university?.name ||
-                    "";
-
-
-                const country =
-                    opportunity.country?.name ||
-                    "";
-
-
-                const type =
-                    opportunity.opportunity_type?.name ||
-                    "";
-
-
-                const funding =
-                    opportunity.funding_type?.name ||
-                    "";
-
-
-                const degrees =
-                    Array.isArray(
-                        opportunity.degrees
-                    )
-                        ? opportunity.degrees
-                            .map(
-                                degree =>
-                                    degree?.name ||
-                                    ""
-                            )
-                            .join(" ")
-                        : "";
-
-
-                const fields =
-                    Array.isArray(
-                        opportunity.fields
-                    )
-                        ? opportunity.fields
-                            .map(
-                                field =>
-                                    field?.name ||
-                                    ""
-                            )
-                            .join(" ")
-                        : "";
-
-
-                return [
-                    title,
-                    university,
-                    country,
-                    type,
-                    funding,
-                    degrees,
-                    fields,
-                ]
-                    .join(" ")
-                    .toLowerCase()
-                    .includes(query);
-
+            if (!query) {
+                return savedItems;
             }
-        );
-
-    }, [
-        savedItems,
-        searchTerm,
-    ]);
 
 
-    // =========================================================
-    // Loading
-    // =========================================================
+            return savedItems.filter(
+                item => {
+
+                    const opportunity =
+                        item?.opportunity;
+
+
+                    if (!opportunity) {
+                        return false;
+                    }
+
+
+                    const searchableValues = [
+
+                        getProgramTitle(
+                            opportunity
+                        ),
+
+                        getUniversityName(
+                            opportunity
+                        ),
+
+                        getCountryName(
+                            opportunity
+                        ),
+
+                        getOpportunityType(
+                            opportunity
+                        ),
+
+                        getFundingType(
+                            opportunity
+                        ),
+
+                        getStudyMode(
+                            opportunity
+                        ),
+
+                        ...getDegrees(
+                            opportunity
+                        ),
+
+                        ...getFields(
+                            opportunity
+                        ),
+
+                        getDisplayValue(
+                            opportunity?.description
+                        ),
+
+                    ];
+
+
+                    return searchableValues
+                        .join(" ")
+                        .toLowerCase()
+                        .includes(query);
+
+                }
+            );
+
+        }, [
+            savedItems,
+            searchTerm,
+        ]);
+
+
+    const clearSearch = () => {
+        setSearchTerm("");
+    };
 
     if (loading) {
-
-        return (
-            <div className="saved-page">
-
-                <div className="saved-state">
-
-                    <div className="saved-loading-spinner" />
-
-                    <h2>
-                        Loading saved opportunities
-                    </h2>
-
-                    <p>
-                        Please wait while we load your collection.
-                    </p>
-
-                </div>
-
-            </div>
-        );
-
-    }
-
-
-    // =========================================================
-    // Initial Error
-    // =========================================================
-
-    if (
-        error &&
-        savedItems.length === 0
-    ) {
-
-        return (
-            <div className="saved-page">
-
-                <div className="saved-state saved-error">
-
-                    <AlertCircle size={30} />
-
-                    <h2>
-                        Unable to load saved opportunities
-                    </h2>
-
-                    <p>
-                        {error}
-                    </p>
-
-                    <Link
-                        to="/student/explore"
-                        className="saved-explore-button"
-                    >
-
-                        <Search size={15} />
-
-                        Explore opportunities
-
-                    </Link>
-
-                </div>
-
-            </div>
-        );
-
+        return <LoadingScreen />;
     }
 
 
     return (
+
         <div className="saved-page">
 
-            <div className="saved-container">
+            <section className="saved-header">
 
+                <div className="saved-header-content">
 
-                {/* =================================================
-                    Header
-                ================================================= */}
+                    <div className="saved-eyebrow">
 
-                <section className="saved-header">
+                        <Bookmark
+                            size={14}
+                        />
 
-                    <div className="saved-header-content">
-
-                        <div className="saved-header-icon">
-                            <Bookmark size={22} />
-                        </div>
-
-
-                        <div>
-
-                            <span className="saved-eyebrow">
-                                YOUR COLLECTION
-                            </span>
-
-
-                            <h1>
-                                Saved opportunities
-                            </h1>
-
-
-                            <p>
-                                Keep track of programs and
-                                opportunities you want to explore later.
-                            </p>
-
-                        </div>
+                        Saved Opportunities
 
                     </div>
 
 
-                    <Link
-                        to="/student/explore"
-                        className="saved-explore-button"
-                    >
-
-                        <Search size={15} />
-
-                        Explore opportunities
-
-                    </Link>
-
-                </section>
+                    <h1>
+                        Your saved opportunities
+                    </h1>
 
 
-                {/* =================================================
-                    Error Banner
-                ================================================= */}
+                    <p>
+                        Keep track of programmes and
+                        opportunities you want to explore later.
+                    </p>
 
-                {error && savedItems.length > 0 && (
+                </div>
 
-                    <div className="saved-error-banner">
-
-                        <AlertCircle size={18} />
-
-                        <span>
-                            {error}
-                        </span>
-
-
-                        <button
-                            type="button"
-                            onClick={() =>
-                                setError("")
-                            }
-                        >
-                            ×
-                        </button>
-
-                    </div>
-
-                )}
-
-
-                {/* =================================================
-                    Summary
-                ================================================= */}
-
-                <section className="saved-summary">
-
-                    <SummaryCard
-                        icon={
-                            <GraduationCap size={19} />
-                        }
-                        count={
-                            savedItems.length
-                        }
-                        label={
-                            savedItems.length === 1
-                                ? "Saved opportunity"
-                                : "Saved opportunities"
-                        }
-                    />
-
-                </section>
-
-
-                {/* =================================================
-                    Search
-                ================================================= */}
 
                 {savedItems.length > 0 && (
 
-                    <section className="saved-search-section">
+                    <div className="saved-search-section">
 
                         <div className="saved-search">
 
-                            <Search size={18} />
+                            <Search
+                                size={18}
+                            />
 
 
                             <input
-                                type="text"
+                                type="search"
                                 value={searchTerm}
                                 onChange={event =>
                                     setSearchTerm(
                                         event.target.value
                                     )
                                 }
-                                placeholder="Search your saved opportunities..."
+                                placeholder="Search saved opportunities..."
+                                aria-label="Search saved opportunities"
                             />
 
 
@@ -491,88 +580,233 @@ function Saved() {
                                 <button
                                     type="button"
                                     className="saved-search-clear"
-                                    onClick={() =>
-                                        setSearchTerm("")
+                                    onClick={
+                                        clearSearch
                                     }
+                                    aria-label="Clear search"
                                 >
-                                    ×
+
+                                    <X
+                                        size={16}
+                                    />
+
                                 </button>
 
                             )}
 
                         </div>
 
-                    </section>
+                    </div>
 
                 )}
 
-
-                {/* =================================================
-                    Saved Opportunities
-                ================================================= */}
-
-                <section className="saved-section saved-last-section">
-
-                    <div className="saved-section-heading">
-
-                        <div>
-
-                            <span>
-                                SAVED
-                            </span>
+            </section>
 
 
-                            <h2>
-                                Saved opportunities
-                            </h2>
+            <main className="saved-main">
+
+                <div className="saved-toolbar">
+
+                    <div>
+
+                        <span className="saved-result-label">
+
+                            YOUR COLLECTION
+
+                        </span>
 
 
-                            <p>
-                                Programs and opportunities you
-                                saved to review later.
-                            </p>
-
-                        </div>
-
-
-                        <Link
-                            to="/student/programs"
-                        >
-
-                            View all
-
-                            <ArrowRight size={14} />
-
-                        </Link>
+                        <h2>
+                            Saved opportunities
+                        </h2>
 
                     </div>
 
 
-                    {/* =================================================
-                        Empty
-                    ================================================= */}
+                    {!loading &&
+                        !error && (
 
-                    {savedItems.length === 0 && (
+                            <div className="saved-results-top">
 
-                        <EmptyState
-                            message="You have not saved any opportunities yet."
-                            link="/student/programs"
-                            linkText="Explore programs"
-                        />
+                                <p>
+
+                                    <strong>
+                                        {
+                                            filteredItems.length
+                                        }
+                                    </strong>
+
+                                    {" "}
+
+                                    {
+                                        filteredItems.length === 1
+                                            ? "opportunity"
+                                            : "opportunities"
+                                    }
+
+                                    {" found"}
+
+                                </p>
+
+                            </div>
+
+                        )}
+
+                </div>
+
+
+                {error &&
+                    savedItems.length > 0 && (
+
+                        <div className="saved-error-banner">
+
+                            <AlertCircle
+                                size={17}
+                            />
+
+                            <span>
+                                {error}
+                            </span>
+
+
+                            <button
+                                type="button"
+                                onClick={() =>
+                                    setError("")
+                                }
+                                aria-label="Close error"
+                            >
+
+                                <X
+                                    size={15}
+                                />
+
+                            </button>
+
+                        </div>
 
                     )}
 
 
-                    {/* =================================================
-                        Search Empty
-                    ================================================= */}
+                <div
+                    className="saved-results"
+                    aria-live="polite"
+                >
 
-                    {savedItems.length > 0 &&
+                    {loading && (
+                        <div className="saved-loading-state">
+
+                            <div className="saved-loading-spinner" />
+
+                            <p>
+                                Loading saved opportunities...
+                            </p>
+
+                        </div>
+                    )}
+
+
+                    {!loading &&
+                        error &&
+                        savedItems.length === 0 && (
+
+                            <div className="saved-empty">
+
+                                <div className="saved-empty-icon">
+
+                                    <AlertCircle
+                                        size={24}
+                                    />
+
+                                </div>
+
+
+                                <h3>
+                                    Unable to load saved opportunities
+                                </h3>
+
+
+                                <p>
+                                    {error}
+                                </p>
+
+
+                                <Link
+                                    to="/student/programs"
+                                    className="saved-empty-button"
+                                >
+
+                                    <Search
+                                        size={14}
+                                    />
+
+                                    Explore programmes
+
+                                </Link>
+
+                            </div>
+
+                        )}
+
+
+                    {!loading &&
+                        !error &&
+                        savedItems.length === 0 && (
+
+                            <div className="saved-empty">
+
+                                <div className="saved-empty-icon">
+
+                                    <Bookmark
+                                        size={24}
+                                    />
+
+                                </div>
+
+
+                                <h3>
+                                    Nothing saved yet
+                                </h3>
+
+
+                                <p>
+                                    Save programmes and opportunities
+                                    to easily find them later.
+                                </p>
+
+
+                                <Link
+                                    to="/student/programs"
+                                    className="saved-empty-button"
+                                >
+
+                                    <Search
+                                        size={14}
+                                    />
+
+                                    Explore programmes
+
+                                </Link>
+
+                            </div>
+
+                        )}
+
+
+                    {!loading &&
+                        !error &&
+                        savedItems.length > 0 &&
                         filteredItems.length === 0 && (
 
-                            <div className="saved-empty-state">
+                            <div className="saved-empty">
 
-                                <Search size={24} />
+                                <div className="saved-empty-icon">
+
+                                    <Search
+                                        size={24}
+                                    />
+
+                                </div>
 
 
                                 <h3>
@@ -587,11 +821,16 @@ function Saved() {
 
                                 <button
                                     type="button"
-                                    onClick={() =>
-                                        setSearchTerm("")
+                                    className="saved-empty-button"
+                                    onClick={
+                                        clearSearch
                                     }
                                 >
+
+                                    <RotateCcwIcon />
+
                                     Clear search
+
                                 </button>
 
                             </div>
@@ -599,492 +838,378 @@ function Saved() {
                         )}
 
 
-                    {/* =================================================
-                        Opportunities Grid
-                    ================================================= */}
+                    {!loading &&
+                        !error &&
+                        filteredItems.length > 0 && (
 
-                    {filteredItems.length > 0 && (
+                            <div className="saved-grid">
 
-                        <div className="saved-programs-grid">
+                                {filteredItems.map(
+                                    item => (
 
-                            {filteredItems.map(
-                                item => {
-
-                                    const opportunity =
-                                        item?.opportunity;
-
-
-                                    if (!opportunity) {
-                                        return null;
-                                    }
-
-
-                                    const university =
-                                        opportunity
-                                            .university
-                                            ?.name;
-
-
-                                    const country =
-                                        opportunity
-                                            .country
-                                            ?.name;
-
-
-                                    const opportunityType =
-                                        opportunity
-                                            .opportunity_type
-                                            ?.name;
-
-
-                                    const fundingType =
-                                        opportunity
-                                            .funding_type
-                                            ?.name;
-
-
-                                    return (
-
-                                        <article
-                                            className="saved-program-card"
+                                        <SavedCard
                                             key={item.id}
-                                        >
+                                            item={item}
+                                            removingId={
+                                                removingId
+                                            }
+                                            onRemove={
+                                                handleRemove
+                                            }
+                                        />
 
+                                    )
+                                )}
 
-                                            {/* =================================================
-                                                Card Top
-                                            ================================================= */}
+                            </div>
 
-                                            <div className="saved-card-top">
+                        )}
 
-                                                <div className="saved-program-icon">
+                </div>
 
-                                                    <GraduationCap
-                                                        size={21}
-                                                    />
+            </main>
 
-                                                </div>
+        </div>
+    );
+}
 
 
-                                                <button
-                                                    className="saved-remove-button"
-                                                    type="button"
-                                                    title="Remove from saved"
-                                                    disabled={
-                                                        removingId ===
-                                                        item.id
-                                                    }
-                                                    onClick={() =>
-                                                        handleRemove(
-                                                            opportunity.id,
-                                                            item.id
-                                                        )
-                                                    }
-                                                >
+function SavedCard({
+    item,
+    removingId,
+    onRemove,
+}) {
 
-                                                    {removingId ===
-                                                        item.id ? (
+    const opportunity =
+        item?.opportunity;
 
-                                                        <Loader2
-                                                            size={15}
-                                                            className="saved-spinner"
-                                                        />
 
-                                                    ) : (
+    if (!opportunity) {
+        return null;
+    }
 
-                                                        <Trash2
-                                                            size={15}
-                                                        />
 
-                                                    )}
+    const title =
+        getProgramTitle(
+            opportunity
+        );
 
-                                                </button>
 
-                                            </div>
+    const university =
+        getUniversityName(
+            opportunity
+        );
 
 
-                                            {/* =================================================
-                                                Opportunity Type
-                                            ================================================= */}
+    const country =
+        getCountryName(
+            opportunity
+        );
 
-                                            {opportunityType && (
 
-                                                <span className="saved-opportunity-type">
+    const opportunityType =
+        getOpportunityType(
+            opportunity
+        );
 
-                                                    {opportunityType}
 
-                                                </span>
+    const fundingType =
+        getFundingType(
+            opportunity
+        );
 
-                                            )}
 
+    const studyMode =
+        getStudyMode(
+            opportunity
+        );
 
-                                            {/* =================================================
-                                                Title
-                                            ================================================= */}
 
-                                            <h3>
-                                                {opportunity.title}
-                                            </h3>
+    const degrees =
+        getDegrees(
+            opportunity
+        );
 
 
-                                            {/* =================================================
-                                                University
-                                            ================================================= */}
+    const fields =
+        getFields(
+            opportunity
+        );
 
-                                            {university && (
 
-                                                <p className="saved-university">
+    const deadline =
+        getDeadline(
+            opportunity
+        );
 
-                                                    <Building2
-                                                        size={14}
-                                                    />
 
-                                                    {university}
+    return (
 
-                                                </p>
+        <article className="saved-card">
 
-                                            )}
+            <div className="saved-card-top">
 
+                <div className="saved-card-icon">
 
-                                            {/* =================================================
-                                                Country
-                                            ================================================= */}
+                    <GraduationCap
+                        size={21}
+                    />
 
-                                            {country && (
+                </div>
 
-                                                <div className="saved-location">
 
-                                                    <MapPin
-                                                        size={13}
-                                                    />
+                <button
+                    type="button"
+                    className="saved-remove-button"
+                    title="Remove from saved"
+                    aria-label={`Remove ${title} from saved`}
+                    disabled={
+                        removingId === item.id
+                    }
+                    onClick={() =>
+                        onRemove(
+                            opportunity.id,
+                            item.id
+                        )
+                    }
+                >
 
-                                                    {country}
+                    {removingId === item.id ? (
 
-                                                </div>
+                        <Loader2
+                            size={15}
+                            className="saved-spinner"
+                        />
 
-                                            )}
+                    ) : (
 
+                        <Trash2
+                            size={15}
+                        />
 
-                                            {/* =================================================
-                                                Metadata
-                                            ================================================= */}
+                    )}
 
-                                            <div className="saved-program-meta">
+                </button>
 
+            </div>
 
-                                                {/* Degree */}
 
-                                                {Array.isArray(
-                                                    opportunity.degrees
-                                                ) &&
-                                                    opportunity.degrees.length >
-                                                    0 && (
+            {opportunityType && (
 
-                                                        <div>
+                <span className="saved-card-type">
 
-                                                            <span>
-                                                                Degree
-                                                            </span>
+                    {opportunityType}
 
+                </span>
 
-                                                            <strong>
+            )}
 
-                                                                {opportunity.degrees
-                                                                    .map(
-                                                                        degree =>
-                                                                            degree?.name
-                                                                    )
-                                                                    .join(", ")}
 
-                                                            </strong>
+            <div className="saved-card-body">
 
-                                                        </div>
+                <h3>
+                    {title}
+                </h3>
 
-                                                    )}
 
+                {university && (
 
-                                                {/* Field */}
+                    <p className="saved-card-university">
 
-                                                {Array.isArray(
-                                                    opportunity.fields
-                                                ) &&
-                                                    opportunity.fields.length >
-                                                    0 && (
+                        <Building2
+                            size={14}
+                        />
 
-                                                        <div>
+                        {university}
 
-                                                            <span>
-                                                                Field
-                                                            </span>
+                    </p>
 
+                )}
 
-                                                            <strong>
 
-                                                                {opportunity.fields
-                                                                    .map(
-                                                                        field =>
-                                                                            field?.name
-                                                                    )
-                                                                    .join(", ")}
+                {country && (
 
-                                                            </strong>
+                    <div className="saved-card-location">
 
-                                                        </div>
+                        <MapPin
+                            size={13}
+                        />
 
-                                                    )}
+                        {country}
 
+                    </div>
 
-                                                {/* Funding */}
+                )}
 
-                                                {fundingType && (
 
-                                                    <div>
+                {opportunity.description && (
 
-                                                        <span>
-                                                            Funding
-                                                        </span>
+                    <p className="saved-card-description">
 
+                        {getDisplayValue(
+                            opportunity.description
+                        )}
 
-                                                        <strong>
-                                                            {fundingType}
-                                                        </strong>
+                    </p>
 
-                                                    </div>
+                )}
 
-                                                )}
 
+                <div className="saved-card-meta">
 
-                                                {/* Study Mode */}
+                    {degrees.length > 0 && (
 
-                                                {opportunity.study_mode && (
+                        <div>
 
-                                                    <div>
+                            <span>
+                                Degree
+                            </span>
 
-                                                        <span>
-                                                            Study mode
-                                                        </span>
-
-
-                                                        <strong>
-                                                            {
-                                                                opportunity.study_mode
-                                                            }
-                                                        </strong>
-
-                                                    </div>
-
-                                                )}
-
-                                            </div>
-
-
-                                            {/* =================================================
-                                                Deadline
-                                            ================================================= */}
-
-                                            {opportunity.deadline && (
-
-                                                <div className="saved-deadline">
-
-                                                    <CalendarDays
-                                                        size={14}
-                                                    />
-
-
-                                                    <span>
-                                                        Deadline
-                                                    </span>
-
-
-                                                    <strong>
-                                                        {formatDate(
-                                                            opportunity.deadline
-                                                        )}
-                                                    </strong>
-
-                                                </div>
-
-                                            )}
-
-
-                                            {/* =================================================
-                                                Actions
-                                            ================================================= */}
-
-                                            <div className="saved-card-actions">
-
-                                                <Link
-                                                    to={`/student/programs/${opportunity.slug ||
-                                                        opportunity.id
-                                                        }`}
-                                                    className="saved-card-button"
-                                                >
-
-                                                    View program
-
-                                                    <ArrowRight
-                                                        size={14}
-                                                    />
-
-                                                </Link>
-
-
-                                                {opportunity.application_url && (
-
-                                                    <a
-                                                        href={
-                                                            opportunity.application_url
-                                                        }
-                                                        target="_blank"
-                                                        rel="noopener noreferrer"
-                                                        className="saved-apply-button"
-                                                    >
-
-                                                        Apply
-
-                                                        <ExternalLink
-                                                            size={13}
-                                                        />
-
-                                                    </a>
-
-                                                )}
-
-                                            </div>
-
-                                        </article>
-
-                                    );
-
-                                }
-                            )}
+                            <strong>
+                                {degrees.join(", ")}
+                            </strong>
 
                         </div>
 
                     )}
 
-                </section>
+
+                    {fields.length > 0 && (
+
+                        <div>
+
+                            <span>
+                                Field
+                            </span>
+
+                            <strong>
+                                {fields.join(", ")}
+                            </strong>
+
+                        </div>
+
+                    )}
+
+
+                    {fundingType && (
+
+                        <div>
+
+                            <span>
+                                Funding
+                            </span>
+
+                            <strong>
+                                {fundingType}
+                            </strong>
+
+                        </div>
+
+                    )}
+
+
+                    {studyMode && (
+
+                        <div>
+
+                            <span>
+                                Study mode
+                            </span>
+
+                            <strong>
+                                {studyMode}
+                            </strong>
+
+                        </div>
+
+                    )}
+
+                </div>
 
             </div>
 
-        </div>
+
+            <div className="saved-card-footer">
+
+                <div className="saved-card-deadline">
+
+                    <CalendarDays
+                        size={14}
+                    />
+
+
+                    <div>
+
+                        <span>
+                            Deadline
+                        </span>
+
+                        <strong>
+                            {formatDate(
+                                deadline
+                            )}
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <div className="saved-card-actions">
+
+                    <Link
+                        to={`/student/programs/${opportunity.slug ||
+                            opportunity.id
+                            }`}
+                        className="saved-card-button"
+                    >
+
+                        View programme
+
+                        <ArrowRight
+                            size={14}
+                        />
+
+                    </Link>
+
+
+                    {opportunity.application_url && (
+
+                        <a
+                            href={
+                                opportunity.application_url
+                            }
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="saved-apply-button"
+                        >
+
+                            Apply
+
+                            <ExternalLink
+                                size={13}
+                            />
+
+                        </a>
+
+                    )}
+
+                </div>
+
+            </div>
+
+        </article>
     );
 }
 
 
-// =========================================================
-// Summary Card
-// =========================================================
-
-function SummaryCard({
-    icon,
-    count,
-    label,
-}) {
+function RotateCcwIcon() {
 
     return (
-
-        <div className="saved-summary-card">
-
-            <div className="saved-summary-icon">
-                {icon}
-            </div>
-
-
-            <div>
-
-                <strong>
-                    {count}
-                </strong>
-
-
-                <span>
-                    {label}
-                </span>
-
-            </div>
-
-        </div>
+        <Sparkles
+            size={14}
+        />
     );
-}
-
-
-// =========================================================
-// Empty State
-// =========================================================
-
-function EmptyState({
-    message,
-    link,
-    linkText,
-}) {
-
-    return (
-
-        <div className="saved-empty-state">
-
-            <div className="saved-empty-icon">
-
-                <Bookmark size={24} />
-
-            </div>
-
-
-            <h3>
-                Nothing saved yet
-            </h3>
-
-
-            <p>
-                {message}
-            </p>
-
-
-            <Link to={link}>
-
-                <Search size={14} />
-
-                {linkText}
-
-            </Link>
-
-        </div>
-    );
-}
-
-
-// =========================================================
-// Format Date
-// =========================================================
-
-function formatDate(value) {
-
-    if (!value) {
-        return "Not specified";
-    }
-
-
-    const date =
-        new Date(value);
-
-
-    if (
-        Number.isNaN(
-            date.getTime()
-        )
-    ) {
-        return "Not specified";
-    }
-
-
-    return new Intl.DateTimeFormat(
-        "en-GB",
-        {
-            day: "2-digit",
-            month: "short",
-            year: "numeric",
-        }
-    ).format(date);
 }
 
 

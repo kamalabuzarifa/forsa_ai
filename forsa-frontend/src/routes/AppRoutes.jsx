@@ -81,11 +81,15 @@ import OpportunityCreate from "../pages/admin/OpportunityCreate";
 import AdminOpportunityDetails from "../pages/admin/OpportunityDetails";
 import OpportunityEdit from "../pages/admin/OpportunityEdit";
 
-import AdminApplications from "../pages/admin/Applications";
+import AdminApplications from "../components/layout/admin/Applications";
 import AdminApplicationDetails from "../pages/admin/ApplicationDetails";
 
 import AdminUniversities from "../pages/admin/Universities";
+import AdminPrograms from "../pages/admin/Programs";
 import Countries from "../pages/admin/Countries";
+import AdminUsers from "../pages/admin/Users";
+import AdminStudents from "../pages/admin/Students";
+import AdminReports from "../pages/admin/Reports";
 
 
 // =========================================================
@@ -383,6 +387,11 @@ function AppRoutes() {
                         element={<AdminUniversities />}
                     />
 
+                    <Route
+                        path="/admin/programs"
+                        element={<AdminPrograms />}
+                    />
+
 
                     {/* =================================================
                         Countries
@@ -391,6 +400,21 @@ function AppRoutes() {
                     <Route
                         path="/admin/countries"
                         element={<Countries />}
+                    />
+
+                    <Route
+                        path="/admin/users"
+                        element={<AdminUsers />}
+                    />
+
+                    <Route
+                        path="/admin/students"
+                        element={<AdminStudents />}
+                    />
+
+                    <Route
+                        path="/admin/reports"
+                        element={<AdminReports />}
                     />
 
                 </Route>

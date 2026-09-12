@@ -1,10 +1,14 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
 import {
+    ChevronDown,
     LayoutDashboard,
     GraduationCap,
     FileText,
     Globe2,
     Building2,
+    Users,
+    BarChart3,
     LogOut,
     X,
 } from "lucide-react";
@@ -16,32 +20,82 @@ import { Separator } from "@/components/ui/separator";
 
 function AdminSidebar({ mobileOpen, onClose }) {
     const { logout } = useAuth();
+    const { pathname } = useLocation();
+    const [clickedSection, setClickedSection] = useState(null);
+    const [hoveredSection, setHoveredSection] = useState(null);
+    const [closedActiveSection, setClosedActiveSection] = useState(null);
 
-    const links = [
+    const dashboardLink = {
+        label: "Dashboard",
+        href: "/admin",
+        icon: LayoutDashboard,
+    };
+
+    const sections = [
         {
-            label: "Dashboard",
-            href: "/admin",
-            icon: LayoutDashboard,
+            label: "Academic Management",
+            links: [
+                {
+                    label: "Countries",
+                    href: "/admin/countries",
+                    icon: Globe2,
+                },
+                {
+                    label: "Universities",
+                    href: "/admin/universities",
+                    icon: Building2,
+                },
+                {
+                    label: "Programs",
+                    href: "/admin/programs",
+                    icon: GraduationCap,
+                },
+            ],
         },
         {
-            label: "Countries",
-            href: "/admin/countries",
-            icon: Globe2,
+            label: "Opportunity Management",
+            links: [
+                {
+                    label: "Opportunities",
+                    href: "/admin/opportunities",
+                    icon: GraduationCap,
+                },
+            ],
         },
         {
-            label: "Universities",
-            href: "/admin/universities",
-            icon: Building2,
+            label: "Student Management",
+            links: [
+                {
+                    label: "Students",
+                    href: "/admin/students",
+                    icon: Users,
+                },
+                {
+                    label: "Applications",
+                    href: "/admin/applications",
+                    icon: FileText,
+                },
+            ],
         },
         {
-            label: "Opportunities",
-            href: "/admin/opportunities",
-            icon: GraduationCap,
+            label: "Access Management",
+            links: [
+                {
+                    label: "Users & Access",
+                    href: "/admin/users",
+                    icon: Users,
+                },
+            ],
         },
         {
-            label: "Applications",
-            href: "/admin/applications",
-            icon: FileText,
+            label: "Reports & Analytics",
+            links: [
+                {
+                    label: "Reports",
+                    href: "/admin/reports",
+                    icon: BarChart3,
+                },
+            ],
         },
     ];
 
@@ -53,6 +107,55 @@ function AdminSidebar({ mobileOpen, onClose }) {
                 ? "bg-primary text-primary-foreground"
                 : "text-muted-foreground hover:bg-muted hover:text-foreground",
         ].join(" ");
+
+    const isSectionActive = (section) =>
+        section.links.some(
+            (item) =>
+                pathname === item.href ||
+                pathname.startsWith(`${item.href}/`)
+        );
+
+    const toggleSection = (sectionLabel) => {
+        const isOpen = clickedSection === sectionLabel;
+        const isActive = sections.some(
+            (section) =>
+                section.label === sectionLabel &&
+                isSectionActive(section)
+        );
+
+        if (isOpen || (isActive && closedActiveSection !== sectionLabel)) {
+            setClickedSection(null);
+            setClosedActiveSection(sectionLabel);
+            return;
+        }
+
+        setClickedSection(sectionLabel);
+        setClosedActiveSection(null);
+    };
+
+    useEffect(() => {
+        setClosedActiveSection(null);
+    }, [pathname]);
+
+    const renderLink = (item) => {
+        const Icon = item.icon;
+
+        return (
+            <NavLink
+                key={item.href}
+                to={item.href}
+                end={item.href === "/admin"}
+                className={getLinkClass}
+                onClick={onClose}
+            >
+                <Icon className="size-4 shrink-0" />
+
+                <span className="truncate">
+                    {item.label}
+                </span>
+            </NavLink>
+        );
+    };
 
     return (
         <>
@@ -68,7 +171,7 @@ function AdminSidebar({ mobileOpen, onClose }) {
             <aside
                 className={[
                     "z-50 flex h-screen w-64 shrink-0 flex-col border-e bg-sidebar",
-                    "lg:sticky lg:top-0 lg:flex",
+                    "lg:fixed lg:inset-y-0 lg:start-0 lg:flex",
                     mobileOpen
                         ? "fixed inset-y-0 start-0 flex"
                         : "hidden lg:flex",
@@ -105,30 +208,71 @@ function AdminSidebar({ mobileOpen, onClose }) {
                 <Separator />
 
                 <div className="flex-1 overflow-y-auto px-3 py-5">
-                    <p className="mb-3 px-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                        Menu
-                    </p>
+                    <nav className="space-y-5">
+                        {renderLink(dashboardLink)}
 
-                    <nav className="space-y-1">
-                        {links.map((item) => {
-                            const Icon = item.icon;
-
-                            return (
-                                <NavLink
-                                    key={item.href}
-                                    to={item.href}
-                                    end={item.href === "/admin"}
-                                    className={getLinkClass}
-                                    onClick={onClose}
+                        {sections.map((section) => (
+                            <div
+                                key={section.label}
+                                className="space-y-1"
+                                onMouseEnter={() =>
+                                    setHoveredSection(section.label)
+                                }
+                                onMouseLeave={() =>
+                                    setHoveredSection(null)
+                                }
+                            >
+                                <button
+                                    type="button"
+                                    className={[
+                                        "flex w-full items-center justify-between gap-2 rounded-lg px-3 py-2 text-left",
+                                        "text-[11px] font-semibold uppercase tracking-wider transition-colors",
+                                        isSectionActive(section)
+                                            ? "bg-primary/10 text-primary"
+                                            : "text-muted-foreground hover:bg-muted hover:text-foreground",
+                                    ].join(" ")}
+                                    onClick={() =>
+                                        toggleSection(section.label)
+                                    }
+                                    aria-expanded={
+                                        hoveredSection === section.label ||
+                                        clickedSection === section.label ||
+                                        (isSectionActive(section) &&
+                                            closedActiveSection !== section.label)
+                                    }
                                 >
-                                    <Icon className="size-4 shrink-0" />
+                                    <span>{section.label}</span>
 
-                                    <span className="truncate">
-                                        {item.label}
-                                    </span>
-                                </NavLink>
-                            );
-                        })}
+                                    <ChevronDown
+                                        className={[
+                                            "size-3.5 shrink-0 transition-transform duration-200",
+                                            hoveredSection === section.label ||
+                                                clickedSection === section.label ||
+                                                (isSectionActive(section) &&
+                                                    closedActiveSection !== section.label)
+                                                ? "rotate-180"
+                                                : "",
+                                        ].join(" ")}
+                                    />
+                                </button>
+
+                                <div
+                                    className={[
+                                        "overflow-hidden transition-all duration-200 ease-out",
+                                        hoveredSection === section.label ||
+                                            clickedSection === section.label ||
+                                            (isSectionActive(section) &&
+                                                closedActiveSection !== section.label)
+                                            ? "max-h-48 opacity-100"
+                                            : "pointer-events-none max-h-0 opacity-0",
+                                    ].join(" ")}
+                                >
+                                    <div className="ms-3 space-y-1 border-s border-border/70 ps-2">
+                                        {section.links.map(renderLink)}
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
                     </nav>
                 </div>
 

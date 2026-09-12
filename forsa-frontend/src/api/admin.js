@@ -1,5 +1,11 @@
 import api from "./axios";
 
+export const getAdminDashboard = async () => {
+    const response = await api.get("/admin/dashboard");
+
+    return response.data;
+};
+
 /*
 |--------------------------------------------------------------------------
 | Admin Lookups
@@ -8,6 +14,32 @@ import api from "./axios";
 
 export const getAdminLookups = async () => {
     const response = await api.get("/admin/lookups");
+
+    return response.data;
+};
+
+/*
+|--------------------------------------------------------------------------
+| Admin Users
+|--------------------------------------------------------------------------
+*/
+
+export const getAdminUsers = async (page = 1, search = "", role = "") => {
+    const response = await api.get("/admin/users", {
+        params: { page, search, role },
+    });
+
+    return response.data;
+};
+
+export const updateAdminUser = async (userId, data) => {
+    const response = await api.put(`/admin/users/${userId}`, data);
+
+    return response.data;
+};
+
+export const deleteAdminUser = async (userId) => {
+    const response = await api.delete(`/admin/users/${userId}`);
 
     return response.data;
 };
@@ -33,6 +65,23 @@ export const createAdminUniversity = async (data) => {
     return response.data;
 };
 
+export const updateAdminUniversity = async (universityId, data) => {
+    const response = await api.put(
+        `/admin/universities/${universityId}`,
+        data
+    );
+
+    return response.data;
+};
+
+export const deleteAdminUniversity = async (universityId) => {
+    const response = await api.delete(
+        `/admin/universities/${universityId}`
+    );
+
+    return response.data;
+};
+
 /*
 |--------------------------------------------------------------------------
 | Admin Countries
@@ -49,6 +98,23 @@ export const createAdminCountry = async (data) => {
     const response = await api.post(
         "/admin/countries",
         data
+    );
+
+    return response.data;
+};
+
+export const updateAdminCountry = async (countryId, data) => {
+    const response = await api.put(
+        `/admin/countries/${countryId}`,
+        data
+    );
+
+    return response.data;
+};
+
+export const deleteAdminCountry = async (countryId) => {
+    const response = await api.delete(
+        `/admin/countries/${countryId}`
     );
 
     return response.data;

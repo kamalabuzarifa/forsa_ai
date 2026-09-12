@@ -24,6 +24,7 @@ import {
 } from "../../../api/universities";
 
 import "./Programs.css";
+import LoadingScreen from "../../../components/LoadingScreen";
 
 
 const INITIAL_FILTERS = {
@@ -1103,6 +1104,10 @@ function Programs() {
         Object.values(
             filters
         ).some(Boolean);
+
+    if (loading) {
+        return <LoadingScreen />;
+    }
 
 
     return (

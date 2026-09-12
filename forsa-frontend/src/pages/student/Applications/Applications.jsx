@@ -42,6 +42,8 @@ import {
     Separator,
 } from "@/components/ui/separator";
 
+import LoadingScreen from "../../../components/LoadingScreen";
+
 import "./Applications.css";
 
 
@@ -662,68 +664,7 @@ function Applications() {
     */
 
     if (loading) {
-        return (
-            <div className="applications-page">
-
-                <div className="applications-container">
-
-                    <section className="applications-hero">
-
-                        <div className="applications-hero-content">
-
-                            <div className="applications-skeleton applications-skeleton-badge" />
-
-                            <div className="applications-skeleton applications-skeleton-title" />
-
-                            <div className="applications-skeleton applications-skeleton-description" />
-
-                        </div>
-
-                    </section>
-
-
-                    <div className="applications-stat-grid">
-
-                        {[1, 2, 3, 4].map(
-                            (item) => (
-                                <Card
-                                    key={item}
-                                    className="applications-card applications-stat-card"
-                                >
-                                    <CardContent>
-
-                                        <div className="applications-skeleton applications-skeleton-stat-icon" />
-
-                                        <div className="applications-skeleton applications-skeleton-stat-label" />
-
-                                        <div className="applications-skeleton applications-skeleton-stat-value" />
-
-                                    </CardContent>
-                                </Card>
-                            )
-                        )}
-
-                    </div>
-
-
-                    <Card className="applications-card applications-loading-card">
-
-                        <CardContent>
-
-                            <div className="applications-skeleton applications-skeleton-line" />
-
-                            <div className="applications-skeleton applications-skeleton-line short" />
-
-                            <div className="applications-skeleton applications-skeleton-table" />
-
-                        </CardContent>
-
-                    </Card>
-
-                </div>
-
-            </div>
-        );
+        return <LoadingScreen />;
     }
 
 
@@ -1063,9 +1004,9 @@ function Applications() {
                                     key={filter.value}
                                     type="button"
                                     className={`applications-filter-button ${statusFilter ===
-                                            filter.value
-                                            ? "active"
-                                            : ""
+                                        filter.value
+                                        ? "active"
+                                        : ""
                                         }`}
                                     onClick={() =>
                                         setStatusFilter(
@@ -1480,9 +1421,9 @@ function Applications() {
                                                 key={page}
                                                 type="button"
                                                 className={`applications-page-button ${page ===
-                                                        currentPage
-                                                        ? "active"
-                                                        : ""
+                                                    currentPage
+                                                    ? "active"
+                                                    : ""
                                                     }`}
                                                 onClick={() =>
                                                     handlePageChange(

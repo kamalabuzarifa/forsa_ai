@@ -1,14 +1,19 @@
 import { useEffect, useState } from "react";
 import {
     Globe2,
+    Pencil,
     Plus,
     Search,
+    Trash2,
+    X,
     XCircle,
 } from "lucide-react";
 
 import {
     getAdminCountries,
     createAdminCountry,
+    updateAdminCountry,
+    deleteAdminCountry,
 } from "../../api/admin";
 
 import {
@@ -57,6 +62,8 @@ function Countries() {
 
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
+    const [editingId, setEditingId] = useState(null);
+    const [deletingId, setDeletingId] = useState(null);
 
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
@@ -128,9 +135,9 @@ function Countries() {
             return;
         }
 
-        if (isoCode && isoCode.length !== 3) {
+        if (isoCode && (isoCode.length < 2 || isoCode.length > 3)) {
             setError(
-                "ISO code must contain exactly 3 characters."
+                "ISO code must contain 2 or 3 characters."
             );
             return;
         }
@@ -138,18 +145,27 @@ function Countries() {
         try {
             setSaving(true);
 
-            await createAdminCountry({
+            const payload = {
                 name,
                 code,
                 iso_code: isoCode || null,
-            });
+            };
+
+            if (editingId) {
+                await updateAdminCountry(editingId, payload);
+            } else {
+                await createAdminCountry(payload);
+            }
 
             setForm(initialForm);
+            setEditingId(null);
 
             await loadCountries();
 
             setSuccess(
-                "Country created successfully."
+                editingId
+                    ? "Country updated successfully."
+                    : "Country created successfully."
             );
         } catch (error) {
             console.error(
@@ -165,6 +181,57 @@ function Countries() {
             );
         } finally {
             setSaving(false);
+        }
+    };
+
+    const handleEdit = (country) => {
+        setEditingId(country.id);
+        setForm({
+            name: country.name || "",
+            code: country.code || "",
+            iso_code: country.iso_code || "",
+        });
+        setError("");
+        setSuccess("");
+        window.scrollTo({ top: 0, behavior: "smooth" });
+    };
+
+    const handleCancelEdit = () => {
+        setEditingId(null);
+        setForm(initialForm);
+        setError("");
+        setSuccess("");
+    };
+
+    const handleDelete = async (country) => {
+        if (!window.confirm(`Delete ${country.name}?`)) {
+            return;
+        }
+
+        try {
+            setDeletingId(country.id);
+            setError("");
+            setSuccess("");
+
+            await deleteAdminCountry(country.id);
+
+            if (editingId === country.id) {
+                handleCancelEdit();
+            }
+
+            setCountries((current) =>
+                current.filter((item) => item.id !== country.id)
+            );
+            setSuccess("Country deleted successfully.");
+        } catch (error) {
+            setError(
+                getErrorMessage(
+                    error,
+                    "Failed to delete country."
+                )
+            );
+        } finally {
+            setDeletingId(null);
         }
     };
 
@@ -232,7 +299,9 @@ function Countries() {
                     <Card>
                         <CardHeader>
                             <CardTitle>
-                                Add Country
+                                {editingId
+                                    ? "Edit Country"
+                                    : "Add Country"}
                             </CardTitle>
 
                             <CardDescription>
@@ -279,7 +348,7 @@ function Countries() {
                                             name="code"
                                             value={form.code}
                                             onChange={handleInputChange}
-                                            placeholder="BR"
+                                            placeholder="BRA"
                                             maxLength={10}
                                             required
                                         />
@@ -298,7 +367,8 @@ function Countries() {
                                             name="iso_code"
                                             value={form.iso_code}
                                             onChange={handleInputChange}
-                                            placeholder="BRA"
+                                            placeholder="BR"
+                                            minLength={2}
                                             maxLength={3}
                                         />
                                     </div>
@@ -306,15 +376,36 @@ function Countries() {
                                 </div>
 
                                 <div className="flex justify-end">
+                                    {editingId && (
+                                        <Button
+                                            type="button"
+                                            variant="outline"
+                                            className="mr-2"
+                                            onClick={handleCancelEdit}
+                                            disabled={saving}
+                                        >
+                                            <X className="size-4" />
+                                            Cancel
+                                        </Button>
+                                    )}
+
                                     <Button
                                         type="submit"
                                         disabled={saving}
                                     >
-                                        <Plus className="size-4" />
+                                        {editingId ? (
+                                            <Pencil className="size-4" />
+                                        ) : (
+                                            <Plus className="size-4" />
+                                        )}
 
                                         {saving
-                                            ? "Creating..."
-                                            : "Add Country"}
+                                            ? editingId
+                                                ? "Saving..."
+                                                : "Creating..."
+                                            : editingId
+                                                ? "Save Changes"
+                                                : "Add Country"}
                                     </Button>
                                 </div>
                             </form>
@@ -408,6 +499,39 @@ function Countries() {
                                                             </span>
                                                         )}
                                                     </div>
+                                                </div>
+
+                                                <div className="ml-auto flex shrink-0 items-center gap-2">
+                                                    <Button
+                                                        type="button"
+                                                        variant="outline"
+                                                        size="icon"
+                                                        onClick={() =>
+                                                            handleEdit(country)
+                                                        }
+                                                        aria-label={`Edit ${country.name}`}
+                                                        title={`Edit ${country.name}`}
+                                                    >
+                                                        <Pencil className="size-4" />
+                                                    </Button>
+
+                                                    <Button
+                                                        type="button"
+                                                        variant="outline"
+                                                        size="icon"
+                                                        className="text-destructive hover:text-destructive"
+                                                        disabled={
+                                                            deletingId ===
+                                                            country.id
+                                                        }
+                                                        onClick={() =>
+                                                            handleDelete(country)
+                                                        }
+                                                        aria-label={`Delete ${country.name}`}
+                                                        title={`Delete ${country.name}`}
+                                                    >
+                                                        <Trash2 className="size-4" />
+                                                    </Button>
                                                 </div>
                                             </div>
                                         )

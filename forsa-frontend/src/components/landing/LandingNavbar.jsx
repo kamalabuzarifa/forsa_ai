@@ -1,23 +1,21 @@
 import {
+    ArrowRight,
     GraduationCap,
     Search,
 } from "lucide-react";
 
 import {
     Link,
-    useNavigate,
 } from "react-router-dom";
 
 function LandingNavbar() {
-
-    const navigate = useNavigate();
-
     return (
         <header className="landing-navbar">
 
             <Link
                 to="/"
                 className="landing-logo"
+                aria-label="EduMatch Home"
             >
                 <span className="logo-mark">
                     <GraduationCap
@@ -32,14 +30,16 @@ function LandingNavbar() {
             </Link>
 
 
-            <nav className="landing-nav">
-
+            <nav
+                className="landing-nav"
+                aria-label="Main navigation"
+            >
                 <a href="#home">
                     Home
                 </a>
 
-                <Link to="/student/opportunities">
-                    Opportunities
+                <Link to="/student/explore">
+                    Explore
                 </Link>
 
                 <a href="#how-it-works">
@@ -57,29 +57,26 @@ function LandingNavbar() {
                 <a href="#contact">
                     Contact
                 </a>
-
             </nav>
 
 
             <div className="landing-actions">
 
-                <button
-                    type="button"
+                <Link
+                    to="/student/explore"
                     className="search-button"
-                    aria-label="Search opportunities"
-                    onClick={() =>
-                        navigate("/student/opportunities")
-                    }
+                    aria-label="Explore opportunities"
+                    title="Explore opportunities"
                 >
                     <Search size={18} />
-                </button>
+                </Link>
 
 
                 <Link
                     to="/login"
                     className="login-button"
                 >
-                    Student Log In
+                    Log In
                 </Link>
 
 
@@ -87,7 +84,8 @@ function LandingNavbar() {
                     to="/register"
                     className="signup-button"
                 >
-                    Student Sign Up
+                    Get Started
+                    <ArrowRight size={16} />
                 </Link>
 
             </div>

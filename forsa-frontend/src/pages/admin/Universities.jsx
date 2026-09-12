@@ -2,14 +2,19 @@ import { useEffect, useState } from "react";
 
 import {
     Building2,
+    Pencil,
     Plus,
     Search,
+    Trash2,
+    X,
     XCircle,
 } from "lucide-react";
 
 import {
     getAdminUniversities,
     createAdminUniversity,
+    updateAdminUniversity,
+    deleteAdminUniversity,
     getAdminCountries,
 } from "../../api/admin";
 
@@ -62,6 +67,8 @@ function Universities() {
 
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
+    const [editingId, setEditingId] = useState(null);
+    const [deletingId, setDeletingId] = useState(null);
 
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
@@ -155,20 +162,29 @@ function Universities() {
         try {
             setSaving(true);
 
-            await createAdminUniversity({
+            const payload = {
                 name,
                 country_id: countryId,
                 website: website || null,
                 description: description || null,
                 status: form.status,
-            });
+            };
+
+            if (editingId) {
+                await updateAdminUniversity(editingId, payload);
+            } else {
+                await createAdminUniversity(payload);
+            }
 
             setForm(initialForm);
+            setEditingId(null);
 
             await loadData();
 
             setSuccess(
-                "University created successfully."
+                editingId
+                    ? "University updated successfully."
+                    : "University created successfully."
             );
         } catch (error) {
             console.error(
@@ -184,6 +200,59 @@ function Universities() {
             );
         } finally {
             setSaving(false);
+        }
+    };
+
+    const handleEdit = (university) => {
+        setEditingId(university.id);
+        setForm({
+            name: university.name || "",
+            country_id: String(university.country_id || ""),
+            website: university.website || "",
+            description: university.description || "",
+            status: university.status || "active",
+        });
+        setError("");
+        setSuccess("");
+        window.scrollTo({ top: 0, behavior: "smooth" });
+    };
+
+    const handleCancelEdit = () => {
+        setEditingId(null);
+        setForm(initialForm);
+        setError("");
+        setSuccess("");
+    };
+
+    const handleDelete = async (university) => {
+        if (!window.confirm(`Delete ${university.name}?`)) {
+            return;
+        }
+
+        try {
+            setDeletingId(university.id);
+            setError("");
+            setSuccess("");
+
+            await deleteAdminUniversity(university.id);
+
+            if (editingId === university.id) {
+                handleCancelEdit();
+            }
+
+            setUniversities((current) =>
+                current.filter((item) => item.id !== university.id)
+            );
+            setSuccess("University deleted successfully.");
+        } catch (error) {
+            setError(
+                getErrorMessage(
+                    error,
+                    "Failed to delete university."
+                )
+            );
+        } finally {
+            setDeletingId(null);
         }
     };
 
@@ -261,7 +330,9 @@ function Universities() {
                     <Card>
                         <CardHeader>
                             <CardTitle>
-                                Add University
+                                {editingId
+                                    ? "Edit University"
+                                    : "Add University"}
                             </CardTitle>
 
                             <CardDescription>
@@ -395,6 +466,19 @@ function Universities() {
                                 </div>
 
                                 <div className="flex justify-end">
+                                    {editingId && (
+                                        <Button
+                                            type="button"
+                                            variant="outline"
+                                            className="mr-2"
+                                            onClick={handleCancelEdit}
+                                            disabled={saving}
+                                        >
+                                            <X className="size-4" />
+                                            Cancel
+                                        </Button>
+                                    )}
+
                                     <Button
                                         type="submit"
                                         disabled={
@@ -402,11 +486,19 @@ function Universities() {
                                             countries.length === 0
                                         }
                                     >
-                                        <Plus className="size-4" />
+                                        {editingId ? (
+                                            <Pencil className="size-4" />
+                                        ) : (
+                                            <Plus className="size-4" />
+                                        )}
 
                                         {saving
-                                            ? "Creating..."
-                                            : "Add University"}
+                                            ? editingId
+                                                ? "Saving..."
+                                                : "Creating..."
+                                            : editingId
+                                                ? "Save Changes"
+                                                : "Add University"}
                                     </Button>
                                 </div>
                             </form>
@@ -508,6 +600,43 @@ function Universities() {
                                                         )}
 
                                                     </div>
+                                                </div>
+
+                                                <div className="ml-auto flex shrink-0 items-center gap-2">
+                                                    <Button
+                                                        type="button"
+                                                        variant="outline"
+                                                        size="icon"
+                                                        onClick={() =>
+                                                            handleEdit(
+                                                                university
+                                                            )
+                                                        }
+                                                        aria-label={`Edit ${university.name}`}
+                                                        title={`Edit ${university.name}`}
+                                                    >
+                                                        <Pencil className="size-4" />
+                                                    </Button>
+
+                                                    <Button
+                                                        type="button"
+                                                        variant="outline"
+                                                        size="icon"
+                                                        className="text-destructive hover:text-destructive"
+                                                        disabled={
+                                                            deletingId ===
+                                                            university.id
+                                                        }
+                                                        onClick={() =>
+                                                            handleDelete(
+                                                                university
+                                                            )
+                                                        }
+                                                        aria-label={`Delete ${university.name}`}
+                                                        title={`Delete ${university.name}`}
+                                                    >
+                                                        <Trash2 className="size-4" />
+                                                    </Button>
                                                 </div>
                                             </div>
                                         )

@@ -255,17 +255,200 @@
 .notification-dot {
     position: absolute;
 
-    top: 8px;
-    right: 8px;
+    top: 3px;
+    right: 2px;
 
-    width: 5px;
-    height: 5px;
+    min-width: 16px;
+    height: 16px;
 
-    border: 1px solid #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0 4px;
+
+    border: 2px solid #ffffff;
+
+    border-radius: 999px;
+
+    color: #ffffff;
+    background: #e16b5c;
+
+    font-size: 8px;
+    font-weight: 800;
+    line-height: 1;
+}
+
+.student-notification-wrapper {
+    position: relative;
+}
+
+.student-notifications-dropdown {
+    position: absolute;
+    z-index: 100;
+
+    top: calc(100% + 10px);
+    right: 0;
+
+    width: min(360px, calc(100vw - 24px));
+    overflow: hidden;
+
+    border: 1px solid #dfeae7;
+    border-radius: 14px;
+
+    background: #ffffff;
+
+    box-shadow:
+        0 18px 45px rgba(20, 60, 55, 0.12),
+        0 3px 10px rgba(20, 60, 55, 0.04);
+
+    transform-origin: top right;
+    animation: student-dropdown-enter 0.16s ease-out;
+}
+
+.student-notifications-header {
+    min-height: 67px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 14px;
+    padding: 14px 16px;
+
+    background: #f5faf9;
+    border-bottom: 1px solid #e8f0ed;
+}
+
+.student-notifications-header strong,
+.student-notifications-header span {
+    display: block;
+}
+
+.student-notifications-header strong {
+    color: #26302e;
+    font-size: 13px;
+}
+
+.student-notifications-header span {
+    margin-top: 4px;
+    color: #7b8985;
+    font-size: 10px;
+}
+
+.student-notifications-read-all {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+
+    padding: 6px 7px;
+
+    border: 0;
+    border-radius: 7px;
+
+    color: #0f9f8f;
+    background: transparent;
+
+    font-family: inherit;
+    font-size: 9px;
+    font-weight: 800;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.student-notifications-read-all:hover {
+    background: #eaf8f5;
+}
+
+.student-notifications-list {
+    max-height: min(390px, 60vh);
+    overflow-y: auto;
+}
+
+.student-notifications-state {
+    padding: 30px 18px;
+
+    color: #899590;
+    font-size: 11px;
+    text-align: center;
+}
+
+.student-notification-item {
+    width: 100%;
+    min-height: 76px;
+
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+
+    padding: 13px 16px;
+
+    border: 0;
+    border-bottom: 1px solid #edf1ef;
+
+    color: inherit;
+    background: #ffffff;
+
+    font-family: inherit;
+    text-align: left;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.student-notification-item:last-child {
+    border-bottom: 0;
+}
+
+.student-notification-item:hover,
+.student-notification-item.unread {
+    background: #f8fcfb;
+}
+
+.student-notification-indicator {
+    width: 7px;
+    height: 7px;
+    flex: 0 0 7px;
+
+    margin-top: 5px;
 
     border-radius: 50%;
+    background: transparent;
+}
 
+.student-notification-item.unread .student-notification-indicator {
     background: #0f9f8f;
+    box-shadow: 0 0 0 3px #eaf8f5;
+}
+
+.student-notification-content {
+    min-width: 0;
+    flex: 1;
+}
+
+.student-notification-content strong,
+.student-notification-content span,
+.student-notification-content small {
+    display: block;
+}
+
+.student-notification-content strong {
+    color: #303936;
+    font-size: 11px;
+    line-height: 1.4;
+}
+
+.student-notification-content span {
+    margin-top: 4px;
+    color: #687572;
+    font-size: 10px;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+}
+
+.student-notification-content small {
+    margin-top: 5px;
+    color: #9aa6a2;
+    font-size: 8px;
 }
 
 
@@ -350,6 +533,17 @@
     width: 39px;
     height: 39px;
 
+    flex: 0 0 39px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    margin: 0;
+
+    color: #ffffff;
+    background: #0f9f8f;
+
     font-size: 12px;
 }
 
@@ -372,21 +566,27 @@
 
 .student-profile-dropdown {
     position: absolute;
+    z-index: 100;
 
     top: calc(100% + 10px);
     right: 0;
 
-    width: 220px;
+    width: 248px;
 
-    padding: 10px;
+    padding: 8px;
 
-    border: 1px solid #e3ebe8;
+    border: 1px solid #dfeae7;
 
-    border-radius: 11px;
+    border-radius: 14px;
 
     background: #ffffff;
 
-    box-shadow: 0 20px 50px rgba(20, 60, 55, 0.12);
+    box-shadow:
+        0 18px 45px rgba(20, 60, 55, 0.12),
+        0 3px 10px rgba(20, 60, 55, 0.04);
+
+    transform-origin: top right;
+    animation: student-dropdown-enter 0.16s ease-out;
 }
 
 
@@ -396,29 +596,32 @@
 
     gap: 10px;
 
-    padding: 9px;
+    padding: 12px 11px;
+
+    border-radius: 10px;
+    background: #f5faf9;
 }
 
 
-.student-profile-dropdown-header strong,
-.student-profile-dropdown-header span {
+.student-profile-dropdown-header>div>strong,
+.student-profile-dropdown-header>div>span {
     display: block;
 }
 
 
-.student-profile-dropdown-header strong {
+.student-profile-dropdown-header>div>strong {
     color: #2e3936;
 
-    font-size: 10px;
+    font-size: 11px;
 }
 
 
-.student-profile-dropdown-header span {
+.student-profile-dropdown-header>div>span {
     margin-top: 3px;
 
     color: #89938f;
 
-    font-size: 8px;
+    font-size: 9px;
 }
 
 
@@ -442,18 +645,18 @@
 .student-dropdown-link,
 .student-dropdown-logout {
     width: 100%;
-    min-height: 38px;
+    min-height: 42px;
 
     display: flex;
     align-items: center;
 
-    gap: 10px;
+    gap: 11px;
 
-    padding: 0 10px;
+    padding: 0 11px;
 
     border: 0;
 
-    border-radius: 7px;
+    border-radius: 9px;
 
     color: #596562;
 
@@ -463,7 +666,7 @@
 
     font-family: inherit;
 
-    font-size: 9px;
+    font-size: 10px;
     font-weight: 700;
 
     cursor: pointer;
@@ -476,6 +679,8 @@
     color: #0f9f8f;
 
     background: #f1f9f7;
+
+    transform: translateX(2px);
 }
 
 
@@ -502,6 +707,18 @@
     color: #a64242;
 
     background: #fff5f5;
+}
+
+@keyframes student-dropdown-enter {
+    from {
+        opacity: 0;
+        transform: translateY(-5px) scale(0.98);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
 }
 
 
@@ -848,7 +1065,7 @@
     .student-profile-dropdown {
         right: -5px;
 
-        width: 205px;
+        width: min(248px, calc(100vw - 24px));
     }
 
 }

@@ -27,6 +27,7 @@ import {
 } from "../../../api/opportunities";
 
 import "./Opportunities.css";
+import LoadingScreen from "../../../components/LoadingScreen";
 
 
 /* =========================================================
@@ -507,6 +508,10 @@ function Opportunities() {
         setVerifiedOnly(false);
 
     };
+
+    if (loading) {
+        return <LoadingScreen />;
+    }
 
 
     /* =====================================================

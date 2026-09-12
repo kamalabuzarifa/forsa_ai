@@ -1,17 +1,40 @@
 import {
-    Building2,
-    Users,
-    Globe2,
-    BarChart3,
     ArrowRight,
+    BarChart3,
+    Building2,
+    Globe2,
+    Users,
 } from "lucide-react";
 
 import { Link } from "react-router-dom";
 
 function ForInstitutions() {
-    return (
-        <section className="institutions-section" id="institutions">
+    const features = [
+        {
+            icon: Users,
+            title: "Reach students who fit",
+            description:
+                "Show your programs to students whose academic background, skills and goals align with what you offer.",
+        },
+        {
+            icon: Globe2,
+            title: "Reach students worldwide",
+            description:
+                "Make your programs discoverable to students looking for study opportunities across different countries.",
+        },
+        {
+            icon: BarChart3,
+            title: "Build your presence",
+            description:
+                "Create an institution profile and present your programs, requirements and opportunities in one place.",
+        },
+    ];
 
+    return (
+        <section
+            className="institutions-section"
+            id="institutions"
+        >
             <div className="institutions-content">
 
                 <span className="section-label">
@@ -19,144 +42,164 @@ function ForInstitutions() {
                 </span>
 
                 <h2>
-                    Reach the right students
-                    <span>with EduMatch</span>
+                    Put your programs
+                    <span>in front of the right students</span>
                 </h2>
 
-                <p>
-                    EduMatch helps universities and educational institutions
-                    reach students who are actively searching for programmes
-                    that match their academic goals, interests, and preferences.
+                <p className="institutions-description">
+                    EduMatch connects universities and educational
+                    institutions with students who are actively looking
+                    for programs that fit their academic goals and interests.
                 </p>
 
                 <div className="institutions-features">
 
-                    <div className="institution-feature">
+                    {features.map((feature) => {
+                        const Icon = feature.icon;
 
-                        <div className="institution-feature-icon">
-                            <Users size={18} />
-                        </div>
+                        return (
+                            <div
+                                className="institution-feature"
+                                key={feature.title}
+                            >
+                                <div className="institution-feature-icon">
+                                    <Icon size={18} />
+                                </div>
 
-                        <div>
-                            <h3>Reach qualified students</h3>
+                                <div className="institution-feature-content">
 
-                            <p>
-                                Connect your programmes with students whose
-                                profiles match your admission requirements.
-                            </p>
-                        </div>
+                                    <h3>
+                                        {feature.title}
+                                    </h3>
 
-                    </div>
+                                    <p>
+                                        {feature.description}
+                                    </p>
 
-                    <div className="institution-feature">
-
-                        <div className="institution-feature-icon">
-                            <Globe2 size={18} />
-                        </div>
-
-                        <div>
-                            <h3>Expand your global reach</h3>
-
-                            <p>
-                                Present your programmes to students searching
-                                for study opportunities around the world.
-                            </p>
-                        </div>
-
-                    </div>
-
-                    <div className="institution-feature">
-
-                        <div className="institution-feature-icon">
-                            <BarChart3 size={18} />
-                        </div>
-
-                        <div>
-                            <h3>Understand student demand</h3>
-
-                            <p>
-                                Use student search and matching data to better
-                                understand programme demand and interests.
-                            </p>
-                        </div>
-
-                    </div>
+                                </div>
+                            </div>
+                        );
+                    })}
 
                 </div>
 
                 <Link
-                    to="/institution/register"
+                    to="#contact"
                     className="institutions-button"
                 >
                     Join EduMatch
-
-                    <ArrowRight size={15} />
+                    <ArrowRight size={16} />
                 </Link>
 
             </div>
 
-
             <div className="institutions-visual">
 
-                <div className="institution-main-card">
+                <div className="institution-dashboard">
 
-                    <div className="institution-card-header">
+                    <div className="institution-dashboard-header">
 
-                        <div className="institution-card-icon">
-                            <Building2 size={21} />
+                        <div className="institution-brand">
+
+                            <div className="institution-card-icon">
+                                <Building2 size={20} />
+                            </div>
+
+                            <div>
+                                <strong>
+                                    Institution Profile
+                                </strong>
+
+                                <span>
+                                    Your programs on EduMatch
+                                </span>
+                            </div>
+
                         </div>
 
-                        <div>
-                            <strong>Institution Dashboard</strong>
-                            <span>Student recruitment overview</span>
+                        <span className="institution-status">
+                            Conceptual view
+                        </span>
+
+                    </div>
+
+                    <div className="institution-program">
+
+                        <div className="institution-program-icon">
+                            <Building2 size={19} />
+                        </div>
+
+                        <div className="institution-program-content">
+
+                            <span>
+                                Featured Program
+                            </span>
+
+                            <strong>
+                                Your featured program
+                            </strong>
+
+                            <p>
+                                Graduate Program
+                            </p>
+
+                        </div>
+
+                        <div className="institution-program-match">
+                            <strong>
+                                Student fit
+                            </strong>
+
+                            <span>
+                                Profile signals
+                            </span>
                         </div>
 
                     </div>
 
+                    <div className="institution-student-group">
 
-                    <div className="institution-metrics">
+                        <div className="student-group-header">
 
-                        <div className="institution-metric">
-                            <span>Student views</span>
-                            <strong>24.8K</strong>
+                            <div>
+                                <strong>
+                                    Student interest
+                                </strong>
+
+                                <span>
+                                    Students matching your program
+                                </span>
+                            </div>
+
+                            <Users size={18} />
+
                         </div>
 
-                        <div className="institution-metric">
-                            <span>Programme matches</span>
-                            <strong>8.4K</strong>
-                        </div>
+                        <div className="student-interest-bars">
 
-                        <div className="institution-metric">
-                            <span>Applications</span>
-                            <strong>1.2K</strong>
-                        </div>
-
-                    </div>
-
-
-                    <div className="institution-chart">
-
-                        <div className="chart-header">
-                            <span>Student interest</span>
-                            <strong>+28.4%</strong>
-                        </div>
-
-                        <div className="chart-bars">
-
-                            <span style={{ height: "35%" }} />
-                            <span style={{ height: "48%" }} />
                             <span style={{ height: "42%" }} />
-                            <span style={{ height: "63%" }} />
-                            <span style={{ height: "58%" }} />
-                            <span style={{ height: "76%" }} />
-                            <span style={{ height: "90%" }} />
+                            <span style={{ height: "55%" }} />
+                            <span style={{ height: "48%" }} />
+                            <span style={{ height: "67%" }} />
+                            <span style={{ height: "61%" }} />
+                            <span style={{ height: "78%" }} />
+                            <span style={{ height: "88%" }} />
 
                         </div>
+
+                    </div>
+
+                    <div className="institution-dashboard-footer">
+
+                        <span>
+                            Global student discovery
+                        </span>
+
+                        <Globe2 size={15} />
 
                     </div>
 
                 </div>
-
 
                 <div className="institution-floating-card">
 
@@ -164,15 +207,21 @@ function ForInstitutions() {
                         <Users size={16} />
                     </div>
 
-                    <div>
-                        <strong>Best-fit students</strong>
-                        <span>92% match quality</span>
+                    <div className="institution-floating-content">
+
+                        <strong>
+                            Best-fit students
+                        </strong>
+
+                        <span>
+                            Matched by profile
+                        </span>
+
                     </div>
 
                 </div>
 
             </div>
-
         </section>
     );
 }

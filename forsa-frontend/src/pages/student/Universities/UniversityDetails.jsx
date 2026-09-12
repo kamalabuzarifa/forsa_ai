@@ -26,6 +26,7 @@ import {
 } from "../../../api/universities";
 
 import "./UniversityDetails.css";
+import LoadingScreen from "../../../components/LoadingScreen";
 
 
 /* =========================================================
@@ -482,21 +483,7 @@ function UniversityDetails() {
        ===================================================== */
 
     if (loading) {
-        return (
-            <div className="university-details-page">
-
-                <div className="university-details-loading">
-
-                    <div className="university-loading-spinner" />
-
-                    <p>
-                        Loading university...
-                    </p>
-
-                </div>
-
-            </div>
-        );
+        return <LoadingScreen />;
     }
 
 

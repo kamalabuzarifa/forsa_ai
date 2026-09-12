@@ -1,76 +1,81 @@
 import {
     ArrowRight,
-    TrendingUp,
-    Users,
+    Brain,
     Globe2,
+    Users,
 } from "lucide-react";
 
+import { Link } from "react-router-dom";
+
 function CaseStudies() {
-    const cases = [
+    const useCases = [
         {
-            icon: TrendingUp,
-            category: "CASE STUDY",
-            title: "Helping institutions reach better-fit students",
+            icon: Brain,
+            category: "SMART DISCOVERY",
+            title: "Help students discover better-fit opportunities",
             description:
-                "See how data-driven student matching can help institutions improve visibility, reach international students, and increase qualified applications.",
-            stat: "42%",
-            statLabel: "more qualified engagement",
+                "EduMatch uses profile information such as education, skills, interests and goals to help students discover opportunities that align with their background.",
+            link: "/student/explore",
+            linkText: "Explore opportunities",
         },
         {
             icon: Globe2,
-            category: "GLOBAL REACH",
-            title: "Connecting education across borders",
+            category: "GLOBAL EDUCATION",
+            title: "Make international opportunities easier to find",
             description:
-                "EduMatch helps institutions present their programmes to students who are actively searching for opportunities that match their goals.",
-            stat: "190+",
-            statLabel: "countries within reach",
+                "Students can explore university programs, scholarships and educational opportunities from different countries through one platform.",
+            link: "/student/universities",
+            linkText: "Explore universities",
         },
         {
             icon: Users,
-            category: "STUDENT MATCHING",
-            title: "Turning discovery into opportunity",
+            category: "INSTITUTION DISCOVERY",
+            title: "Help institutions reach relevant students",
             description:
-                "Our recommendation system helps students move from browsing programmes to finding opportunities that fit their academic profile.",
-            stat: "92%",
-            statLabel: "match confidence",
+                "Universities and educational institutions can present their programs to students actively searching for opportunities that fit their goals.",
+            link: "#institutions",
+            linkText: "For institutions",
         },
     ];
 
     return (
-        <section className="case-studies-section">
-
+        <section
+            className="case-studies-section"
+            id="use-cases"
+        >
             <div className="case-studies-heading">
 
                 <div>
                     <span className="section-label">
-                        CASE STUDIES
+                        HOW EDUMATCH HELPS
                     </span>
 
                     <h2>
-                        Real results from
-                        <span>better matching</span>
+                        From discovery
+                        <span>to the right opportunity</span>
                     </h2>
                 </div>
 
                 <p>
-                    Explore how EduMatch can help students and
-                    institutions make better education decisions.
+                    EduMatch brings students and educational institutions
+                    together through personalized discovery and smarter
+                    opportunity matching.
                 </p>
 
             </div>
 
             <div className="case-studies-grid">
 
-                {cases.map((item, index) => {
+                {useCases.map((item) => {
                     const Icon = item.icon;
 
                     return (
                         <article
                             className="case-study-card"
-                            key={index}
+                            key={item.title}
                         >
-
                             <div className="case-study-top">
+
                                 <div className="case-study-icon">
                                     <Icon size={21} />
                                 </div>
@@ -78,6 +83,7 @@ function CaseStudies() {
                                 <span>
                                     {item.category}
                                 </span>
+
                             </div>
 
                             <h3>
@@ -88,20 +94,13 @@ function CaseStudies() {
                                 {item.description}
                             </p>
 
-                            <div className="case-study-stat">
-                                <strong>
-                                    {item.stat}
-                                </strong>
-
-                                <span>
-                                    {item.statLabel}
-                                </span>
-                            </div>
-
-                            <button className="case-study-link">
-                                Read case study
-                                <ArrowRight size={14} />
-                            </button>
+                            <Link
+                                to={item.link}
+                                className="case-study-link"
+                            >
+                                {item.linkText}
+                                <ArrowRight size={15} />
+                            </Link>
 
                         </article>
                     );
@@ -110,12 +109,35 @@ function CaseStudies() {
             </div>
 
             <div className="case-studies-footer">
-                <a href="#contact">
-                    View all case studies
-                    <ArrowRight size={14} />
-                </a>
-            </div>
 
+                <div className="case-studies-footer-content">
+
+                    <div className="case-studies-footer-icon">
+                        <Brain size={17} />
+                    </div>
+
+                    <div>
+                        <strong>
+                            One platform. Smarter education discovery.
+                        </strong>
+
+                        <span>
+                            Discover opportunities based on what actually
+                            matters to your profile.
+                        </span>
+                    </div>
+
+                </div>
+
+                <Link
+                    to="/register"
+                    className="case-studies-footer-link"
+                >
+                    Get started
+                    <ArrowRight size={15} />
+                </Link>
+
+            </div>
         </section>
     );
 }

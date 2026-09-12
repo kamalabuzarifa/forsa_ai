@@ -28,6 +28,7 @@ import {
 } from "../../../api/scholarships";
 
 import "./Scholarships.css";
+import LoadingScreen from "../../../components/LoadingScreen";
 
 
 /* =========================================================
@@ -1248,6 +1249,10 @@ export default function Scholarships() {
             filters.funding ||
             search.trim()
         );
+
+    if (loading) {
+        return <LoadingScreen />;
+    }
 
 
     /* =====================================================

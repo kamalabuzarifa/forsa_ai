@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Country;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class AdminCountryController extends Controller
 {
@@ -45,7 +46,8 @@ class AdminCountryController extends Controller
             'iso_code' => [
                 'nullable',
                 'string',
-                'size:3',
+                'min:2',
+                'max:3',
                 'unique:countries,iso_code',
             ],
         ]);
@@ -56,5 +58,60 @@ class AdminCountryController extends Controller
             'message' => 'Country created successfully.',
             'country' => $country,
         ], 201);
+    }
+
+    public function update(Request $request, Country $country): JsonResponse
+    {
+        $data = $request->validate([
+            'name' => [
+                'required',
+                'string',
+                'max:100',
+                Rule::unique('countries', 'name')
+                    ->ignore($country->id),
+            ],
+
+            'code' => [
+                'required',
+                'string',
+                'max:10',
+                Rule::unique('countries', 'code')
+                    ->ignore($country->id),
+            ],
+
+            'iso_code' => [
+                'nullable',
+                'string',
+                'min:2',
+                'max:3',
+                Rule::unique('countries', 'iso_code')
+                    ->ignore($country->id),
+            ],
+        ]);
+
+        $country->update($data);
+
+        return response()->json([
+            'message' => 'Country updated successfully.',
+            'country' => $country,
+        ]);
+    }
+
+    public function destroy(Country $country): JsonResponse
+    {
+        if (
+            $country->universities()->exists() ||
+            $country->opportunities()->exists()
+        ) {
+            return response()->json([
+                'message' => 'This country cannot be deleted because it is used by universities or opportunities.',
+            ], 422);
+        }
+
+        $country->delete();
+
+        return response()->json([
+            'message' => 'Country deleted successfully.',
+        ]);
     }
 }

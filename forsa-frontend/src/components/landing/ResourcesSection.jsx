@@ -1,76 +1,93 @@
 import {
-    FileText,
-    BookOpen,
-    BarChart3,
     ArrowRight,
+    BarChart3,
+    BookOpen,
+    FileText,
 } from "lucide-react";
+
+import { Link } from "react-router-dom";
 
 function ResourcesSection() {
     const resources = [
         {
             icon: FileText,
             type: "GUIDE",
-            title: "How to choose the right study programme",
+            title: "Build a stronger student profile",
             description:
-                "Learn how to compare programmes, universities, requirements, and funding options.",
+                "Learn which academic, skills, language and experience details can help you present your background clearly.",
+            link: "/student/profile",
+            linkText: "Build your profile",
         },
         {
             icon: BarChart3,
-            type: "REPORT",
-            title: "Global education trends",
+            type: "DISCOVERY",
+            title: "How to compare study opportunities",
             description:
-                "Explore insights about international students, study destinations, and education demand.",
+                "Understand the key factors to review when comparing programs, universities, funding and eligibility.",
+            link: "/student/explore",
+            linkText: "Explore opportunities",
         },
         {
             icon: BookOpen,
-            type: "ARTICLE",
-            title: "Preparing for your next academic step",
+            type: "GUIDANCE",
+            title: "Prepare for your next academic step",
             description:
-                "Practical guidance to help you prepare your profile and discover new opportunities.",
+                "Get practical guidance for exploring programs and making decisions based on your academic goals.",
+            link: "/student/universities",
+            linkText: "Explore universities",
         },
     ];
 
     return (
-        <section className="resources-section">
-
+        <section
+            className="resources-section"
+            id="resources"
+        >
             <div className="resources-heading">
 
                 <div>
                     <span className="section-label">
-                        RESOURCES
+                        LEARNING RESOURCES
                     </span>
 
                     <h2>
-                        Knowledge to help you
-                        <span>make better decisions</span>
+                        Make better decisions
+                        <span>with the right information</span>
                     </h2>
+
+                    <p>
+                        Useful guidance to help you understand your options,
+                        improve your profile and take the next step with more
+                        confidence.
+                    </p>
                 </div>
 
-                <a
-                    href="#resources"
+                <Link
+                    to="/student/explore"
                     className="resources-view-all"
                 >
-                    View all
+                    Explore EduMatch
                     <ArrowRight size={14} />
-                </a>
+                </Link>
 
             </div>
 
             <div className="resources-grid">
 
-                {resources.map((resource, index) => {
+                {resources.map((resource) => {
                     const Icon = resource.icon;
 
                     return (
                         <article
                             className="resource-card"
-                            key={index}
+                            key={resource.title}
                         >
-
                             <div className="resource-image">
+
                                 <div className="resource-image-icon">
-                                    <Icon size={30} />
+                                    <Icon size={28} />
                                 </div>
+
                             </div>
 
                             <div className="resource-content">
@@ -87,19 +104,51 @@ function ResourcesSection() {
                                     {resource.description}
                                 </p>
 
-                                <a href="#contact">
-                                    Read more
+                                <Link
+                                    to={resource.link}
+                                    className="resource-link"
+                                >
+                                    {resource.linkText}
                                     <ArrowRight size={13} />
-                                </a>
+                                </Link>
 
                             </div>
-
                         </article>
                     );
                 })}
 
             </div>
 
+            <div className="resources-footer">
+
+                <div className="resources-footer-content">
+
+                    <div className="resources-footer-icon">
+                        <BookOpen size={17} />
+                    </div>
+
+                    <div>
+                        <strong>
+                            Start with your profile
+                        </strong>
+
+                        <span>
+                            The more complete your profile, the more useful
+                            your opportunity discovery can become.
+                        </span>
+                    </div>
+
+                </div>
+
+                <Link
+                    to="/register"
+                    className="resources-footer-link"
+                >
+                    Get started
+                    <ArrowRight size={15} />
+                </Link>
+
+            </div>
         </section>
     );
 }

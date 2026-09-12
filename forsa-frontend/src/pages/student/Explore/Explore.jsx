@@ -27,6 +27,7 @@ import {
 } from "../../../api/universities";
 
 import "./Explore.css";
+import LoadingScreen from "../../../components/LoadingScreen";
 
 
 /* =========================================================
@@ -856,6 +857,10 @@ function Explore() {
        RENDER
     ========================================================= */
 
+    if (loading) {
+        return <LoadingScreen />;
+    }
+
     return (
 
         <div className="explore-page">
@@ -1496,8 +1501,8 @@ function Explore() {
 
                                                 <div
                                                     className={`program-card-logo ${universityId
-                                                            ? "is-clickable"
-                                                            : ""
+                                                        ? "is-clickable"
+                                                        : ""
                                                         }`}
                                                     role={
                                                         universityId

@@ -7,7 +7,7 @@
     min-height: 100vh;
     padding-bottom: 72px;
 
-    background: #f8fafc;
+    background: #ffffff;
     color: #0f172a;
 
     overflow-x: hidden;
@@ -21,7 +21,11 @@
 .universities-hero {
     width: 100%;
 
-    background: #ffffff;
+    background:
+        linear-gradient(135deg,
+            #f3faf8 0%,
+            #ffffff 58%,
+            #f5faf9 100%);
 
     border-bottom: 1px solid #e2e8f0;
 }

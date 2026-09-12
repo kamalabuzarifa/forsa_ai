@@ -12,7 +12,7 @@ import {
 
 import {
     getAdminApplications,
-} from "../../api/admin";
+} from "../../../api/admin";
 
 import {
     Card,
@@ -84,10 +84,13 @@ const getOpportunityTitle = (application) => {
 };
 
 const getStatus = (application) => {
-    return (
-        application?.status ??
-        "pending"
-    );
+    const status = application?.status;
+
+    if (status && typeof status === "object") {
+        return status.code ?? status.value ?? status.name ?? "pending";
+    }
+
+    return status || "pending";
 };
 
 const formatStatus = (status) => {

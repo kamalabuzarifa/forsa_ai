@@ -2,13 +2,16 @@
 
 use App\Http\Controllers\Api\AdminApplicationController;
 use App\Http\Controllers\Api\AdminCountryController;
+use App\Http\Controllers\Api\AdminDashboardController;
 use App\Http\Controllers\Api\AdminLookupController;
 use App\Http\Controllers\Api\AdminOpportunityController;
 use App\Http\Controllers\Api\AdminUniversityController;
+use App\Http\Controllers\Api\AdminUserController;
 use App\Http\Controllers\Api\ApplicationController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\EligibilityController;
 use App\Http\Controllers\Api\MatchingController;
+use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\OpportunityController;
 use App\Http\Controllers\Api\RecommendationController;
 use App\Http\Controllers\Api\StudentProfileController;
@@ -56,6 +59,21 @@ Route::prefix('auth')->group(function () {
 */
 
 Route::middleware('auth:sanctum')->group(function () {
+
+    Route::get(
+        '/notifications',
+        [NotificationController::class, 'index']
+    )->name('notifications.index');
+
+    Route::patch(
+        '/notifications/{notification}/read',
+        [NotificationController::class, 'markAsRead']
+    )->name('notifications.read');
+
+    Route::patch(
+        '/notifications/read-all',
+        [NotificationController::class, 'markAllAsRead']
+    )->name('notifications.read-all');
 
 
     /*
@@ -313,9 +331,29 @@ Route::middleware('auth:sanctum')->group(function () {
             */
 
             Route::get(
+                '/dashboard',
+                [AdminDashboardController::class, 'index']
+            )->name('admin.dashboard.index');
+
+            Route::get(
                 '/lookups',
                 [AdminLookupController::class, 'index']
             )->name('admin.lookups.index');
+
+            Route::get(
+                '/users',
+                [AdminUserController::class, 'index']
+            )->name('admin.users.index');
+
+            Route::put(
+                '/users/{user}',
+                [AdminUserController::class, 'update']
+            )->name('admin.users.update');
+
+            Route::delete(
+                '/users/{user}',
+                [AdminUserController::class, 'destroy']
+            )->name('admin.users.destroy');
 
 
             /*
@@ -334,6 +372,16 @@ Route::middleware('auth:sanctum')->group(function () {
                 [AdminCountryController::class, 'store']
             )->name('admin.countries.store');
 
+            Route::put(
+                '/countries/{country}',
+                [AdminCountryController::class, 'update']
+            )->name('admin.countries.update');
+
+            Route::delete(
+                '/countries/{country}',
+                [AdminCountryController::class, 'destroy']
+            )->name('admin.countries.destroy');
+
 
             /*
             |--------------------------------------------------------------------------
@@ -350,6 +398,16 @@ Route::middleware('auth:sanctum')->group(function () {
                 '/universities',
                 [AdminUniversityController::class, 'store']
             )->name('admin.universities.store');
+
+            Route::put(
+                '/universities/{university}',
+                [AdminUniversityController::class, 'update']
+            )->name('admin.universities.update');
+
+            Route::delete(
+                '/universities/{university}',
+                [AdminUniversityController::class, 'destroy']
+            )->name('admin.universities.destroy');
 
 
             /*

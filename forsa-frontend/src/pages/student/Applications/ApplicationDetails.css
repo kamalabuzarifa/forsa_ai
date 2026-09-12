@@ -1909,3 +1909,166 @@
     }
 
 }
+
+.application-details-page {
+    --application-primary: #0f9f8f;
+    --application-primary-dark: #0c887a;
+    --application-primary-soft: #eaf8f5;
+    --application-border: #e1eae7;
+    --application-text: #26302e;
+    --application-muted: #687572;
+
+    background: #ffffff;
+}
+
+.application-details-container {
+    width: min(1180px, calc(100% - 48px));
+    max-width: 1180px;
+    padding: 32px 0 72px;
+}
+
+.application-details-breadcrumb a:hover,
+.application-eyebrow,
+.application-section-heading>span,
+.application-action,
+.application-back-button:hover {
+    color: var(--application-primary);
+}
+
+.application-details-header {
+    margin-inline: calc((1180px - min(100vw, 1180px)) / 2);
+    padding: 28px max(24px, calc((100vw - 1180px) / 2));
+
+    background:
+        linear-gradient(135deg,
+            #f3faf8 0%,
+            #ffffff 58%,
+            #f5faf9 100%);
+
+    border-bottom: 1px solid var(--application-border);
+}
+
+.application-header-icon,
+.application-overview-card>svg,
+.application-opportunity-icon,
+.application-student-icon {
+    border-color: #c5ebe6;
+    background: var(--application-primary-soft);
+    color: var(--application-primary);
+}
+
+.application-header-content h1,
+.application-overview-card strong,
+.application-section-heading h2,
+.application-opportunity-highlight strong,
+.application-student strong {
+    color: var(--application-text);
+}
+
+.application-overview-card,
+.application-details-card,
+.application-details-error,
+.application-state {
+    border-color: var(--application-border);
+    border-radius: 17px;
+    box-shadow: 0 4px 16px rgba(15, 23, 42, 0.03);
+}
+
+.application-overview-card,
+.application-details-card,
+.application-sidebar-card {
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        transform 0.2s ease;
+}
+
+.application-overview-card:hover,
+.application-sidebar-card:hover {
+    border-color: #b9ded8;
+    box-shadow: 0 10px 28px rgba(20, 60, 55, 0.07);
+}
+
+.application-details-card {
+    box-shadow: 0 6px 22px rgba(20, 60, 55, 0.045);
+}
+
+.application-details-layout {
+    gap: clamp(20px, 3vw, 28px);
+}
+
+.application-details-content {
+    gap: clamp(16px, 2vw, 22px);
+}
+
+.application-header-content h1 {
+    font-size: clamp(26px, 3vw, 36px);
+}
+
+.application-primary-button,
+.application-back-button,
+.application-view-opportunity,
+.application-sidebar-back {
+    min-height: 42px;
+    border-radius: 9px;
+}
+
+.application-details-page table {
+    max-width: 100%;
+}
+
+.application-opportunity-highlight {
+    border-color: #c5ebe6;
+    background: #f5faf9;
+}
+
+.application-details-card {
+    overflow: hidden;
+}
+
+.application-section-heading {
+    border-bottom-color: #edf1ef;
+}
+
+.application-primary-button,
+.application-action-button {
+    border-color: var(--application-primary);
+    background: var(--application-primary);
+}
+
+.application-primary-button:hover,
+.application-action-button:hover {
+    border-color: var(--application-primary-dark);
+    background: var(--application-primary-dark);
+}
+
+.application-details-page button:focus-visible,
+.application-details-page a:focus-visible {
+    outline-color: rgba(15, 159, 143, 0.35);
+}
+
+@media (max-width: 1200px) {
+    .application-details-header {
+        margin-inline: 0;
+        padding-inline: 0;
+    }
+}
+
+@media (max-width: 900px) {
+    .application-details-container {
+        width: calc(100% - 36px);
+        padding-top: 24px;
+    }
+}
+
+@media (max-width: 600px) {
+    .application-details-container {
+        width: calc(100% - 28px);
+        padding-top: 18px;
+    }
+
+    .application-details-header {
+        padding-top: 22px;
+        padding-bottom: 22px;
+    }
+}

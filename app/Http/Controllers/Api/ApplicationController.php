@@ -120,6 +120,12 @@ class ApplicationController extends Controller
             'notes' => $request->validated('notes'),
         ]);
 
+        $user->notifications()->create([
+            'type' => 'application_submitted',
+            'title' => 'Application submitted',
+            'message' => "Your application for {$opportunity->title} was submitted successfully.",
+        ]);
+
         /*
         |--------------------------------------------------------------------------
         | Load relations

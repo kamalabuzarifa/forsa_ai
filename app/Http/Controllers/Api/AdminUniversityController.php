@@ -81,4 +81,59 @@ class AdminUniversityController extends Controller
             'university' => $university,
         ], 201);
     }
+
+    public function update(Request $request, University $university): JsonResponse
+    {
+        $data = $request->validate([
+            'country_id' => [
+                'required',
+                'integer',
+                'exists:countries,id',
+            ],
+
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('universities', 'name')
+                    ->ignore($university->id),
+            ],
+
+            'website' => [
+                'nullable',
+                'url',
+                'max:500',
+            ],
+
+            'description' => [
+                'nullable',
+                'string',
+            ],
+
+            'status' => [
+                'required',
+                Rule::in([
+                    'active',
+                    'inactive',
+                ]),
+            ],
+        ]);
+
+        $university->update($data);
+        $university->load('country:id,name');
+
+        return response()->json([
+            'message' => 'University updated successfully.',
+            'university' => $university,
+        ]);
+    }
+
+    public function destroy(University $university): JsonResponse
+    {
+        $university->delete();
+
+        return response()->json([
+            'message' => 'University deleted successfully.',
+        ]);
+    }
 }

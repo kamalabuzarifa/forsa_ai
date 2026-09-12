@@ -3,12 +3,15 @@
 ========================================================= */
 
 .saved-page {
+    width: 100%;
     min-height: 100vh;
-    padding: 38px 5% 80px;
 
-    color: var(--text);
+    padding-bottom: 72px;
 
-    background: #f7faf9;
+    background: #ffffff;
+    color: #0f172a;
+
+    overflow-x: hidden;
 }
 
 
@@ -17,134 +20,460 @@
 ========================================================= */
 
 .saved-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+    width: 100%;
 
-    gap: 30px;
+    background:
+        linear-gradient(135deg,
+            #f3faf8 0%,
+            #ffffff 58%,
+            #f5faf9 100%);
 
-    margin-bottom: 28px;
-    padding: 30px;
-
-    border: 1px solid var(--border);
-    border-radius: 16px;
-
-    background: #ffffff;
+    border-bottom: 1px solid #e1eae7;
 }
+
 
 .saved-header-content {
+    width: min(1180px, calc(100% - 48px));
+
+    margin: 0 auto;
+
+    padding: 75px 0 24px;
+}
+
+
+.saved-eyebrow {
+    display: inline-flex;
+    align-items: center;
+
+    gap: 7px;
+
+    margin-bottom: 11px;
+
+    color: #0f9f8f;
+
+    font-size: 10px;
+    font-weight: 800;
+
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+}
+
+
+.saved-eyebrow svg {
+    flex-shrink: 0;
+}
+
+
+.saved-header h1 {
+    max-width: 650px;
+
+    margin: 17px 0 20px;
+
+    color: #26302e;
+
+    font-size: clamp(38px, 4vw, 53px);
+    font-weight: 800;
+
+    line-height: 1.04;
+    letter-spacing: -2.4px;
+}
+
+
+.saved-header p {
+    max-width: 560px;
+
+    margin: 0;
+
+    color: #687572;
+
+    font-size: 13px;
+    line-height: 1.85;
+}
+
+
+/* =========================================================
+   SEARCH SECTION
+========================================================= */
+
+.saved-search-section {
+    width: min(1180px, calc(100% - 48px));
+
+    margin: 0 auto;
+
+    padding: 22px 0 30px;
+
     display: flex;
     align-items: center;
 
-    gap: 17px;
+    gap: 10px;
+
+    .saved-loading-state {
+        min-height: 220px;
+
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+
+        color: #7b8783;
+        background: #ffffff;
+        border: 1px dashed #d7e4e0;
+        border-radius: 12px;
+    }
+
+    .saved-loading-state p {
+        margin: 0;
+        font-size: 12px;
+    }
 }
 
-.saved-header-icon {
-    width: 52px;
-    height: 52px;
 
-    flex: 0 0 52px;
+/* =========================================================
+   SEARCH
+========================================================= */
+
+.saved-search {
+    min-width: 0;
+    flex: 1;
+
+    height: 60px;
+
+    box-sizing: border-box;
+
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+
+    padding: 6px 12px 6px 18px;
+
+    border: 1px solid #dce8e4;
+    border-radius: 11px;
+
+    background: #ffffff;
+
+    color: #8a9692;
+
+    box-shadow:
+        0 15px 35px rgba(20, 60, 55, 0.08);
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+.saved-search:focus-within {
+    border-color: #b9ded8;
+
+    box-shadow:
+        0 0 0 3px rgba(15, 159, 143, 0.07),
+        0 15px 35px rgba(20, 60, 55, 0.08);
+}
+
+
+.saved-search>svg {
+    flex-shrink: 0;
+
+    color: #8a9692;
+}
+
+
+.saved-search input {
+    min-width: 0;
+    flex: 1;
+
+    width: 100%;
+    height: 100%;
+
+    padding: 0;
+
+    border: 0;
+    outline: 0;
+
+    color: #303936;
+    background: transparent;
+
+    font-family: inherit;
+    font-size: 11px;
+}
+
+
+.saved-search input::placeholder {
+    color: #9aa4a1;
+}
+
+
+.saved-search-clear {
+    width: 34px;
+    height: 34px;
+
+    flex: 0 0 34px;
 
     display: flex;
     align-items: center;
     justify-content: center;
 
-    border-radius: 13px;
+    padding: 0;
 
-    color: var(--primary);
-    background: var(--primary-light);
-}
-
-.saved-eyebrow {
-    display: block;
-
-    margin-bottom: 6px;
-
-    color: var(--primary);
-
-    font-size: 8px;
-    font-weight: 800;
-    letter-spacing: 1px;
-}
-
-.saved-header h1 {
-    margin: 0;
-
-    color: #26302e;
-
-    font-size: 28px;
-    line-height: 1.2;
-    letter-spacing: -0.7px;
-}
-
-.saved-header p {
-    max-width: 550px;
-
-    margin: 8px 0 0;
-
-    color: #77827f;
-
-    font-size: 10px;
-    line-height: 1.7;
-}
-
-.saved-explore-button {
-    display: inline-flex;
-    align-items: center;
-
-    gap: 8px;
-
-    flex-shrink: 0;
-
-    padding: 12px 17px;
-
+    border: 1px solid #dce7e4;
     border-radius: 8px;
 
-    color: #ffffff;
-    background: var(--primary);
+    color: #78837f;
+    background: #ffffff;
 
-    text-decoration: none;
+    cursor: pointer;
 
-    font-size: 9px;
-    font-weight: 800;
-
-    transition: 0.2s ease;
+    transition:
+        color 0.2s ease,
+        border-color 0.2s ease,
+        background 0.2s ease;
 }
 
-.saved-explore-button:hover {
-    background: var(--primary-dark);
-    transform: translateY(-1px);
+
+.saved-search-clear:hover {
+    color: #0f9f8f;
+
+    border-color: #b9ded8;
+
+    background: #eaf8f5;
 }
 
 
 /* =========================================================
-   SUMMARY
+   MAIN
 ========================================================= */
 
-.saved-summary {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
+.saved-main {
+    width: min(1180px, calc(100% - 48px));
 
-    gap: 15px;
-
-    margin-bottom: 42px;
+    margin: 0 auto;
 }
 
-.saved-summary-card {
+
+/* =========================================================
+   TOOLBAR
+========================================================= */
+
+.saved-toolbar {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+
+    gap: 40px;
+
+    padding: 55px 0 35px;
+}
+
+
+.saved-result-label {
+    display: inline-block;
+
+    color: #0f9f8f;
+
+    font-size: 9px;
+    font-weight: 800;
+
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+}
+
+
+.saved-toolbar h2 {
+    margin: 10px 0 0;
+
+    color: #293330;
+
+    font-size: 32px;
+    font-weight: 800;
+
+    line-height: 1.1;
+    letter-spacing: -1px;
+}
+
+
+.saved-results-top {
+    min-height: 28px;
+
+    display: flex;
+    align-items: center;
+}
+
+
+.saved-results-top p {
+    margin: 0;
+
+    color: #77827f;
+
+    font-size: 10px;
+}
+
+
+.saved-results-top strong {
+    color: #303936;
+
+    font-size: 12px;
+    font-weight: 800;
+}
+
+
+/* =========================================================
+   ERROR BANNER
+========================================================= */
+
+.saved-error-banner {
+    width: 100%;
+
+    min-height: 48px;
+
+    box-sizing: border-box;
+
     display: flex;
     align-items: center;
 
-    gap: 13px;
+    gap: 9px;
 
-    padding: 19px 20px;
+    margin-bottom: 20px;
 
-    border: 1px solid var(--border);
-    border-radius: 12px;
+    padding: 10px 12px;
+
+    border: 1px solid #f0d4d4;
+    border-radius: 10px;
+
+    color: #a34a4a;
+    background: #fff8f8;
+
+    font-size: 10px;
+    line-height: 1.5;
+}
+
+
+.saved-error-banner svg {
+    flex-shrink: 0;
+}
+
+
+.saved-error-banner span {
+    min-width: 0;
+    flex: 1;
+}
+
+
+.saved-error-banner button {
+    width: 28px;
+    height: 28px;
+
+    flex: 0 0 28px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0;
+
+    border: 1px solid transparent;
+    border-radius: 7px;
+
+    color: #a34a4a;
+    background: transparent;
+
+    cursor: pointer;
+}
+
+
+.saved-error-banner button:hover {
+    background: #fceeee;
+}
+
+
+/* =========================================================
+   RESULTS
+========================================================= */
+
+.saved-results {
+    width: 100%;
+    min-width: 0;
+}
+
+
+/* =========================================================
+   GRID
+========================================================= */
+
+.saved-grid {
+    width: 100%;
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
+    gap: 16px;
+}
+
+
+/* =========================================================
+   CARD
+========================================================= */
+
+.saved-card {
+    min-width: 0;
+
+    display: flex;
+    flex-direction: column;
+
+    overflow: hidden;
+
+    background: #ffffff;
+
+    border: 1px solid #e2e8f0;
+    border-radius: 17px;
+
+    box-shadow:
+        0 4px 16px rgba(15, 23, 42, 0.03);
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        transform 0.2s ease;
+}
+
+
+.saved-card:hover {
+    border-color: #a7ddd7;
+
+    box-shadow:
+        0 10px 28px rgba(15, 23, 42, 0.07);
+
+    transform: translateY(-2px);
+}
+
+
+/* =========================================================
+   CARD TOP
+========================================================= */
+
+.saved-card-top {
+    min-height: 72px;
+
+    padding: 18px;
+
+    box-sizing: border-box;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 12px;
+
+    border-bottom: 1px solid #e2e8f0;
 
     background: #ffffff;
 }
 
-.saved-summary-icon {
+
+.saved-card-icon {
     width: 40px;
     height: 40px;
 
@@ -154,136 +483,452 @@
     align-items: center;
     justify-content: center;
 
+    border: 1px solid #c5ebe6;
     border-radius: 10px;
 
-    color: var(--primary);
-    background: var(--primary-light);
+    color: #0f9f8f;
+    background: #e8f7f5;
 }
 
-.saved-summary-card strong,
-.saved-summary-card span {
-    display: block;
+
+.saved-remove-button {
+    width: 34px;
+    height: 34px;
+
+    flex: 0 0 34px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0;
+
+    border: 1px solid #e2e8f0;
+    border-radius: 9px;
+
+    color: #78837f;
+    background: #ffffff;
+
+    cursor: pointer;
+
+    transition:
+        color 0.2s ease,
+        border-color 0.2s ease,
+        background 0.2s ease,
+        transform 0.2s ease;
 }
 
-.saved-summary-card strong {
-    color: #26302e;
 
-    font-size: 19px;
+.saved-remove-button:hover:not(:disabled) {
+    color: #c45c5c;
+
+    border-color: #efcaca;
+
+    background: #fff7f7;
+
+    transform: translateY(-1px);
 }
 
-.saved-summary-card span {
-    margin-top: 3px;
 
-    color: #858e8b;
+.saved-remove-button:disabled {
+    opacity: 0.55;
 
-    font-size: 8px;
+    cursor: not-allowed;
+}
+
+
+.saved-spinner {
+    animation: saved-spin 0.8s linear infinite;
+}
+
+
+@keyframes saved-spin {
+
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+
 }
 
 
 /* =========================================================
-   SECTIONS
+   CARD TYPE
 ========================================================= */
 
-.saved-section {
-    margin-bottom: 55px;
-}
+.saved-card-type {
+    width: fit-content;
+    max-width: calc(100% - 36px);
 
-.saved-last-section {
-    margin-bottom: 0;
-}
+    margin: 17px 18px 0;
 
-.saved-section-heading {
-    display: flex;
-    align-items: end;
-    justify-content: space-between;
+    padding: 5px 8px;
 
-    gap: 25px;
+    border: 1px solid #c5ebe6;
+    border-radius: 6px;
 
-    margin-bottom: 22px;
-}
-
-.saved-section-heading>div>span {
-    color: var(--primary);
-
-    font-size: 8px;
-    font-weight: 800;
-
-    letter-spacing: 1px;
-}
-
-.saved-section-heading h2 {
-    margin: 7px 0 5px;
-
-    color: #26302e;
-
-    font-size: 22px;
-    letter-spacing: -0.5px;
-}
-
-.saved-section-heading p {
-    margin: 0;
-
-    color: #7a8582;
+    color: #0f9f8f;
+    background: #e8f7f5;
 
     font-size: 9px;
+    line-height: 1.3;
+
+    font-weight: 700;
+
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
-.saved-section-heading>a {
-    display: inline-flex;
+
+/* =========================================================
+   CARD BODY
+========================================================= */
+
+.saved-card-body {
+    min-width: 0;
+
+    flex: 1;
+
+    padding: 14px 18px 18px;
+}
+
+
+.saved-card-body h3 {
+    margin: 0;
+
+    color: #0f172a;
+
+    font-size: 18px;
+    line-height: 1.4;
+
+    font-weight: 750;
+
+    letter-spacing: -0.2px;
+}
+
+
+.saved-card-university {
+    min-width: 0;
+
+    display: flex;
+    align-items: center;
+
+    gap: 7px;
+
+    margin: 11px 0 0;
+
+    color: #475569;
+
+    font-size: 12px;
+    line-height: 1.5;
+
+    font-weight: 600;
+}
+
+
+.saved-card-university svg {
+    flex: 0 0 auto;
+
+    color: #0f9f8f;
+}
+
+
+.saved-card-university {
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+}
+
+
+.saved-card-location {
+    display: flex;
     align-items: center;
 
     gap: 6px;
 
-    color: var(--primary);
+    margin-top: 7px;
 
-    text-decoration: none;
+    color: #64748b;
 
-    font-size: 9px;
-    font-weight: 800;
+    font-size: 11px;
+    line-height: 1.4;
+
+    font-weight: 500;
+}
+
+
+.saved-card-location svg {
+    flex: 0 0 auto;
+
+    color: #0f9f8f;
+}
+
+
+.saved-card-description {
+    margin: 12px 0 0;
+
+    display: -webkit-box;
+
+    overflow: hidden;
+
+    color: #64748b;
+
+    font-size: 13px;
+    line-height: 1.65;
+
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
 }
 
 
 /* =========================================================
-   PROGRAMS
+   CARD META
 ========================================================= */
 
-.saved-programs-grid {
+.saved-card-meta {
+    margin-top: 17px;
+
+    padding-top: 14px;
+
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
 
-    gap: 18px;
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 12px 10px;
+
+    border-top: 1px solid #e2e8f0;
 }
 
-.saved-program-card {
-    padding: 22px;
 
-    border: 1px solid var(--border);
-    border-radius: 14px;
+.saved-card-meta>div {
+    min-width: 0;
 
-    background: #ffffff;
+    display: flex;
+    flex-direction: column;
 
-    transition: 0.25s ease;
+    gap: 4px;
 }
 
-.saved-program-card:hover {
-    transform: translateY(-4px);
 
-    box-shadow: 0 18px 40px rgba(20, 60, 55, 0.07);
+.saved-card-meta span {
+    color: #64748b;
+
+    font-size: 9px;
+    line-height: 1.4;
+
+    font-weight: 600;
+
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
 }
 
-.saved-card-top {
+
+.saved-card-meta strong {
+    overflow: hidden;
+
+    color: #334155;
+
+    font-size: 10px;
+    line-height: 1.45;
+
+    font-weight: 700;
+
+    text-overflow: ellipsis;
+}
+
+
+/* =========================================================
+   CARD FOOTER
+========================================================= */
+
+.saved-card-footer {
+    min-height: 82px;
+
+    padding: 13px 18px;
+
+    box-sizing: border-box;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 11px;
+
+    border-top: 1px solid #e2e8f0;
+
+    background: #f8fafc;
+}
+
+
+.saved-card-deadline {
+    min-width: 0;
+
     display: flex;
     align-items: center;
-    justify-content: space-between;
 
-    margin-bottom: 18px;
+    gap: 7px;
 }
 
-.saved-program-icon,
-.saved-university-icon,
-.saved-scholarship-icon {
-    width: 43px;
-    height: 43px;
+
+.saved-card-deadline>svg {
+    flex: 0 0 auto;
+
+    color: #0f9f8f;
+}
+
+
+.saved-card-deadline>div {
+    min-width: 0;
+
+    display: flex;
+    align-items: center;
+
+    gap: 6px;
+}
+
+
+.saved-card-deadline span {
+    color: #64748b;
+
+    font-size: 10px;
+    line-height: 1.4;
+
+    font-weight: 600;
+}
+
+
+.saved-card-deadline strong {
+    overflow: hidden;
+
+    color: #0f172a;
+
+    font-size: 11px;
+    line-height: 1.4;
+
+    font-weight: 700;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   CARD ACTIONS
+========================================================= */
+
+.saved-card-actions {
+    display: flex;
+    align-items: center;
+
+    gap: 7px;
+}
+
+
+.saved-card-button,
+.saved-apply-button {
+    min-height: 34px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 6px;
+
+    padding: 0 11px;
+
+    border-radius: 8px;
+
+    font-family: inherit;
+    font-size: 9px;
+    font-weight: 800;
+
+    text-decoration: none;
+
+    transition:
+        color 0.2s ease,
+        background 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s ease;
+}
+
+
+.saved-card-button {
+    flex: 1;
+
+    color: #0f9f8f;
+
+    border: 1px solid #c5ebe6;
+
+    background: #ffffff;
+}
+
+
+.saved-card-button:hover {
+    color: #ffffff;
+
+    border-color: #0f9f8f;
+
+    background: #0f9f8f;
+
+    transform: translateY(-1px);
+}
+
+
+.saved-apply-button {
+    color: #ffffff;
+
+    border: 1px solid #0f9f8f;
+
+    background: #0f9f8f;
+}
+
+
+.saved-apply-button:hover {
+    border-color: #0f766e;
+
+    background: #0f766e;
+
+    transform: translateY(-1px);
+}
+
+
+/* =========================================================
+   EMPTY STATE
+========================================================= */
+
+.saved-empty {
+    min-height: 280px;
+
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 10px;
+
+    padding: 30px;
+
+    border: 1px dashed #d7e4e0;
+    border-radius: 12px;
+
+    color: #7b8783;
+    background: #ffffff;
+
+    text-align: center;
+}
+
+
+.saved-empty-icon {
+    width: 46px;
+    height: 46px;
 
     display: flex;
     align-items: center;
@@ -291,316 +936,217 @@
 
     border-radius: 11px;
 
-    color: var(--primary);
-    background: var(--primary-light);
+    color: #0f9f8f;
+    background: #eaf8f5;
 }
 
-.saved-remove-button {
-    width: 31px;
-    height: 31px;
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    border: 1px solid #e6ecea;
-    border-radius: 8px;
-
-    color: #8b9592;
-    background: #ffffff;
-
-    cursor: pointer;
-
-    transition: 0.2s ease;
-}
-
-.saved-remove-button:hover {
-    color: #d05252;
-    border-color: #efd4d4;
-    background: #fff8f8;
-}
-
-.saved-match {
-    display: inline-block;
-
-    margin-bottom: 9px;
-
-    color: var(--primary);
-
-    font-size: 8px;
-    font-weight: 800;
-    letter-spacing: 0.5px;
-}
-
-.saved-program-card h3 {
+.saved-empty h3 {
     margin: 0;
 
-    color: #26302e;
+    color: #293330;
 
-    font-size: 15px;
-    line-height: 1.4;
+    font-size: 17px;
+    font-weight: 800;
 }
 
-.saved-university {
-    margin: 7px 0 8px;
 
-    color: #65716e;
+.saved-empty p {
+    max-width: 430px;
+
+    margin: 0;
+
+    color: #7b8783;
 
     font-size: 10px;
-    font-weight: 700;
+    line-height: 1.7;
 }
 
-.saved-location {
-    display: flex;
-    align-items: center;
 
-    gap: 5px;
+.saved-empty-button {
+    min-height: 38px;
 
-    color: #8a9491;
-
-    font-size: 8px;
-}
-
-.saved-program-meta {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-
-    gap: 8px;
-
-    margin-top: 20px;
-    padding-top: 17px;
-
-    border-top: 1px solid #edf0ef;
-}
-
-.saved-program-meta div {
-    min-width: 0;
-}
-
-.saved-program-meta span,
-.saved-program-meta strong {
-    display: block;
-}
-
-.saved-program-meta span {
-    color: #909a97;
-    font-size: 7px;
-}
-
-.saved-program-meta strong {
-    overflow: hidden;
-
-    margin-top: 5px;
-
-    color: #303936;
-
-    font-size: 8px;
-
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-.saved-card-button {
-    display: flex;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
 
-    gap: 7px;
+    gap: 6px;
 
-    width: 100%;
+    margin-top: 6px;
 
-    margin-top: 19px;
-    padding: 10px 13px;
+    padding: 0 15px;
 
-    border: 1px solid #dce8e5;
+    border: 1px solid #c5ebe6;
     border-radius: 8px;
 
-    color: var(--primary);
-    background: #ffffff;
+    color: #0f9f8f;
+    background: #eaf8f5;
+
+    font-family: inherit;
+    font-size: 10px;
+    font-weight: 800;
 
     text-decoration: none;
 
-    font-size: 8px;
-    font-weight: 800;
+    cursor: pointer;
 
-    transition: 0.2s ease;
-}
-
-.saved-card-button:hover {
-    border-color: var(--primary);
-    background: var(--primary-light);
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s ease;
 }
 
 
-/* =========================================================
-   UNIVERSITIES
-========================================================= */
+.saved-empty-button:hover {
+    border-color: #a7ddd7;
 
-.saved-universities-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    background: #dff3ef;
 
-    gap: 18px;
-}
-
-.saved-university-card {
-    padding: 23px;
-
-    border: 1px solid var(--border);
-    border-radius: 14px;
-
-    background: #ffffff;
-
-    transition: 0.25s ease;
-}
-
-.saved-university-card:hover {
-    transform: translateY(-4px);
-
-    box-shadow: 0 18px 40px rgba(20, 60, 55, 0.07);
-}
-
-.saved-university-card-top {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    margin-bottom: 18px;
-}
-
-.saved-university-card h3 {
-    margin: 0;
-
-    color: #26302e;
-
-    font-size: 16px;
-}
-
-.saved-university-info {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-
-    gap: 10px;
-
-    margin-top: 21px;
-    padding-top: 17px;
-
-    border-top: 1px solid #edf0ef;
-}
-
-.saved-university-info span,
-.saved-university-info strong {
-    display: block;
-}
-
-.saved-university-info span {
-    color: #909a97;
-    font-size: 7px;
-}
-
-.saved-university-info strong {
-    margin-top: 5px;
-
-    color: #303936;
-
-    font-size: 9px;
+    transform: translateY(-1px);
 }
 
 
 /* =========================================================
-   SCHOLARSHIPS
+   SKELETON
 ========================================================= */
 
-.saved-scholarships-grid {
+.saved-card-skeleton {
+    pointer-events: none;
+}
+
+
+.skeleton-line {
+    border-radius: 6px;
+
+    background: #e2e8f0;
+}
+
+
+.skeleton-saved-icon {
+    width: 40px;
+    height: 40px;
+
+    border-radius: 10px;
+
+    background: #e2e8f0;
+}
+
+
+.skeleton-saved-remove {
+    width: 34px;
+    height: 34px;
+
+    border-radius: 9px;
+
+    background: #e2e8f0;
+}
+
+
+.skeleton-line.saved-type {
+    width: 75px;
+    height: 21px;
+
+    margin: 17px 18px 0;
+}
+
+
+.skeleton-line.saved-title {
+    width: 80%;
+    height: 15px;
+
+    margin-bottom: 12px;
+}
+
+
+.skeleton-line.saved-university {
+    width: 60%;
+    height: 10px;
+
+    margin-bottom: 9px;
+}
+
+
+.skeleton-line.saved-location {
+    width: 35%;
+    height: 9px;
+
+    margin-bottom: 16px;
+}
+
+
+.skeleton-line.saved-description {
+    width: 92%;
+    height: 10px;
+
+    margin-bottom: 9px;
+}
+
+
+.skeleton-line.saved-description.short {
+    width: 65%;
+
+    margin-bottom: 0;
+}
+
+
+.saved-skeleton-meta {
+    margin-top: 17px;
+
+    padding-top: 14px;
+
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
 
-    gap: 18px;
-}
-
-.saved-scholarship-card {
-    padding: 23px;
-
-    border: 1px solid var(--border);
-    border-radius: 14px;
-
-    background: #ffffff;
-
-    transition: 0.25s ease;
-}
-
-.saved-scholarship-card:hover {
-    transform: translateY(-4px);
-
-    box-shadow: 0 18px 40px rgba(20, 60, 55, 0.07);
-}
-
-.saved-scholarship-top {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    margin-bottom: 17px;
-}
-
-.saved-scholarship-label {
-    display: block;
-
-    margin-bottom: 8px;
-
-    color: var(--primary);
-
-    font-size: 8px;
-    font-weight: 800;
-
-    letter-spacing: 0.7px;
-}
-
-.saved-scholarship-card h3 {
-    margin: 0;
-
-    color: #26302e;
-
-    font-size: 16px;
-    line-height: 1.4;
-}
-
-.saved-scholarship-card>p {
-    margin: 7px 0 0;
-
-    color: #77827f;
-
-    font-size: 9px;
-}
-
-.saved-scholarship-details {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
 
     gap: 10px;
 
-    margin-top: 21px;
-    padding-top: 17px;
-
-    border-top: 1px solid #edf0ef;
+    border-top: 1px solid #e2e8f0;
 }
 
-.saved-scholarship-details span,
-.saved-scholarship-details strong {
-    display: block;
+
+.skeleton-meta {
+    width: 80px;
+    height: 9px;
+
+    border-radius: 5px;
+
+    background: #e2e8f0;
 }
 
-.saved-scholarship-details span {
-    color: #909a97;
-    font-size: 7px;
+
+.skeleton-deadline {
+    width: 130px;
+    height: 10px;
+
+    border-radius: 5px;
+
+    background: #e2e8f0;
 }
 
-.saved-scholarship-details strong {
-    margin-top: 5px;
 
-    color: #303936;
+.skeleton-button {
+    width: 110px;
+    height: 34px;
 
-    font-size: 9px;
+    border-radius: 8px;
+
+    background: #e2e8f0;
+}
+
+
+/* =========================================================
+   LARGE TABLET
+========================================================= */
+
+@media (max-width: 1100px) {
+
+    .saved-header-content,
+    .saved-search-section,
+    .saved-main {
+        width: calc(100% - 40px);
+    }
+
 }
 
 
@@ -608,43 +1154,18 @@
    TABLET
 ========================================================= */
 
-@media (max-width: 1000px) {
+@media (max-width: 900px) {
 
-    .saved-page {
-        padding-left: 4%;
-        padding-right: 4%;
+    .saved-grid {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
     }
 
-    .saved-programs-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
 
-
-/* =========================================================
-   TABLET SMALL
-========================================================= */
-
-@media (max-width: 800px) {
-
-    .saved-header {
-        align-items: flex-start;
-        flex-direction: column;
+    .saved-toolbar h2 {
+        font-size: 29px;
     }
 
-    .saved-explore-button {
-        width: 100%;
-        justify-content: center;
-    }
-
-    .saved-summary {
-        grid-template-columns: 1fr;
-    }
-
-    .saved-universities-grid,
-    .saved-scholarships-grid {
-        grid-template-columns: 1fr;
-    }
 }
 
 
@@ -652,55 +1173,184 @@
    MOBILE
 ========================================================= */
 
-@media (max-width: 600px) {
-
-    .saved-page {
-        padding: 25px 18px 60px;
-    }
-
-    .saved-header {
-        padding: 22px 18px;
-    }
+@media (max-width: 650px) {
 
     .saved-header-content {
-        align-items: flex-start;
+        padding-top: 55px;
+        padding-bottom: 20px;
     }
 
-    .saved-header-icon {
-        width: 45px;
-        height: 45px;
-
-        flex-basis: 45px;
-    }
 
     .saved-header h1 {
-        font-size: 23px;
+        font-size: 39px;
+
+        letter-spacing: -1.7px;
     }
+
 
     .saved-header p {
-        font-size: 9px;
+        font-size: 11px;
     }
 
-    .saved-programs-grid {
+
+    .saved-search-section {
+        padding-top: 18px;
+        padding-bottom: 25px;
+    }
+
+
+    .saved-search {
+        width: 100%;
+
+        height: 55px;
+
+        padding-left: 14px;
+    }
+
+
+    .saved-toolbar {
+        flex-direction: column;
+
+        align-items: flex-start;
+
+        gap: 18px;
+
+        padding-top: 55px;
+        padding-bottom: 32px;
+    }
+
+
+    .saved-toolbar h2 {
+        font-size: 30px;
+    }
+
+
+    .saved-grid {
         grid-template-columns: 1fr;
     }
 
-    .saved-section-heading {
-        align-items: flex-start;
-        flex-direction: column;
 
-        gap: 10px;
+    /* =====================================================
+       MOBILE CARD
+    ===================================================== */
+
+    .saved-card {
+        border-radius: 15px;
     }
 
-    .saved-section-heading h2 {
-        font-size: 20px;
+
+    .saved-card-top {
+        min-height: 64px;
+
+        padding: 15px;
     }
 
-    .saved-program-card,
-    .saved-university-card,
-    .saved-scholarship-card {
-        padding: 19px;
+
+    .saved-card-icon {
+        width: 38px;
+        height: 38px;
+
+        flex-basis: 38px;
     }
+
+
+    .saved-remove-button {
+        width: 32px;
+        height: 32px;
+
+        flex-basis: 32px;
+
+        border-radius: 8px;
+    }
+
+
+    .saved-card-type {
+        margin-right: 15px;
+        margin-left: 15px;
+
+        font-size: 8px;
+    }
+
+
+    .saved-card-body {
+        padding: 13px 15px 16px;
+    }
+
+
+    .saved-card-body h3 {
+        font-size: 17px;
+    }
+
+
+    .saved-card-university {
+        font-size: 11px;
+    }
+
+
+    .saved-card-location {
+        font-size: 10px;
+    }
+
+
+    .saved-card-description {
+        margin-top: 10px;
+
+        font-size: 12px;
+    }
+
+
+    .saved-card-meta {
+        margin-top: 15px;
+
+        padding-top: 13px;
+
+        gap: 10px 8px;
+    }
+
+
+    .saved-card-meta span {
+        font-size: 8px;
+    }
+
+
+    .saved-card-meta strong {
+        font-size: 9px;
+    }
+
+
+    .saved-card-footer {
+        min-height: 82px;
+
+        padding: 12px 15px;
+    }
+
+
+    .saved-card-deadline span {
+        font-size: 9px;
+    }
+
+
+    .saved-card-deadline strong {
+        font-size: 10px;
+    }
+
+
+    .saved-card-button,
+    .saved-apply-button {
+        min-height: 33px;
+
+        padding: 0 9px;
+
+        font-size: 8px;
+    }
+
+
+    .saved-empty {
+        min-height: 240px;
+
+        padding: 30px 20px;
+    }
+
 }
 
 
@@ -710,17 +1360,82 @@
 
 @media (max-width: 420px) {
 
-    .saved-header-content {
-        gap: 12px;
+    .saved-header-content,
+    .saved-search-section,
+    .saved-main {
+        width: calc(100% - 20px);
     }
 
-    .saved-header-icon {
-        display: none;
+
+    .saved-header h1 {
+        font-size: 35px;
     }
 
-    .saved-program-meta,
-    .saved-university-info,
-    .saved-scholarship-details {
-        gap: 6px;
+
+    .saved-header p {
+        font-size: 10px;
     }
+
+
+    .saved-search input {
+        font-size: 9px;
+    }
+
+
+    .saved-toolbar h2 {
+        font-size: 28px;
+    }
+
+
+    .saved-card-top {
+        padding: 14px;
+    }
+
+
+    .saved-card-body {
+        padding: 12px 14px 15px;
+    }
+
+
+    .saved-card-body h3 {
+        font-size: 16px;
+    }
+
+
+    .saved-card-university {
+        font-size: 10px;
+    }
+
+
+    .saved-card-description {
+        font-size: 11px;
+    }
+
+
+    .saved-card-meta {
+        margin-top: 14px;
+
+        gap: 9px 7px;
+    }
+
+
+    .saved-card-footer {
+        padding-right: 14px;
+        padding-left: 14px;
+    }
+
+
+    .saved-card-actions {
+        gap: 5px;
+    }
+
+
+    .saved-card-button,
+    .saved-apply-button {
+        padding-right: 8px;
+        padding-left: 8px;
+
+        font-size: 8px;
+    }
+
 }

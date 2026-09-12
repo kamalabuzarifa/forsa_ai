@@ -1,73 +1,80 @@
 import {
-    GraduationCap,
     Globe2,
+    GraduationCap,
+    Sparkles,
     Target,
-    Users,
 } from "lucide-react";
 
 function StatsSection() {
+    const stats = [
+        {
+            icon: GraduationCap,
+            value: "Scholarships",
+            label: "Discover funding options",
+        },
+        {
+            icon: Globe2,
+            value: "Programs",
+            label: "Compare study paths",
+        },
+        {
+            icon: Target,
+            value: "Your profile",
+            label: "Use your real context",
+        },
+        {
+            icon: Sparkles,
+            value: "Clearer next steps",
+            label: "Move from search to action",
+        },
+    ];
+
     return (
         <section className="stats-section">
+            <div className="stats-container">
 
-            <div className="stats-grid">
+                <div className="stats-intro">
+                    <span>
+                        <Sparkles size={14} />
+                        Built for your next step
+                    </span>
 
-                <div className="stat-item">
-
-                    <div className="stat-icon">
-                        <GraduationCap size={22} />
-                    </div>
-
-                    <div>
-                        <strong>1,000+</strong>
-                        <span>Opportunities</span>
-                    </div>
-
+                    <p>
+                        Everything you need to discover opportunities
+                        that fit your profile.
+                    </p>
                 </div>
 
+                <div className="stats-grid">
 
-                <div className="stat-item">
+                    {stats.map((stat) => {
+                        const Icon = stat.icon;
 
-                    <div className="stat-icon">
-                        <Globe2 size={22} />
-                    </div>
+                        return (
+                            <div
+                                className="stat-item"
+                                key={stat.label}
+                            >
+                                <div className="stat-icon">
+                                    <Icon size={21} />
+                                </div>
 
-                    <div>
-                        <strong>50+</strong>
-                        <span>Countries</span>
-                    </div>
+                                <div className="stat-content">
+                                    <strong>
+                                        {stat.value}
+                                    </strong>
 
-                </div>
-
-
-                <div className="stat-item">
-
-                    <div className="stat-icon">
-                        <Users size={22} />
-                    </div>
-
-                    <div>
-                        <strong>5,000+</strong>
-                        <span>Students</span>
-                    </div>
-
-                </div>
-
-
-                <div className="stat-item">
-
-                    <div className="stat-icon">
-                        <Target size={22} />
-                    </div>
-
-                    <div>
-                        <strong>AI</strong>
-                        <span>Personalized Matching</span>
-                    </div>
+                                    <span>
+                                        {stat.label}
+                                    </span>
+                                </div>
+                            </div>
+                        );
+                    })}
 
                 </div>
 
             </div>
-
         </section>
     );
 }

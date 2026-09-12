@@ -36,6 +36,7 @@ import {
 } from "../../../api/applications";
 
 import "./OpportunityDetails.css";
+import LoadingScreen from "../../../components/LoadingScreen";
 
 
 /* =========================================================
@@ -724,24 +725,7 @@ function OpportunityDetails() {
     ========================================================= */
 
     if (loading) {
-
-        return (
-
-            <div className="opportunity-details-page">
-
-                <div className="opportunity-details-state">
-
-                    <div className="opportunity-loading-spinner" />
-
-                    <p>
-                        Loading opportunity...
-                    </p>
-
-                </div>
-
-            </div>
-
-        );
+        return <LoadingScreen />;
     }
 
 

@@ -2,16 +2,14 @@ import {
     ArrowRight,
     Brain,
     Check,
+    GraduationCap,
     Sparkles,
-    Star,
     Target,
 } from "lucide-react";
 
 import { Link } from "react-router-dom";
 
-
 function HeroSection() {
-
     const handleHeroSubmit = (event) => {
         event.preventDefault();
 
@@ -26,47 +24,36 @@ function HeroSection() {
             `/register?email=${encodeURIComponent(email)}`;
     };
 
-
     return (
         <section
             className="hero-section"
             id="home"
         >
-
             <div className="hero-content">
 
                 <div className="hero-badge">
-
                     <Sparkles size={15} />
 
                     <span>
                         AI-powered opportunity matching
                     </span>
-
                 </div>
-
 
                 <h1>
                     Find opportunities
-
-                    <span>
-                        made for you
-                    </span>
+                    <span>made for you</span>
                 </h1>
 
-
                 <p className="hero-description">
-                    EduMatch helps students discover scholarships,
-                    study programs and educational opportunities
-                    that match their education, skills and goals.
+                    Discover scholarships, university programs,
+                    and educational opportunities matched to your
+                    academic background, skills, interests, and goals.
                 </p>
-
 
                 <form
                     className="hero-search"
                     onSubmit={handleHeroSubmit}
                 >
-
                     <input
                         type="email"
                         name="email"
@@ -82,20 +69,18 @@ function HeroSection() {
                     >
                         <ArrowRight size={21} />
                     </button>
-
                 </form>
-
 
                 <div className="hero-features">
 
                     <span>
                         <Check size={15} />
-                        Free to use
+                        Free to get started
                     </span>
 
                     <span>
                         <Check size={15} />
-                        Personalized matching
+                        Personalized matches
                     </span>
 
                     <span>
@@ -105,52 +90,25 @@ function HeroSection() {
 
                 </div>
 
+                <div className="hero-actions">
 
-                <div className="hero-trust">
-
-                    <div className="trust-avatars">
-
-                        <span>K</span>
-                        <span>A</span>
-                        <span>M</span>
-                        <span>+</span>
-
-                    </div>
-
-
-                    <div>
-
-                        <div className="trust-stars">
-
-                            {[1, 2, 3, 4, 5].map((star) => (
-                                <Star
-                                    key={star}
-                                    size={12}
-                                    fill="currentColor"
-                                />
-                            ))}
-
-                        </div>
-
-
-                        <p>
-                            Built for students searching for
-                            their next opportunity
-                        </p>
-
-                    </div>
+                    <Link
+                        to="/student/explore"
+                        className="hero-secondary-link"
+                    >
+                        Explore opportunities
+                        <ArrowRight size={16} />
+                    </Link>
 
                 </div>
 
             </div>
 
-
             <div className="hero-visual">
 
-                <div className="image-decoration image-decoration-back" />
+                <div className="hero-image-decoration hero-image-decoration-back" />
 
-                <div className="image-decoration image-decoration-front" />
-
+                <div className="hero-image-decoration hero-image-decoration-front" />
 
                 <div className="hero-image-wrapper">
 
@@ -160,93 +118,136 @@ function HeroSection() {
                         className="hero-image"
                     />
 
-                </div>
+                    <div className="hero-image-overlay" />
 
+                </div>
 
                 <div className="floating-card floating-card-top">
 
-                    <div className="avatar avatar-one">
-                        <Brain size={16} />
+                    <div className="floating-card-icon">
+                        <Brain size={17} />
                     </div>
 
-                    <div>
+                    <div className="floating-card-content">
 
                         <strong>
                             Smart Matching
                         </strong>
 
                         <p>
-                            Opportunities selected for you
+                            Built around your profile
                         </p>
 
                     </div>
 
-                </div>
+                    <div className="floating-card-status">
+                        <span />
+                    </div>
 
+                </div>
 
                 <div className="floating-card floating-card-bottom">
 
-                    <div className="avatar avatar-two">
-                        <Target size={16} />
+                    <div className="floating-card-icon">
+                        <Target size={17} />
                     </div>
 
-                    <div>
+                    <div className="floating-card-content">
 
                         <strong>
-                            AI Match
+                            Profile fit
                         </strong>
 
                         <p>
-                            Based on your profile
+                            Compare your profile with requirements
                         </p>
 
                     </div>
 
                 </div>
 
+                <div className="hero-opportunity-card">
 
-                <div className="hero-match-card">
+                    <div className="hero-opportunity-header">
 
-                    <div className="hero-match-header">
-
-                        <div className="mini-icon">
-                            <Sparkles size={14} />
+                        <div className="hero-opportunity-icon">
+                            <GraduationCap size={17} />
                         </div>
 
-                        <div>
+                        <div className="hero-opportunity-title">
 
                             <strong>
-                                AI Match
+                                MSc Artificial Intelligence
                             </strong>
 
                             <span>
-                                Personalized recommendation
+                                University Program
                             </span>
 
                         </div>
 
                     </div>
 
+                    <div className="hero-opportunity-match">
 
-                    <div className="hero-match-score">
+                        <div className="hero-opportunity-score">
+                            <strong>
+                                Match signals
+                            </strong>
 
-                        <strong>
-                            92%
-                        </strong>
+                            <span>
+                                Based on your profile
+                            </span>
+                        </div>
 
-                        <div className="hero-score-bar">
+                        <div className="hero-score-progress">
                             <span />
                         </div>
 
                     </div>
 
+                    <div className="hero-opportunity-reasons">
+
+                        <span>
+                            <Check size={12} />
+                            Academic fit
+                        </span>
+
+                        <span>
+                            <Check size={12} />
+                            Skills match
+                        </span>
+
+                        <span>
+                            <Check size={12} />
+                            Eligible
+                        </span>
+
+                    </div>
+
+                </div>
+
+                <div className="hero-ai-badge">
+
+                    <div className="hero-ai-icon">
+                        <Sparkles size={14} />
+                    </div>
+
+                    <div>
+                        <strong>
+                            AI Recommendation
+                        </strong>
+
+                        <span>
+                            Personalized for you
+                        </span>
+                    </div>
+
                 </div>
 
             </div>
-
         </section>
     );
 }
-
 
 export default HeroSection;

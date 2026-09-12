@@ -9,7 +9,7 @@
     overflow-x: hidden;
 
     color: var(--text, #293330);
-    background: #f7faf9;
+    background: #ffffff;
 }
 
 
@@ -31,7 +31,11 @@
 
     border-bottom: 1px solid var(--border, #e1ebe8);
 
-    background: #ffffff;
+    background:
+        linear-gradient(135deg,
+            #f3faf8 0%,
+            #ffffff 58%,
+            #f5faf9 100%);
 }
 
 .ai-advisor-header-content {
