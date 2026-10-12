@@ -9,6 +9,10 @@ import {
     Building2,
     Users,
     BarChart3,
+    BookOpen,
+    Briefcase,
+    ShieldCheck,
+    PieChart,
     LogOut,
     X,
 } from "lucide-react";
@@ -17,6 +21,7 @@ import { useAuth } from "../../../context/AuthContext";
 
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { cn } from "@/lib/utils";
 
 function AdminSidebar({ mobileOpen, onClose }) {
     const { logout } = useAuth();
@@ -34,93 +39,62 @@ function AdminSidebar({ mobileOpen, onClose }) {
     const sections = [
         {
             label: "Academic Management",
+            icon: BookOpen,
             links: [
-                {
-                    label: "Countries",
-                    href: "/admin/countries",
-                    icon: Globe2,
-                },
-                {
-                    label: "Universities",
-                    href: "/admin/universities",
-                    icon: Building2,
-                },
-                {
-                    label: "Programs",
-                    href: "/admin/programs",
-                    icon: GraduationCap,
-                },
+                { label: "Countries", href: "/admin/countries", icon: Globe2 },
+                { label: "Universities", href: "/admin/universities", icon: Building2 },
+                { label: "Programs", href: "/admin/programs", icon: GraduationCap },
             ],
         },
         {
             label: "Opportunity Management",
+            icon: Briefcase,
             links: [
-                {
-                    label: "Opportunities",
-                    href: "/admin/opportunities",
-                    icon: GraduationCap,
-                },
+                { label: "Opportunities", href: "/admin/opportunities", icon: GraduationCap },
             ],
         },
         {
             label: "Student Management",
+            icon: Users,
             links: [
-                {
-                    label: "Students",
-                    href: "/admin/students",
-                    icon: Users,
-                },
-                {
-                    label: "Applications",
-                    href: "/admin/applications",
-                    icon: FileText,
-                },
+                { label: "Students", href: "/admin/students", icon: Users },
+                { label: "Applications", href: "/admin/applications", icon: FileText },
             ],
         },
         {
             label: "Access Management",
+            icon: ShieldCheck,
             links: [
-                {
-                    label: "Users & Access",
-                    href: "/admin/users",
-                    icon: Users,
-                },
+                { label: "Users & Access", href: "/admin/users", icon: Users },
             ],
         },
         {
             label: "Reports & Analytics",
+            icon: PieChart,
             links: [
-                {
-                    label: "Reports",
-                    href: "/admin/reports",
-                    icon: BarChart3,
-                },
+                { label: "Reports", href: "/admin/reports", icon: BarChart3 },
             ],
         },
     ];
 
-    const getLinkClass = ({ isActive }) =>
-        [
-            "flex w-full items-center gap-3 rounded-lg px-3 py-2.5",
-            "text-sm font-medium transition-colors",
-            isActive
-                ? "bg-primary text-primary-foreground"
-                : "text-muted-foreground hover:bg-muted hover:text-foreground",
-        ].join(" ");
+    // --- Functionality below is unchanged from the original component ---
 
     const isSectionActive = (section) =>
         section.links.some(
             (item) =>
-                pathname === item.href ||
-                pathname.startsWith(`${item.href}/`)
+                pathname === item.href || pathname.startsWith(`${item.href}/`)
         );
+
+    const isSectionOpen = (section) =>
+        hoveredSection === section.label ||
+        clickedSection === section.label ||
+        (isSectionActive(section) && closedActiveSection !== section.label);
 
     const toggleSection = (sectionLabel) => {
         const isOpen = clickedSection === sectionLabel;
         const isActive = sections.some(
             (section) =>
-                section.label === sectionLabel &&
-                isSectionActive(section)
+                section.label === sectionLabel && isSectionActive(section)
         );
 
         if (isOpen || (isActive && closedActiveSection !== sectionLabel)) {
@@ -137,7 +111,9 @@ function AdminSidebar({ mobileOpen, onClose }) {
         setClosedActiveSection(null);
     }, [pathname]);
 
-    const renderLink = (item) => {
+    // --- Visual layer only from here down ---
+
+    const renderLink = (item, { compact = false } = {}) => {
         const Icon = item.icon;
 
         return (
@@ -145,14 +121,32 @@ function AdminSidebar({ mobileOpen, onClose }) {
                 key={item.href}
                 to={item.href}
                 end={item.href === "/admin"}
-                className={getLinkClass}
                 onClick={onClose}
+                className={({ isActive }) =>
+                    cn(
+                        "group relative flex w-full items-center gap-3 rounded-lg border-s-2 border-transparent",
+                        "text-sm font-medium transition-colors duration-150",
+                        compact ? "px-2.5 py-2" : "px-3 py-2.5",
+                        isActive
+                            ? "border-primary bg-primary/10 text-primary"
+                            : "text-muted-foreground hover:bg-muted/70 hover:text-foreground"
+                    )
+                }
             >
-                <Icon className="size-4 shrink-0" />
-
-                <span className="truncate">
-                    {item.label}
-                </span>
+                {({ isActive }) => (
+                    <>
+                        <Icon
+                            className={cn(
+                                compact ? "size-3.5" : "size-4",
+                                "shrink-0",
+                                isActive
+                                    ? "text-primary"
+                                    : "text-muted-foreground group-hover:text-foreground"
+                            )}
+                        />
+                        <span className="truncate">{item.label}</span>
+                    </>
+                )}
             </NavLink>
         );
     };
@@ -169,27 +163,25 @@ function AdminSidebar({ mobileOpen, onClose }) {
             )}
 
             <aside
-                className={[
-                    "z-50 flex h-screen w-64 shrink-0 flex-col border-e bg-sidebar",
+                className={cn(
+                    "z-50 flex h-screen w-64 shrink-0 flex-col border-e border-border/70 bg-sidebar",
                     "lg:fixed lg:inset-y-0 lg:start-0 lg:flex",
-                    mobileOpen
-                        ? "fixed inset-y-0 start-0 flex"
-                        : "hidden lg:flex",
-                ].join(" ")}
+                    mobileOpen ? "fixed inset-y-0 start-0 flex" : "hidden lg:flex"
+                )}
             >
-                <div className="flex h-16 shrink-0 items-center justify-between px-5">
-                    <div className="flex items-center gap-3">
-                        <div className="flex size-9 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+                {/* Header */}
+                <div className="flex h-16 shrink-0 items-center justify-between gap-2 px-4">
+                    <div className="flex min-w-0 items-center gap-2.5">
+                        <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground shadow-sm">
                             <GraduationCap className="size-5" />
                         </div>
 
                         <div className="min-w-0">
-                            <p className="truncate font-semibold">
-                                EduMatch
-                            </p>
-
-                            <p className="truncate text-xs text-muted-foreground">
+                            <p className="truncate text-[15px] font-semibold leading-tight text-foreground">
                                 Admin Portal
+                            </p>
+                            <p className="truncate text-[11px] font-medium leading-tight text-muted-foreground">
+                                EduMatch Administration
                             </p>
                         </div>
                     </div>
@@ -198,8 +190,9 @@ function AdminSidebar({ mobileOpen, onClose }) {
                         type="button"
                         variant="ghost"
                         size="icon"
-                        className="lg:hidden"
+                        className="shrink-0 lg:hidden"
                         onClick={onClose}
+                        aria-label="Close navigation"
                     >
                         <X className="size-5" />
                     </Button>
@@ -207,76 +200,76 @@ function AdminSidebar({ mobileOpen, onClose }) {
 
                 <Separator />
 
-                <div className="flex-1 overflow-y-auto px-3 py-5">
-                    <nav className="space-y-5">
-                        {renderLink(dashboardLink)}
+                {/* Navigation */}
+                <nav className="flex-1 overflow-y-auto px-4 py-4">
+                    {renderLink(dashboardLink)}
 
-                        {sections.map((section) => (
-                            <div
-                                key={section.label}
-                                className="space-y-1"
-                                onMouseEnter={() =>
-                                    setHoveredSection(section.label)
-                                }
-                                onMouseLeave={() =>
-                                    setHoveredSection(null)
-                                }
-                            >
-                                <button
-                                    type="button"
-                                    className={[
-                                        "flex w-full items-center justify-between gap-2 rounded-lg px-3 py-2 text-left",
-                                        "text-[11px] font-semibold uppercase tracking-wider transition-colors",
-                                        isSectionActive(section)
-                                            ? "bg-primary/10 text-primary"
-                                            : "text-muted-foreground hover:bg-muted hover:text-foreground",
-                                    ].join(" ")}
-                                    onClick={() =>
-                                        toggleSection(section.label)
-                                    }
-                                    aria-expanded={
-                                        hoveredSection === section.label ||
-                                        clickedSection === section.label ||
-                                        (isSectionActive(section) &&
-                                            closedActiveSection !== section.label)
-                                    }
-                                >
-                                    <span>{section.label}</span>
+                    <div className="mt-5 space-y-5">
+                        {sections.map((section) => {
+                            const SectionIcon = section.icon;
+                            const active = isSectionActive(section);
+                            const open = isSectionOpen(section);
 
-                                    <ChevronDown
-                                        className={[
-                                            "size-3.5 shrink-0 transition-transform duration-200",
-                                            hoveredSection === section.label ||
-                                                clickedSection === section.label ||
-                                                (isSectionActive(section) &&
-                                                    closedActiveSection !== section.label)
-                                                ? "rotate-180"
-                                                : "",
-                                        ].join(" ")}
-                                    />
-                                </button>
-
+                            return (
                                 <div
-                                    className={[
-                                        "overflow-hidden transition-all duration-200 ease-out",
-                                        hoveredSection === section.label ||
-                                            clickedSection === section.label ||
-                                            (isSectionActive(section) &&
-                                                closedActiveSection !== section.label)
-                                            ? "max-h-48 opacity-100"
-                                            : "pointer-events-none max-h-0 opacity-0",
-                                    ].join(" ")}
+                                    key={section.label}
+                                    onMouseEnter={() => setHoveredSection(section.label)}
+                                    onMouseLeave={() => setHoveredSection(null)}
                                 >
-                                    <div className="ms-3 space-y-1 border-s border-border/70 ps-2">
-                                        {section.links.map(renderLink)}
+                                    <button
+                                        type="button"
+                                        onClick={() => toggleSection(section.label)}
+                                        aria-expanded={open}
+                                        className={cn(
+                                            "flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left",
+                                            "text-sm font-medium transition-colors duration-150",
+                                            active
+                                                ? "text-primary"
+                                                : "text-foreground/80 hover:bg-muted/70 hover:text-foreground"
+                                        )}
+                                    >
+                                        <SectionIcon
+                                            className={cn(
+                                                "size-4 shrink-0",
+                                                active ? "text-primary" : "text-muted-foreground"
+                                            )}
+                                        />
+                                        <span className="flex-1 truncate">{section.label}</span>
+                                        <ChevronDown
+                                            className={cn(
+                                                "size-4 shrink-0 text-muted-foreground transition-transform duration-200",
+                                                open && "rotate-180",
+                                                active && "text-primary"
+                                            )}
+                                        />
+                                    </button>
+
+                                    <div
+                                        className={cn(
+                                            "grid transition-all duration-200 ease-out",
+                                            open
+                                                ? "grid-rows-[1fr] opacity-100"
+                                                : "grid-rows-[0fr] opacity-0"
+                                        )}
+                                    >
+                                        <div className="overflow-hidden">
+                                            <div className="ms-[18px] mt-1 space-y-1 border-s border-border/70 ps-3">
+                                                {section.links.map((item) =>
+                                                    renderLink(item, { compact: true })
+                                                )}
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        ))}
-                    </nav>
-                </div>
+                            );
+                        })}
+                    </div>
+                </nav>
 
-                <div className="shrink-0 border-t p-3">
+                <Separator />
+
+                {/* Footer */}
+                <div className="shrink-0 px-4 py-3">
                     <Button
                         type="button"
                         variant="ghost"
@@ -284,7 +277,6 @@ function AdminSidebar({ mobileOpen, onClose }) {
                         onClick={logout}
                     >
                         <LogOut className="size-4" />
-
                         <span>Logout</span>
                     </Button>
                 </div>
