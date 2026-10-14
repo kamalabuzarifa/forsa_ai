@@ -1,10 +1,14 @@
 <?php
 
 use App\Http\Controllers\Api\AdminApplicationController;
+use App\Http\Controllers\Api\AdminAuditLogController;
+use App\Http\Controllers\Api\AdminContentController;
 use App\Http\Controllers\Api\AdminCountryController;
 use App\Http\Controllers\Api\AdminDashboardController;
 use App\Http\Controllers\Api\AdminLookupController;
 use App\Http\Controllers\Api\AdminOpportunityController;
+use App\Http\Controllers\Api\AdminRoleController;
+use App\Http\Controllers\Api\AdminTaxonomyController;
 use App\Http\Controllers\Api\AdminUniversityController;
 use App\Http\Controllers\Api\AdminUserController;
 use App\Http\Controllers\Api\ApplicationController;
@@ -18,6 +22,7 @@ use App\Http\Controllers\Api\StudentProfileController;
 use App\Http\Controllers\Api\AdvisorController;
 use App\Http\Controllers\Api\SavedOpportunityController;
 use App\Http\Controllers\Api\UniversityController;
+use App\Http\Controllers\Api\ContentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -50,6 +55,12 @@ Route::prefix('auth')->group(function () {
         )->name('auth.logout');
     });
 });
+
+
+Route::get(
+    '/content/pages/{slug}',
+    [ContentController::class, 'show']
+)->name('content.pages.show');
 
 
 /*
@@ -343,17 +354,128 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::get(
                 '/users',
                 [AdminUserController::class, 'index']
-            )->name('admin.users.index');
+            )->middleware('permission:users.view')
+                ->name('admin.users.index');
 
             Route::put(
                 '/users/{user}',
                 [AdminUserController::class, 'update']
-            )->name('admin.users.update');
+            )->middleware('permission:users.manage')
+                ->name('admin.users.update');
 
             Route::delete(
                 '/users/{user}',
                 [AdminUserController::class, 'destroy']
-            )->name('admin.users.destroy');
+            )->middleware('permission:users.manage')
+                ->name('admin.users.destroy');
+
+            Route::get(
+                '/roles',
+                [AdminRoleController::class, 'index']
+            )->middleware('permission:roles.manage')
+                ->name('admin.roles.index');
+
+            Route::post(
+                '/roles',
+                [AdminRoleController::class, 'store']
+            )->middleware('permission:roles.manage')
+                ->name('admin.roles.store');
+
+            Route::put(
+                '/roles/{role}',
+                [AdminRoleController::class, 'update']
+            )->middleware('permission:roles.manage')
+                ->name('admin.roles.update');
+
+            Route::delete(
+                '/roles/{role}',
+                [AdminRoleController::class, 'destroy']
+            )->middleware('permission:roles.manage')
+                ->name('admin.roles.destroy');
+
+            Route::get(
+                '/taxonomies/{taxonomy}',
+                [AdminTaxonomyController::class, 'index']
+            )->middleware('permission:taxonomies.manage')
+                ->name('admin.taxonomies.index');
+
+            Route::post(
+                '/taxonomies/{taxonomy}',
+                [AdminTaxonomyController::class, 'store']
+            )->middleware('permission:taxonomies.manage')
+                ->name('admin.taxonomies.store');
+
+            Route::put(
+                '/taxonomies/{taxonomy}/{id}',
+                [AdminTaxonomyController::class, 'update']
+            )->middleware('permission:taxonomies.manage')
+                ->name('admin.taxonomies.update');
+
+            Route::delete(
+                '/taxonomies/{taxonomy}/{id}',
+                [AdminTaxonomyController::class, 'destroy']
+            )->middleware('permission:taxonomies.manage')
+                ->name('admin.taxonomies.destroy');
+
+            Route::get(
+                '/audit-logs',
+                [AdminAuditLogController::class, 'index']
+            )->middleware('permission:audit_logs.view')
+                ->name('admin.audit-logs.index');
+
+            Route::get(
+                '/content/pages',
+                [AdminContentController::class, 'pages']
+            )->middleware('permission:pages.view')
+                ->name('admin.content.pages.index');
+
+            Route::post(
+                '/content/pages',
+                [AdminContentController::class, 'storePage']
+            )->middleware('permission:pages.create')
+                ->name('admin.content.pages.store');
+
+            Route::put(
+                '/content/pages/{page}',
+                [AdminContentController::class, 'updatePage']
+            )->middleware('permission:pages.update')
+                ->name('admin.content.pages.update');
+
+            Route::post(
+                '/content/pages/{page}/publish',
+                [AdminContentController::class, 'publishPage']
+            )->middleware('permission:pages.publish')
+                ->name('admin.content.pages.publish');
+
+            Route::post(
+                '/content/pages/{page}/unpublish',
+                [AdminContentController::class, 'unpublishPage']
+            )->middleware('permission:pages.publish')
+                ->name('admin.content.pages.unpublish');
+
+            Route::get(
+                '/content/pages/{page}/sections',
+                [AdminContentController::class, 'sections']
+            )->middleware('permission:pages.view')
+                ->name('admin.content.sections.index');
+
+            Route::post(
+                '/content/pages/{page}/sections',
+                [AdminContentController::class, 'storeSection']
+            )->middleware('permission:pages.manage_sections')
+                ->name('admin.content.sections.store');
+
+            Route::put(
+                '/content/sections/{section}',
+                [AdminContentController::class, 'updateSection']
+            )->middleware('permission:pages.manage_sections')
+                ->name('admin.content.sections.update');
+
+            Route::delete(
+                '/content/sections/{section}',
+                [AdminContentController::class, 'destroySection']
+            )->middleware('permission:pages.manage_sections')
+                ->name('admin.content.sections.destroy');
 
 
             /*
@@ -365,22 +487,26 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::get(
                 '/countries',
                 [AdminCountryController::class, 'index']
-            )->name('admin.countries.index');
+            )->middleware('permission:universities.view')
+                ->name('admin.countries.index');
 
             Route::post(
                 '/countries',
                 [AdminCountryController::class, 'store']
-            )->name('admin.countries.store');
+            )->middleware('permission:universities.create')
+                ->name('admin.countries.store');
 
             Route::put(
                 '/countries/{country}',
                 [AdminCountryController::class, 'update']
-            )->name('admin.countries.update');
+            )->middleware('permission:universities.update')
+                ->name('admin.countries.update');
 
             Route::delete(
                 '/countries/{country}',
                 [AdminCountryController::class, 'destroy']
-            )->name('admin.countries.destroy');
+            )->middleware('permission:universities.delete')
+                ->name('admin.countries.destroy');
 
 
             /*
@@ -392,22 +518,26 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::get(
                 '/universities',
                 [AdminUniversityController::class, 'index']
-            )->name('admin.universities.index');
+            )->middleware('permission:universities.view')
+                ->name('admin.universities.index');
 
             Route::post(
                 '/universities',
                 [AdminUniversityController::class, 'store']
-            )->name('admin.universities.store');
+            )->middleware('permission:universities.create')
+                ->name('admin.universities.store');
 
             Route::put(
                 '/universities/{university}',
                 [AdminUniversityController::class, 'update']
-            )->name('admin.universities.update');
+            )->middleware('permission:universities.update')
+                ->name('admin.universities.update');
 
             Route::delete(
                 '/universities/{university}',
                 [AdminUniversityController::class, 'destroy']
-            )->name('admin.universities.destroy');
+            )->middleware('permission:universities.delete')
+                ->name('admin.universities.destroy');
 
 
             /*
@@ -419,27 +549,32 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::get(
                 '/opportunities',
                 [AdminOpportunityController::class, 'index']
-            )->name('admin.opportunities.index');
+            )->middleware('permission:opportunities.view')
+                ->name('admin.opportunities.index');
 
             Route::post(
                 '/opportunities',
                 [AdminOpportunityController::class, 'store']
-            )->name('admin.opportunities.store');
+            )->middleware('permission:opportunities.create')
+                ->name('admin.opportunities.store');
 
             Route::get(
                 '/opportunities/{opportunity}',
                 [AdminOpportunityController::class, 'show']
-            )->name('admin.opportunities.show');
+            )->middleware('permission:opportunities.view')
+                ->name('admin.opportunities.show');
 
             Route::put(
                 '/opportunities/{opportunity}',
                 [AdminOpportunityController::class, 'update']
-            )->name('admin.opportunities.update');
+            )->middleware('permission:opportunities.update')
+                ->name('admin.opportunities.update');
 
             Route::delete(
                 '/opportunities/{opportunity}',
                 [AdminOpportunityController::class, 'destroy']
-            )->name('admin.opportunities.destroy');
+            )->middleware('permission:opportunities.delete')
+                ->name('admin.opportunities.destroy');
 
 
             /*
@@ -451,16 +586,19 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::get(
                 '/applications',
                 [AdminApplicationController::class, 'index']
-            )->name('admin.applications.index');
+            )->middleware('permission:applications.view')
+                ->name('admin.applications.index');
 
             Route::get(
                 '/applications/{application}',
                 [AdminApplicationController::class, 'show']
-            )->name('admin.applications.show');
+            )->middleware('permission:applications.view')
+                ->name('admin.applications.show');
 
             Route::put(
                 '/applications/{application}',
                 [AdminApplicationController::class, 'update']
-            )->name('admin.applications.update');
+            )->middleware('permission:applications.review')
+                ->name('admin.applications.update');
         });
 });

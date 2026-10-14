@@ -64,6 +64,12 @@ class AdminOpportunityController extends Controller
                 $data['opportunity_type_id'],
                 'funding_type_id' =>
                 $data['funding_type_id'] ?? null,
+                'annual_tuition' =>
+                $data['annual_tuition'] ?? null,
+                'currency' =>
+                $data['currency'] ?? null,
+                'study_mode' =>
+                $data['study_mode'] ?? null,
                 'application_url' =>
                 $data['application_url'],
                 'source_url' =>
@@ -125,6 +131,9 @@ class AdminOpportunityController extends Controller
                 'country_id',
                 'opportunity_type_id',
                 'funding_type_id',
+                'annual_tuition',
+                'currency',
+                'study_mode',
                 'application_url',
                 'source_url',
                 'deadline',

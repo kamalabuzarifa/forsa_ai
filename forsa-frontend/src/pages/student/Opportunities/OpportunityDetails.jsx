@@ -36,6 +36,7 @@ import {
 } from "../../../api/applications";
 
 import "./OpportunityDetails.css";
+import "../../../components/student/StudentDetail.css";
 import LoadingScreen from "../../../components/LoadingScreen";
 
 

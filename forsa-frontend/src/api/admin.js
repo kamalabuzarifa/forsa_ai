@@ -46,6 +46,122 @@ export const deleteAdminUser = async (userId) => {
 
 /*
 |--------------------------------------------------------------------------
+| Admin Roles and Permissions
+|--------------------------------------------------------------------------
+*/
+
+export const getAdminRoles = async () => {
+    const response = await api.get("/admin/roles");
+
+    return response.data;
+};
+
+export const createAdminRole = async (data) => {
+    const response = await api.post("/admin/roles", data);
+
+    return response.data;
+};
+
+export const updateAdminRole = async (roleId, data) => {
+    const response = await api.put(`/admin/roles/${roleId}`, data);
+
+    return response.data;
+};
+
+export const deleteAdminRole = async (roleId) => {
+    const response = await api.delete(`/admin/roles/${roleId}`);
+
+    return response.data;
+};
+
+export const getAdminTaxonomy = async (taxonomy) => {
+    const response = await api.get(`/admin/taxonomies/${taxonomy}`);
+
+    return response.data;
+};
+
+export const createAdminTaxonomy = async (taxonomy, data) => {
+    const response = await api.post(`/admin/taxonomies/${taxonomy}`, data);
+
+    return response.data;
+};
+
+export const updateAdminTaxonomy = async (taxonomy, id, data) => {
+    const response = await api.put(`/admin/taxonomies/${taxonomy}/${id}`, data);
+
+    return response.data;
+};
+
+export const deleteAdminTaxonomy = async (taxonomy, id) => {
+    const response = await api.delete(`/admin/taxonomies/${taxonomy}/${id}`);
+
+    return response.data;
+};
+
+export const getAdminAuditLogs = async (page = 1, params = {}) => {
+    const response = await api.get("/admin/audit-logs", {
+        params: { page, ...params },
+    });
+
+    return response.data;
+};
+
+export const getAdminContentPages = async () => {
+    const response = await api.get("/admin/content/pages");
+
+    return response.data;
+};
+
+export const createAdminContentPage = async (data) => {
+    const response = await api.post("/admin/content/pages", data);
+
+    return response.data;
+};
+
+export const updateAdminContentPage = async (pageId, data) => {
+    const response = await api.put(`/admin/content/pages/${pageId}`, data);
+
+    return response.data;
+};
+
+export const publishAdminContentPage = async (pageId) => {
+    const response = await api.post(`/admin/content/pages/${pageId}/publish`);
+
+    return response.data;
+};
+
+export const unpublishAdminContentPage = async (pageId) => {
+    const response = await api.post(`/admin/content/pages/${pageId}/unpublish`);
+
+    return response.data;
+};
+
+export const getAdminContentSections = async (pageId) => {
+    const response = await api.get(`/admin/content/pages/${pageId}/sections`);
+
+    return response.data;
+};
+
+export const createAdminContentSection = async (pageId, data) => {
+    const response = await api.post(`/admin/content/pages/${pageId}/sections`, data);
+
+    return response.data;
+};
+
+export const updateAdminContentSection = async (sectionId, data) => {
+    const response = await api.put(`/admin/content/sections/${sectionId}`, data);
+
+    return response.data;
+};
+
+export const deleteAdminContentSection = async (sectionId) => {
+    const response = await api.delete(`/admin/content/sections/${sectionId}`);
+
+    return response.data;
+};
+
+/*
+|--------------------------------------------------------------------------
 | Admin Universities
 |--------------------------------------------------------------------------
 */

@@ -90,6 +90,10 @@ import Countries from "../pages/admin/Countries";
 import AdminUsers from "../pages/admin/Users";
 import AdminStudents from "../pages/admin/Students";
 import AdminReports from "../pages/admin/Reports";
+import AdminRoles from "../pages/admin/Roles";
+import AdminTaxonomies from "../pages/admin/Taxonomies";
+import AdminAuditLogs from "../pages/admin/AuditLogs";
+import AdminContentPages from "../pages/admin/ContentPages";
 
 
 // =========================================================
@@ -405,6 +409,26 @@ function AppRoutes() {
                     <Route
                         path="/admin/users"
                         element={<AdminUsers />}
+                    />
+
+                    <Route
+                        path="/admin/roles"
+                        element={<AdminRoles />}
+                    />
+
+                    <Route
+                        path="/admin/taxonomies"
+                        element={<AdminTaxonomies />}
+                    />
+
+                    <Route
+                        path="/admin/audit-logs"
+                        element={<AdminAuditLogs />}
+                    />
+
+                    <Route
+                        path="/admin/content"
+                        element={<AdminContentPages />}
                     />
 
                     <Route

@@ -1,0 +1,73 @@
+.admin-main {
+    background: #f7fcfa;
+}
+
+.admin-main > * {
+    min-height: 100%;
+}
+
+.admin-main .admin-content-width {
+    width: 100%;
+    max-width: 80rem;
+    margin-inline: auto;
+    padding: 1.5rem 1rem 2.5rem;
+}
+
+.admin-main .admin-content-width.admin-content-narrow {
+    max-width: 64rem;
+}
+
+.admin-main .admin-content-width.admin-content-form {
+    max-width: 72rem;
+}
+
+.admin-main .admin-content-width > * + * {
+    margin-top: 1.5rem;
+}
+
+.admin-main [data-slot="card"] {
+    border-color: hsl(var(--border) / 0.75);
+    box-shadow: 0 1px 2px rgb(15 23 42 / 0.04);
+}
+
+.admin-main [data-slot="card-header"] {
+    padding: 1.25rem 1.5rem;
+}
+
+.admin-main [data-slot="card-content"] {
+    padding: 1.25rem 1.5rem;
+}
+
+.admin-main [data-slot="card-header"] + [data-slot="card-content"] {
+    padding-top: 0;
+}
+
+.admin-main .admin-content-width > section:first-child h1,
+.admin-main .admin-content-width > div:first-child h1 {
+    letter-spacing: -0.025em;
+}
+
+.admin-main table thead {
+    background: hsl(var(--muted) / 0.45);
+}
+
+.admin-main table tbody tr {
+    transition: background-color 150ms ease;
+}
+
+.admin-main table tbody tr:hover {
+    background: hsl(var(--muted) / 0.3);
+}
+
+@media (min-width: 640px) {
+    .admin-main .admin-content-width {
+        padding-inline: 1.5rem;
+    }
+}
+
+@media (min-width: 1024px) {
+    .admin-main .admin-content-width {
+        padding-inline: 2rem;
+        padding-top: 2rem;
+    }
+}

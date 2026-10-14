@@ -57,6 +57,27 @@ class StoreOpportunityRequest extends FormRequest
                 'exists:funding_types,id',
             ],
 
+            'annual_tuition' => [
+                'nullable',
+                'numeric',
+                'min:0',
+            ],
+
+            'currency' => [
+                'nullable',
+                'string',
+                'max:10',
+            ],
+
+            'study_mode' => [
+                'nullable',
+                Rule::in([
+                    'on_campus',
+                    'online',
+                    'hybrid',
+                ]),
+            ],
+
             'application_url' => [
                 'required',
                 'url',

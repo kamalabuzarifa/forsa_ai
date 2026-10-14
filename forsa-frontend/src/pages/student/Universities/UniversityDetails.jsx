@@ -26,6 +26,7 @@ import {
 } from "../../../api/universities";
 
 import "./UniversityDetails.css";
+import "../../../components/student/StudentDetail.css";
 import LoadingScreen from "../../../components/LoadingScreen";
 
 
@@ -636,7 +637,12 @@ function UniversityDetails() {
 
             <section className="university-details-stats">
 
-                <div className="university-details-stats-inner">
+                <div
+                    className={`university-details-stats-inner ${!countryName || !university.website
+                            ? "has-fewer-stats"
+                            : ""
+                        }`}
+                >
 
                     <div className="university-stat">
 

@@ -68,6 +68,30 @@ class UpdateOpportunityRequest extends FormRequest
                 'exists:funding_types,id',
             ],
 
+            'annual_tuition' => [
+                'sometimes',
+                'nullable',
+                'numeric',
+                'min:0',
+            ],
+
+            'currency' => [
+                'sometimes',
+                'nullable',
+                'string',
+                'max:10',
+            ],
+
+            'study_mode' => [
+                'sometimes',
+                'nullable',
+                Rule::in([
+                    'on_campus',
+                    'online',
+                    'hybrid',
+                ]),
+            ],
+
             'application_url' => [
                 'sometimes',
                 'url',

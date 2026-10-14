@@ -1,0 +1,191 @@
+/* Shared card language based on the Programs page reference. */
+
+.student-reference-card {
+    min-width: 0;
+
+    display: flex;
+    flex-direction: column;
+
+    overflow: hidden;
+
+    padding: 0;
+
+    border: 1px solid #e2e8f0;
+    border-radius: 17px;
+
+    background: #ffffff;
+
+    box-shadow:
+        0 4px 16px rgba(15, 23, 42, 0.03);
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        transform 0.2s ease;
+}
+
+.student-reference-card:hover {
+    border-color: #a7ddd7;
+
+    box-shadow:
+        0 10px 28px rgba(15, 23, 42, 0.07);
+
+    transform: translateY(-2px);
+}
+
+.student-reference-card .student-card-top {
+    padding: 18px 18px 17px;
+
+    border-bottom: 1px solid #e2e8f0;
+
+    background: #ffffff;
+}
+
+.student-reference-card .student-card-body {
+    min-width: 0;
+
+    flex: 1;
+
+    padding: 18px;
+}
+
+.student-reference-card .student-card-meta {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    align-items: center;
+
+    gap: 7px;
+
+    margin: 0 18px;
+    padding: 14px 0;
+
+    border-top: 1px solid #e2e8f0;
+}
+
+.student-reference-card .student-card-meta-item {
+    min-width: 0;
+    min-height: 27px;
+    max-width: 100%;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    box-sizing: border-box;
+    padding: 0 9px;
+
+    border: 1px solid #e2e8f0;
+    border-radius: 7px;
+
+    color: #475569;
+    background: #f8fafc;
+
+    font-size: 12px;
+    line-height: 1.4;
+    font-weight: 600;
+
+    white-space: nowrap;
+}
+
+.student-reference-card .student-card-meta-item.is-primary {
+    color: #0f9f8f;
+
+    border-color: #c5ebe6;
+
+    background: #e8f7f5;
+}
+
+.student-reference-card .student-card-footer {
+    min-height: 68px;
+
+    box-sizing: border-box;
+    padding: 13px 18px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 12px;
+
+    border-top: 1px solid #e2e8f0;
+
+    background: #f8fafc;
+}
+
+.student-reference-card .student-card-action {
+    width: 36px;
+    height: 36px;
+
+    flex: 0 0 36px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 1px solid #c5ebe6;
+    border-radius: 10px;
+
+    color: #0f9f8f;
+    background: #ffffff;
+
+    text-decoration: none;
+
+    transition:
+        background 0.2s ease,
+        color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.student-reference-card .student-card-action:hover {
+    color: #ffffff;
+
+    background: #0f9f8f;
+
+    transform: translateX(2px);
+}
+
+@media (max-width: 650px) {
+    .student-reference-card {
+        border-radius: 15px;
+    }
+
+    .student-reference-card .student-card-top {
+        padding: 15px;
+    }
+
+    .student-reference-card .student-card-body {
+        padding: 16px 15px;
+    }
+
+    .student-reference-card .student-card-meta {
+        grid-template-columns: 1fr;
+
+        margin-right: 15px;
+        margin-left: 15px;
+    }
+
+    .student-reference-card .student-card-footer {
+        padding-right: 15px;
+        padding-left: 15px;
+    }
+}
+
+@media (max-width: 420px) {
+    .student-reference-card .student-card-top {
+        padding: 14px;
+    }
+
+    .student-reference-card .student-card-body {
+        padding: 15px 14px;
+    }
+
+    .student-reference-card .student-card-meta {
+        margin-right: 14px;
+        margin-left: 14px;
+    }
+
+    .student-reference-card .student-card-footer {
+        padding-right: 14px;
+        padding-left: 14px;
+    }
+}

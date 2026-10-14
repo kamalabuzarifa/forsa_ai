@@ -1,13 +1,9 @@
 import {
     ArrowRight,
     Bookmark,
-    Building2,
-    CalendarDays,
     ExternalLink,
-    GraduationCap,
-    MapPin,
+    Heart,
     Search,
-    Trash2,
     X,
     Loader2,
     AlertCircle,
@@ -29,6 +25,7 @@ import {
     removeSavedOpportunity,
 } from "../../../api/saved";
 
+import "../Programs/Programs.css";
 import "./Saved.css";
 import LoadingScreen from "../../../components/LoadingScreen";
 
@@ -945,24 +942,41 @@ function SavedCard({
 
     return (
 
-        <article className="saved-card">
+        <article className="program-card saved-opportunity-card">
 
-            <div className="saved-card-top">
+            <div className="program-card-top">
 
-                <div className="saved-card-icon">
+                <div className="program-card-top-main">
 
-                    <GraduationCap
-                        size={21}
-                    />
+                    <div className="program-card-degree-header">
+
+                        {degrees[0] && (
+
+                            <strong>
+                                {degrees[0]}
+                            </strong>
+
+                        )}
+
+                        {university && (
+
+                            <span>
+                                {university}
+                            </span>
+
+                        )}
+
+                    </div>
 
                 </div>
 
 
                 <button
                     type="button"
-                    className="saved-remove-button"
+                    className="program-card-save"
                     title="Remove from saved"
                     aria-label={`Remove ${title} from saved`}
+                    aria-pressed="true"
                     disabled={
                         removingId === item.id
                     }
@@ -983,8 +997,9 @@ function SavedCard({
 
                     ) : (
 
-                        <Trash2
-                            size={15}
+                        <Heart
+                            size={17}
+                            fill="currentColor"
                         />
 
                     )}
@@ -994,57 +1009,25 @@ function SavedCard({
             </div>
 
 
-            {opportunityType && (
+            <div className="program-card-body">
 
-                <span className="saved-card-type">
+                {fields[0] && (
 
-                    {opportunityType}
+                    <span className="program-card-field">
+                        {fields[0]}
+                    </span>
 
-                </span>
-
-            )}
+                )}
 
 
-            <div className="saved-card-body">
-
-                <h3>
+                <h2>
                     {title}
-                </h3>
-
-
-                {university && (
-
-                    <p className="saved-card-university">
-
-                        <Building2
-                            size={14}
-                        />
-
-                        {university}
-
-                    </p>
-
-                )}
-
-
-                {country && (
-
-                    <div className="saved-card-location">
-
-                        <MapPin
-                            size={13}
-                        />
-
-                        {country}
-
-                    </div>
-
-                )}
+                </h2>
 
 
                 {opportunity.description && (
 
-                    <p className="saved-card-description">
+                    <p className="program-card-description">
 
                         {getDisplayValue(
                             opportunity.description
@@ -1055,102 +1038,77 @@ function SavedCard({
                 )}
 
 
-                <div className="saved-card-meta">
+            </div>
 
-                    {degrees.length > 0 && (
 
-                        <div>
+            {(country || opportunityType || fundingType || studyMode) && (
 
-                            <span>
-                                Degree
-                            </span>
+                <div className="program-card-meta">
 
-                            <strong>
-                                {degrees.join(", ")}
-                            </strong>
+                    {country && (
 
-                        </div>
+                        <span>
+                            {country}
+                        </span>
 
                     )}
 
+                    {opportunityType && (
 
-                    {fields.length > 0 && (
-
-                        <div>
-
-                            <span>
-                                Field
-                            </span>
-
-                            <strong>
-                                {fields.join(", ")}
-                            </strong>
-
-                        </div>
+                        <span>
+                            {opportunityType}
+                        </span>
 
                     )}
-
 
                     {fundingType && (
 
-                        <div>
-
-                            <span>
-                                Funding
-                            </span>
-
-                            <strong>
-                                {fundingType}
-                            </strong>
-
-                        </div>
+                        <span>
+                            {fundingType}
+                        </span>
 
                     )}
 
-
                     {studyMode && (
 
-                        <div>
-
-                            <span>
-                                Study mode
-                            </span>
-
-                            <strong>
-                                {studyMode}
-                            </strong>
-
-                        </div>
+                        <span>
+                            {studyMode}
+                        </span>
 
                     )}
 
                 </div>
 
-            </div>
+            )}
 
 
-            <div className="saved-card-footer">
+            <div className="program-card-footer">
 
-                <div className="saved-card-deadline">
+                <div className="program-card-deadline">
 
-                    <CalendarDays
-                        size={14}
-                    />
+                    {deadline ? (
 
+                        <>
 
-                    <div>
+                            <span>
+                                Deadline
+                            </span>
+
+                            <strong>
+                                {formatDate(
+                                    deadline
+                                )}
+                            </strong>
+
+                        </>
+
+                    ) : (
 
                         <span>
-                            Deadline
+                            Application deadline
                         </span>
 
-                        <strong>
-                            {formatDate(
-                                deadline
-                            )}
-                        </strong>
-
-                    </div>
+                    )}
 
                 </div>
 
@@ -1161,13 +1119,12 @@ function SavedCard({
                         to={`/student/programs/${opportunity.slug ||
                             opportunity.id
                             }`}
-                        className="saved-card-button"
+                        className="program-card-arrow"
+                        aria-label={`View ${title}`}
                     >
 
-                        View programme
-
                         <ArrowRight
-                            size={14}
+                            size={18}
                         />
 
                     </Link>
@@ -1182,12 +1139,11 @@ function SavedCard({
                             target="_blank"
                             rel="noopener noreferrer"
                             className="saved-apply-button"
+                            aria-label={`Apply for ${title}`}
                         >
 
-                            Apply
-
                             <ExternalLink
-                                size={13}
+                                size={16}
                             />
 
                         </a>

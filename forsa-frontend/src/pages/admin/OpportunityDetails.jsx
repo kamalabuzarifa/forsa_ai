@@ -200,7 +200,7 @@ function AdminOpportunityDetails() {
     if (loading) {
         return (
             <div className="w-full">
-                <div className="mx-auto flex min-h-[60vh] max-w-7xl items-center justify-center px-4">
+                <div className="admin-content-width flex min-h-[60vh] items-center justify-center">
                     <div className="flex flex-col items-center gap-3">
                         <Loader2 className="size-7 animate-spin text-muted-foreground" />
 
@@ -216,7 +216,7 @@ function AdminOpportunityDetails() {
     if (error) {
         return (
             <div className="w-full">
-                <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+                <div className="admin-content-width">
                     <Card>
                         <CardContent className="flex min-h-[400px] flex-col items-center justify-center text-center">
                             <div className="mb-4 flex size-12 items-center justify-center rounded-full bg-destructive/10">
@@ -248,7 +248,7 @@ function AdminOpportunityDetails() {
     if (!opportunity) {
         return (
             <div className="w-full">
-                <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+                <div className="admin-content-width">
                     <Card>
                         <CardContent className="flex min-h-[400px] flex-col items-center justify-center text-center">
                             <h1 className="text-xl font-semibold">
@@ -292,7 +292,7 @@ function AdminOpportunityDetails() {
 
     return (
         <div className="w-full">
-            <div className="mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+            <div className="admin-content-width">
                 <div className="space-y-6">
 
                     <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">

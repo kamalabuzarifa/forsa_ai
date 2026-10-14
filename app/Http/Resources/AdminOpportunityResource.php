@@ -50,6 +50,12 @@ class AdminOpportunityResource extends JsonResource
                 ]
             ),
 
+            'annual_tuition' => $this->annual_tuition,
+
+            'currency' => $this->currency,
+
+            'study_mode' => $this->study_mode,
+
             'application_url' => $this->application_url,
 
             'source_url' => $this->source_url,

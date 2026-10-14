@@ -32,6 +32,7 @@ import {
 import LoadingScreen from "../../../components/LoadingScreen";
 
 import "./ApplicationDetails.css";
+import "../../../components/student/StudentDetail.css";
 
 
 /* =========================================================
@@ -762,7 +763,7 @@ function ApplicationDetails() {
                    BREADCRUMB
                 ================================================= */}
 
-                <div className="application-details-breadcrumb">
+                {/* <div className="application-details-breadcrumb">
 
                     <Link to="/student/applications">
 
@@ -778,7 +779,7 @@ function ApplicationDetails() {
                         Application #{application.id}
                     </span>
 
-                </div>
+                </div> */}
 
 
                 {/* =================================================

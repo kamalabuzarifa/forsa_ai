@@ -171,11 +171,16 @@ function ProtectedRoute({
 
     if (
         role &&
-        user?.role !== role
+        user?.role !== role &&
+        !(
+            role === "admin" &&
+            user?.role === "super_admin"
+        )
     ) {
 
         const fallbackPath =
-            user?.role === "admin"
+            user?.role === "admin" ||
+            user?.role === "super_admin"
                 ? "/admin"
                 : "/student";
 

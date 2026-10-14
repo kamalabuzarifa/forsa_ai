@@ -246,6 +246,14 @@
 }
 
 
+.university-details-stats-inner.has-fewer-stats {
+    grid-template-columns:
+        repeat(auto-fit, minmax(280px, 360px));
+
+    justify-content: center;
+}
+
+
 .university-stat {
     min-height: 100px;
 
@@ -1369,6 +1377,10 @@
     }
 
     .university-details-stats-inner {
+        grid-template-columns: 1fr;
+    }
+
+    .university-details-stats-inner.has-fewer-stats {
         grid-template-columns: 1fr;
     }
 

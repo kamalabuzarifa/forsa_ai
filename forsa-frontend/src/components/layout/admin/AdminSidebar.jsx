@@ -44,6 +44,7 @@ function AdminSidebar({ mobileOpen, onClose }) {
                 { label: "Countries", href: "/admin/countries", icon: Globe2 },
                 { label: "Universities", href: "/admin/universities", icon: Building2 },
                 { label: "Programs", href: "/admin/programs", icon: GraduationCap },
+                { label: "Taxonomies", href: "/admin/taxonomies", icon: BookOpen },
             ],
         },
         {
@@ -66,6 +67,7 @@ function AdminSidebar({ mobileOpen, onClose }) {
             icon: ShieldCheck,
             links: [
                 { label: "Users & Access", href: "/admin/users", icon: Users },
+                { label: "Roles & Permissions", href: "/admin/roles", icon: ShieldCheck },
             ],
         },
         {
@@ -73,6 +75,8 @@ function AdminSidebar({ mobileOpen, onClose }) {
             icon: PieChart,
             links: [
                 { label: "Reports", href: "/admin/reports", icon: BarChart3 },
+                { label: "Audit Logs", href: "/admin/audit-logs", icon: ShieldCheck },
+                { label: "Website Content", href: "/admin/content", icon: FileText },
             ],
         },
     ];

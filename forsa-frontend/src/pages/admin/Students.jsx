@@ -42,7 +42,7 @@ function AdminStudents() {
 
     return (
         <div className="w-full">
-            <div className="mx-auto w-full max-w-7xl space-y-6 px-4 py-6 sm:px-6 lg:px-8">
+            <div className="admin-content-width space-y-6">
                 <section>
                     <Badge variant="secondary" className="mb-2">Admin control</Badge>
                     <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">Students</h1>

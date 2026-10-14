@@ -92,7 +92,8 @@ export function AuthProvider({ children }) {
         user?.role === "student";
 
     const isAdmin =
-        user?.role === "admin";
+        user?.role === "admin" ||
+        user?.role === "super_admin";
 
 
     /*

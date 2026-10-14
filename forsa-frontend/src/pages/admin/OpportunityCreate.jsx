@@ -34,6 +34,9 @@ const createInitialForm = () => ({
     country_id: "",
     opportunity_type_id: "",
     funding_type_id: "",
+    annual_tuition: "",
+    currency: "USD",
+    study_mode: "",
 
     application_url: "",
     source_url: "",
@@ -758,6 +761,17 @@ function OpportunityCreate() {
                     )
                     : null,
 
+            annual_tuition:
+                form.annual_tuition === ""
+                    ? null
+                    : Number(form.annual_tuition),
+
+            currency:
+                form.currency.trim() || null,
+
+            study_mode:
+                form.study_mode || null,
+
             application_url:
                 form.application_url.trim(),
 
@@ -905,7 +919,7 @@ function OpportunityCreate() {
 
     return (
         <div className="w-full">
-            <div className="mx-auto w-full max-w-6xl px-4 py-6 sm:px-6 lg:px-8">
+            <div className="admin-content-width admin-content-form">
                 <div className="space-y-6">
 
                     <Link
@@ -1350,6 +1364,56 @@ function OpportunityCreate() {
                                                     </option>
                                                 )
                                             )}
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div className="grid gap-4 md:grid-cols-3">
+                                    <div className="space-y-2">
+                                        <label htmlFor="annual_tuition" className="text-sm font-medium">
+                                            Annual Tuition
+                                        </label>
+                                        <Input
+                                            id="annual_tuition"
+                                            name="annual_tuition"
+                                            type="number"
+                                            min="0"
+                                            step="0.01"
+                                            value={form.annual_tuition}
+                                            onChange={handleInputChange}
+                                            placeholder="Optional"
+                                        />
+                                    </div>
+
+                                    <div className="space-y-2">
+                                        <label htmlFor="currency" className="text-sm font-medium">
+                                            Currency
+                                        </label>
+                                        <Input
+                                            id="currency"
+                                            name="currency"
+                                            value={form.currency}
+                                            onChange={handleInputChange}
+                                            placeholder="USD"
+                                            maxLength={10}
+                                        />
+                                    </div>
+
+                                    <div className="space-y-2">
+                                        <label htmlFor="study_mode" className="text-sm font-medium">
+                                            Study Mode
+                                        </label>
+                                        <select
+                                            id="study_mode"
+                                            name="study_mode"
+                                            value={form.study_mode}
+                                            onChange={handleInputChange}
+                                            className="h-10 w-full rounded-md border bg-background px-3 text-sm outline-none focus:ring-2 focus:ring-ring"
+                                        >
+                                            <option value="">Not specified</option>
+                                            <option value="on_campus">On campus</option>
+                                            <option value="online">Online</option>
+                                            <option value="hybrid">Hybrid</option>
                                         </select>
                                     </div>
                                 </div>

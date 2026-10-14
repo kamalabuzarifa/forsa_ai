@@ -28,6 +28,7 @@ import {
 } from "../../../api/scholarships";
 
 import "./Scholarships.css";
+import "../../../components/student/StudentCard.css";
 import LoadingScreen from "../../../components/LoadingScreen";
 
 
@@ -1843,12 +1844,12 @@ export default function Scholarships() {
                                         key={
                                             scholarship.id
                                         }
-                                        className="scholarship-card"
+                                        className="scholarship-card student-reference-card"
                                     >
 
                                         {/* CARD TOP */}
 
-                                        <div className="scholarship-card-top">
+                                        <div className="scholarship-card-top student-card-top">
 
                                             <div className="scholarship-icon">
 
@@ -1915,91 +1916,95 @@ export default function Scholarships() {
                                         </div>
 
 
-                                        {/* TITLE */}
+                                        <div className="scholarship-card-body student-card-body">
 
-                                        <h2>
-                                            {
-                                                scholarship.title
-                                            }
-                                        </h2>
+                                            {/* TITLE */}
 
-
-                                        {/* UNIVERSITY */}
-
-                                        <p className="scholarship-university">
-
-                                            <GraduationCap
-                                                size={15}
-                                            />
-
-                                            {
-                                                scholarship.university
-                                            }
-
-                                        </p>
-
-
-                                        {/* DESCRIPTION */}
-
-                                        <p className="scholarship-description">
-
-                                            {
-                                                scholarship.description
-                                            }
-
-                                        </p>
-
-
-                                        {/* META */}
-
-                                        <div className="scholarship-meta">
-
-                                            <span>
-
-                                                <Globe2
-                                                    size={15}
-                                                />
-
+                                            <h2>
                                                 {
-                                                    scholarship.country ||
-                                                    "Not specified"
+                                                    scholarship.title
                                                 }
+                                            </h2>
 
-                                            </span>
 
+                                            {/* UNIVERSITY */}
 
-                                            <span>
+                                            <p className="scholarship-university">
 
                                                 <GraduationCap
                                                     size={15}
                                                 />
 
                                                 {
-                                                    scholarship.degree
+                                                    scholarship.university
                                                 }
 
-                                            </span>
+                                            </p>
 
 
-                                            <span>
+                                            {/* DESCRIPTION */}
 
-                                                <DollarSign
-                                                    size={15}
-                                                />
+                                            <p className="scholarship-description">
 
                                                 {
-                                                    scholarship.funding ||
-                                                    "Not specified"
+                                                    scholarship.description
                                                 }
 
-                                            </span>
+                                            </p>
+
+
+                                            {/* META */}
+
+                                            <div className="scholarship-meta student-card-meta">
+
+                                                <span className="student-card-meta-item is-primary">
+
+                                                    <Globe2
+                                                        size={15}
+                                                    />
+
+                                                    {
+                                                        scholarship.country ||
+                                                        "Not specified"
+                                                    }
+
+                                                </span>
+
+
+                                                <span className="student-card-meta-item">
+
+                                                    <GraduationCap
+                                                        size={15}
+                                                    />
+
+                                                    {
+                                                        scholarship.degree
+                                                    }
+
+                                                </span>
+
+
+                                                <span className="student-card-meta-item">
+
+                                                    <DollarSign
+                                                        size={15}
+                                                    />
+
+                                                    {
+                                                        scholarship.funding ||
+                                                        "Not specified"
+                                                    }
+
+                                                </span>
+
+                                            </div>
 
                                         </div>
 
 
                                         {/* FOOTER */}
 
-                                        <div className="scholarship-footer">
+                                        <div className="scholarship-footer student-card-footer">
 
                                             <span className="scholarship-deadline">
 

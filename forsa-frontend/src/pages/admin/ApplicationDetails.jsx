@@ -194,7 +194,7 @@ function AdminApplicationDetails() {
 
     if (loading) {
         return (
-            <div className="mx-auto w-full max-w-5xl px-4 py-6">
+            <div className="admin-content-width admin-content-narrow">
                 <div className="space-y-4">
                     <div className="h-8 w-56 animate-pulse rounded bg-muted" />
 
@@ -208,7 +208,7 @@ function AdminApplicationDetails() {
 
     if (!application) {
         return (
-            <div className="mx-auto w-full max-w-5xl px-4 py-6">
+            <div className="admin-content-width admin-content-narrow">
                 <div className="rounded-xl border border-destructive/30 bg-destructive/5 p-5 text-destructive">
                     {error ||
                         "Application not found."}
@@ -266,7 +266,7 @@ function AdminApplicationDetails() {
 
     return (
         <div className="w-full">
-            <div className="mx-auto w-full max-w-5xl px-4 py-6 sm:px-6 lg:px-8">
+            <div className="admin-content-width admin-content-narrow">
 
                 <div className="space-y-6">
 

@@ -80,7 +80,7 @@ function AdminDashboard() {
     }, [loadDashboard]);
 
     if (loading) return <AdminDashboardSkeleton />;
-    if (error) return <div className="admin-dashboard-container"><div className="admin-dashboard-error"><Activity /><div><strong>Dashboard unavailable</strong><p>{error}</p></div><button type="button" onClick={loadDashboard}><RefreshCw size={14} /> Retry</button></div></div>;
+    if (error) return <div className="admin-dashboard-page"><div className="admin-dashboard-container"><div className="admin-dashboard-error"><Activity /><div><strong>Dashboard unavailable</strong><p>{error}</p></div><button type="button" onClick={loadDashboard}><RefreshCw size={14} /> Retry</button></div></div></div>;
 
     const metrics = dashboard?.metrics || {};
     const recentApplications = dashboard?.recent_applications || [];

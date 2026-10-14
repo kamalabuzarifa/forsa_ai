@@ -27,6 +27,7 @@ import {
 } from "../../../api/universities";
 
 import "./Explore.css";
+import "../../../components/student/StudentCard.css";
 import LoadingScreen from "../../../components/LoadingScreen";
 
 
@@ -1487,7 +1488,7 @@ function Explore() {
                                 return (
 
                                     <article
-                                        className="program-card"
+                                        className="program-card student-reference-card"
                                         key={id}
                                     >
 
@@ -1495,7 +1496,7 @@ function Explore() {
                                             CARD TOP
                                         ================================================= */}
 
-                                        <div className="program-card-top">
+                                        <div className="program-card-top student-card-top">
 
                                             <div className="program-card-top-main">
 
@@ -1582,7 +1583,7 @@ function Explore() {
                                             CARD BODY
                                         ================================================= */}
 
-                                        <div className="program-card-body">
+                                        <div className="program-card-body student-card-body">
 
                                             {field && (
 
@@ -1623,7 +1624,7 @@ function Explore() {
                                             studyMode
                                         ) && (
 
-                                                <div className="program-card-meta">
+                                                <div className="program-card-meta student-card-meta">
 
                                                     {opportunityType && (
 
@@ -1660,7 +1661,7 @@ function Explore() {
                                             FOOTER
                                         ================================================= */}
 
-                                        <div className="program-card-footer">
+                                        <div className="program-card-footer student-card-footer">
 
                                             <div className="program-card-deadline">
 
@@ -1698,7 +1699,7 @@ function Explore() {
                                                         ? `${STUDENT_ROUTES.programs}/${id}`
                                                         : STUDENT_ROUTES.programs
                                                 }
-                                                className="program-card-arrow"
+                                                className="program-card-arrow student-card-action"
                                                 aria-label={`View ${title}`}
                                             >
 

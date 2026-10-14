@@ -1,6 +1,7 @@
 import {
     ArrowRight,
     GraduationCap,
+    Heart,
     RotateCcw,
     Search,
     SlidersHorizontal,
@@ -22,6 +23,16 @@ import {
     getUniversities,
     getUniversityPrograms,
 } from "../../../api/universities";
+
+import {
+    getPublishedContentPage,
+} from "../../../api/content";
+
+import {
+    isOpportunitySaved,
+    removeSavedOpportunity,
+    saveOpportunity,
+} from "../../../api/saved";
 
 import "./Programs.css";
 import LoadingScreen from "../../../components/LoadingScreen";
@@ -774,6 +785,9 @@ function Programs() {
     const [showFilters, setShowFilters] =
         useState(false);
 
+    const [pageContent, setPageContent] =
+        useState(null);
+
 
     useEffect(() => {
 
@@ -786,6 +800,19 @@ function Programs() {
                 setError("");
 
                 try {
+
+                    try {
+                        const contentResponse =
+                            await getPublishedContentPage("programs");
+
+                        if (isMounted) {
+                            setPageContent(
+                                contentResponse?.page ?? null
+                            );
+                        }
+                    } catch {
+                        // Catalogue data remains available when CMS content is absent.
+                    }
 
                     const universitiesResponse =
                         await getUniversities({
@@ -1114,302 +1141,315 @@ function Programs() {
 
         <div className="programs-page">
 
-            <section className="programs-header">
+            {(() => {
+                const introSection =
+                    pageContent?.sections?.find(
+                        (section) => section.key === "intro"
+                    );
 
-                <div className="programs-header-content">
+                return (
 
-                    <div className="programs-eyebrow">
+                    <section className="programs-header">
 
-                        <Sparkles
-                            size={14}
-                        />
+                        <div className="programs-header-content">
 
-                        Explore Programmes
+                            <div className="programs-eyebrow">
 
-                    </div>
+                                <Sparkles
+                                    size={14}
+                                />
 
-                    <h1>
-                        Find your next programme
-                    </h1>
+                                Explore Programmes
 
-                    <p>
-                        Explore published study
-                        programmes from universities
-                        around the world.
-                    </p>
+                            </div>
 
-                </div>
+                            <h1>
+                                {introSection?.heading ||
+                                    pageContent?.title ||
+                                    "Find your next programme"}
+                            </h1>
 
+                            <p>
+                                {introSection?.body ||
+                                    pageContent?.description ||
+                                    "Explore published study programmes from universities around the world."}
+                            </p>
 
-                <div className="programs-search-section">
-
-                    <div className="programs-search">
-
-                        <Search
-                            size={18}
-                        />
-
-                        <input
-                            type="search"
-                            placeholder="Search programmes, universities or countries..."
-                            value={search}
-                            onChange={(
-                                event
-                            ) =>
-                                setSearch(
-                                    event.target.value
-                                )
-                            }
-                            aria-label="Search programmes"
-                        />
-
-                    </div>
+                        </div>
 
 
-                    <div className="programs-filter-wrapper">
+                        <div className="programs-search-section">
 
-                        <button
-                            type="button"
-                            className={`programs-filter-button ${showFilters
-                                ? "is-active"
-                                : ""
-                                }`}
-                            onClick={() =>
-                                setShowFilters(
-                                    (previous) =>
-                                        !previous
-                                )
-                            }
-                            aria-expanded={
-                                showFilters
-                            }
-                            aria-controls="programs-filters"
-                        >
+                            <div className="programs-search">
 
-                            <SlidersHorizontal
-                                size={16}
-                            />
+                                <Search
+                                    size={18}
+                                />
 
-                            Filters
+                                <input
+                                    type="search"
+                                    placeholder="Search programmes, universities or countries..."
+                                    value={search}
+                                    onChange={(
+                                        event
+                                    ) =>
+                                        setSearch(
+                                            event.target.value
+                                        )
+                                    }
+                                    aria-label="Search programmes"
+                                />
 
-                        </button>
+                            </div>
 
 
-                        {showFilters && (
+                            <div className="programs-filter-wrapper">
 
-                            <div
-                                id="programs-filters"
-                                className="programs-filter-dropdown"
-                            >
+                                <button
+                                    type="button"
+                                    className={`programs-filter-button ${showFilters
+                                        ? "is-active"
+                                        : ""
+                                        }`}
+                                    onClick={() =>
+                                        setShowFilters(
+                                            (previous) =>
+                                                !previous
+                                        )
+                                    }
+                                    aria-expanded={
+                                        showFilters
+                                    }
+                                    aria-controls="programs-filters"
+                                >
 
-                                <div className="programs-filter-dropdown-header">
+                                    <SlidersHorizontal
+                                        size={16}
+                                    />
 
-                                    <div>
+                                    Filters
 
-                                        <span>
-                                            Refine results
-                                        </span>
+                                </button>
 
-                                        <h3>
-                                            Filters
-                                        </h3>
+
+                                {showFilters && (
+
+                                    <div
+                                        id="programs-filters"
+                                        className="programs-filter-dropdown"
+                                    >
+
+                                        <div className="programs-filter-dropdown-header">
+
+                                            <div>
+
+                                                <span>
+                                                    Refine results
+                                                </span>
+
+                                                <h3>
+                                                    Filters
+                                                </h3>
+
+                                            </div>
+
+                                            <button
+                                                type="button"
+                                                className="programs-filter-dropdown-close"
+                                                onClick={() =>
+                                                    setShowFilters(
+                                                        false
+                                                    )
+                                                }
+                                                aria-label="Close filters"
+                                            >
+                                                <X
+                                                    size={17}
+                                                />
+                                            </button>
+
+                                        </div>
+
+
+                                        <div className="program-filter-group">
+
+                                            <label htmlFor="program-country-filter">
+                                                Country
+                                            </label>
+
+                                            <select
+                                                id="program-country-filter"
+                                                value={
+                                                    filters.country
+                                                }
+                                                onChange={(
+                                                    event
+                                                ) =>
+                                                    updateFilter(
+                                                        "country",
+                                                        event.target.value
+                                                    )
+                                                }
+                                            >
+
+                                                <option value="">
+                                                    All countries
+                                                </option>
+
+                                                {countries.map(
+                                                    (country) => (
+
+                                                        <option
+                                                            key={
+                                                                country.id ||
+                                                                country.name
+                                                            }
+                                                            value={
+                                                                country.id ||
+                                                                country.name
+                                                            }
+                                                        >
+                                                            {country.name}
+                                                        </option>
+
+                                                    )
+                                                )}
+
+                                            </select>
+
+                                        </div>
+
+
+                                        <div className="program-filter-group">
+
+                                            <label htmlFor="program-degree-filter">
+                                                Degree
+                                            </label>
+
+                                            <select
+                                                id="program-degree-filter"
+                                                value={
+                                                    filters.degree
+                                                }
+                                                onChange={(
+                                                    event
+                                                ) =>
+                                                    updateFilter(
+                                                        "degree",
+                                                        event.target.value
+                                                    )
+                                                }
+                                            >
+
+                                                <option value="">
+                                                    All degrees
+                                                </option>
+
+                                                {degrees.map(
+                                                    (degree) => (
+
+                                                        <option
+                                                            key={
+                                                                degree.id ||
+                                                                degree.name
+                                                            }
+                                                            value={
+                                                                degree.id ||
+                                                                degree.name
+                                                            }
+                                                        >
+                                                            {degree.name}
+                                                        </option>
+
+                                                    )
+                                                )}
+
+                                            </select>
+
+                                        </div>
+
+
+                                        <div className="program-filter-group">
+
+                                            <label htmlFor="program-field-filter">
+                                                Field
+                                            </label>
+
+                                            <select
+                                                id="program-field-filter"
+                                                value={
+                                                    filters.field
+                                                }
+                                                onChange={(
+                                                    event
+                                                ) =>
+                                                    updateFilter(
+                                                        "field",
+                                                        event.target.value
+                                                    )
+                                                }
+                                            >
+
+                                                <option value="">
+                                                    All fields
+                                                </option>
+
+                                                {fields.map(
+                                                    (field) => (
+
+                                                        <option
+                                                            key={
+                                                                field.id ||
+                                                                field.name
+                                                            }
+                                                            value={
+                                                                field.id ||
+                                                                field.name
+                                                            }
+                                                        >
+                                                            {field.name}
+                                                        </option>
+
+                                                    )
+                                                )}
+
+                                            </select>
+
+                                        </div>
+
+
+                                        {hasFilters && (
+
+                                            <button
+                                                type="button"
+                                                className="programs-clear-filters"
+                                                onClick={
+                                                    resetFilters
+                                                }
+                                            >
+
+                                                <RotateCcw
+                                                    size={14}
+                                                />
+
+                                                Clear all filters
+
+                                            </button>
+
+                                        )}
 
                                     </div>
-
-                                    <button
-                                        type="button"
-                                        className="programs-filter-dropdown-close"
-                                        onClick={() =>
-                                            setShowFilters(
-                                                false
-                                            )
-                                        }
-                                        aria-label="Close filters"
-                                    >
-                                        <X
-                                            size={17}
-                                        />
-                                    </button>
-
-                                </div>
-
-
-                                <div className="program-filter-group">
-
-                                    <label htmlFor="program-country-filter">
-                                        Country
-                                    </label>
-
-                                    <select
-                                        id="program-country-filter"
-                                        value={
-                                            filters.country
-                                        }
-                                        onChange={(
-                                            event
-                                        ) =>
-                                            updateFilter(
-                                                "country",
-                                                event.target.value
-                                            )
-                                        }
-                                    >
-
-                                        <option value="">
-                                            All countries
-                                        </option>
-
-                                        {countries.map(
-                                            (country) => (
-
-                                                <option
-                                                    key={
-                                                        country.id ||
-                                                        country.name
-                                                    }
-                                                    value={
-                                                        country.id ||
-                                                        country.name
-                                                    }
-                                                >
-                                                    {country.name}
-                                                </option>
-
-                                            )
-                                        )}
-
-                                    </select>
-
-                                </div>
-
-
-                                <div className="program-filter-group">
-
-                                    <label htmlFor="program-degree-filter">
-                                        Degree
-                                    </label>
-
-                                    <select
-                                        id="program-degree-filter"
-                                        value={
-                                            filters.degree
-                                        }
-                                        onChange={(
-                                            event
-                                        ) =>
-                                            updateFilter(
-                                                "degree",
-                                                event.target.value
-                                            )
-                                        }
-                                    >
-
-                                        <option value="">
-                                            All degrees
-                                        </option>
-
-                                        {degrees.map(
-                                            (degree) => (
-
-                                                <option
-                                                    key={
-                                                        degree.id ||
-                                                        degree.name
-                                                    }
-                                                    value={
-                                                        degree.id ||
-                                                        degree.name
-                                                    }
-                                                >
-                                                    {degree.name}
-                                                </option>
-
-                                            )
-                                        )}
-
-                                    </select>
-
-                                </div>
-
-
-                                <div className="program-filter-group">
-
-                                    <label htmlFor="program-field-filter">
-                                        Field
-                                    </label>
-
-                                    <select
-                                        id="program-field-filter"
-                                        value={
-                                            filters.field
-                                        }
-                                        onChange={(
-                                            event
-                                        ) =>
-                                            updateFilter(
-                                                "field",
-                                                event.target.value
-                                            )
-                                        }
-                                    >
-
-                                        <option value="">
-                                            All fields
-                                        </option>
-
-                                        {fields.map(
-                                            (field) => (
-
-                                                <option
-                                                    key={
-                                                        field.id ||
-                                                        field.name
-                                                    }
-                                                    value={
-                                                        field.id ||
-                                                        field.name
-                                                    }
-                                                >
-                                                    {field.name}
-                                                </option>
-
-                                            )
-                                        )}
-
-                                    </select>
-
-                                </div>
-
-
-                                {hasFilters && (
-
-                                    <button
-                                        type="button"
-                                        className="programs-clear-filters"
-                                        onClick={
-                                            resetFilters
-                                        }
-                                    >
-
-                                        <RotateCcw
-                                            size={14}
-                                        />
-
-                                        Clear all filters
-
-                                    </button>
 
                                 )}
 
                             </div>
 
-                        )}
+                        </div>
 
-                    </div>
+                    </section>
 
-                </div>
-
-            </section>
+                );
+            })()}
 
 
             <main className="programs-main">
@@ -1589,6 +1629,98 @@ function ProgramCard({
     program,
 }) {
 
+    const [saved, setSaved] =
+        useState(
+            Boolean(program?.saved)
+        );
+
+    const [saving, setSaving] =
+        useState(false);
+
+    useEffect(() => {
+
+        let mounted = true;
+
+        const loadSavedState = async () => {
+
+            if (!program?.id) {
+                return;
+            }
+
+            try {
+
+                const response =
+                    await isOpportunitySaved(
+                        program.id
+                    );
+
+                const savedState =
+                    response?.saved ??
+                    response?.data?.saved ??
+                    false;
+
+                if (mounted) {
+                    setSaved(
+                        Boolean(savedState)
+                    );
+                }
+
+            } catch (error) {
+
+                console.error(
+                    "Failed to load saved program state:",
+                    error
+                );
+            }
+        };
+
+        loadSavedState();
+
+        return () => {
+            mounted = false;
+        };
+
+    }, [program?.id]);
+
+    const handleSave = async () => {
+
+        if (
+            !program?.id ||
+            saving
+        ) {
+            return;
+        }
+
+        setSaving(true);
+
+        try {
+
+            if (saved) {
+                await removeSavedOpportunity(
+                    program.id
+                );
+            } else {
+                await saveOpportunity(
+                    program.id
+                );
+            }
+
+            setSaved(
+                current => !current
+            );
+
+        } catch (error) {
+
+            console.error(
+                "Failed to update saved program:",
+                error
+            );
+
+        } finally {
+            setSaving(false);
+        }
+    };
+
     const title =
         getProgramTitle(
             program
@@ -1664,6 +1796,24 @@ function ProgramCard({
                     </div>
 
                 </div>
+
+                <button
+                    type="button"
+                    className="program-card-save"
+                    aria-label={
+                        saved
+                            ? `Remove ${title} from saved programs`
+                            : `Save ${title}`
+                    }
+                    aria-pressed={saved}
+                    disabled={saving}
+                    onClick={handleSave}
+                >
+                    <Heart
+                        size={17}
+                        fill={saved ? "currentColor" : "none"}
+                    />
+                </button>
 
             </div>
 

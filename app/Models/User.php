@@ -92,6 +92,16 @@ class User extends Authenticatable
         return $this->hasMany(Notification::class);
     }
 
+    public function auditLogs(): HasMany
+    {
+        return $this->hasMany(AuditLog::class);
+    }
+
+    public function roles(): BelongsToMany
+    {
+        return $this->belongsToMany(Role::class);
+    }
+
     public function createdOpportunities(): HasMany
     {
         return $this->hasMany(
@@ -102,11 +112,33 @@ class User extends Authenticatable
 
     public function isAdmin(): bool
     {
-        return $this->role === 'admin';
+        return $this->role === 'admin' ||
+            $this->hasRole('super_admin');
     }
 
     public function isStudent(): bool
     {
         return $this->role === 'student';
+    }
+
+    public function hasRole(string $role): bool
+    {
+        return $this->roles()
+            ->where('name', $role)
+            ->exists();
+    }
+
+    public function hasPermission(string $permission): bool
+    {
+        if ($this->hasRole('super_admin')) {
+            return true;
+        }
+
+        return $this->roles()
+            ->whereHas(
+                'permissions',
+                fn($query) => $query->where('name', $permission)
+            )
+            ->exists();
     }
 }

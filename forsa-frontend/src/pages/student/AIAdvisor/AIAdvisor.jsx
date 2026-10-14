@@ -23,7 +23,9 @@ import {
     getAIRecommendations,
 } from "../../../api/aiAdvisor";
 
+import "../Programs/Programs.css";
 import "./AIAdvisor.css";
+import "../../../components/student/StudentCard.css";
 
 
 function AIAdvisor() {
@@ -967,21 +969,59 @@ function AIAdvisor() {
                                     return (
 
                                         <article
-                                            className="ai-result-card"
+                                            className="program-card student-reference-card"
                                             key={
                                                 opportunityId ??
                                                 `recommendation-${index}`
                                             }
                                         >
 
-                                            <div>
+                                            <div className="program-card-top student-card-top">
+
+                                                <div className="program-card-top-main">
+
+                                                    <div className="program-card-degree-header">
+
+                                                        {degreeName && (
+
+                                                            <strong>
+                                                                {degreeName}
+                                                            </strong>
+
+                                                        )}
+
+                                                        {universityName && (
+
+                                                            <span>
+                                                                {universityName}
+                                                            </span>
+
+                                                        )}
+
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
+
+
+                                            <div className="program-card-body student-card-body">
 
                                                 <span className="ai-result-score">
                                                     Match
                                                 </span>
 
 
-                                                <h3>
+                                                {fieldName && (
+
+                                                    <span className="program-card-field">
+                                                        {fieldName}
+                                                    </span>
+
+                                                )}
+
+
+                                                <h2>
 
                                                     {
                                                         opportunity?.title ??
@@ -989,40 +1029,13 @@ function AIAdvisor() {
                                                         "Untitled opportunity"
                                                     }
 
-                                                </h3>
+                                                </h2>
 
 
-                                                {universityName && (
+                                                {opportunity?.description && (
 
-                                                    <p>
-                                                        {universityName}
-                                                    </p>
-
-                                                )}
-
-
-                                                {countryName && (
-
-                                                    <p>
-                                                        {countryName}
-                                                    </p>
-
-                                                )}
-
-
-                                                {degreeName && (
-
-                                                    <p>
-                                                        {degreeName}
-                                                    </p>
-
-                                                )}
-
-
-                                                {fieldName && (
-
-                                                    <p>
-                                                        {fieldName}
+                                                    <p className="program-card-description">
+                                                        {opportunity.description}
                                                     </p>
 
                                                 )}
@@ -1030,22 +1043,70 @@ function AIAdvisor() {
                                             </div>
 
 
+                                            {(countryName || opportunity?.opportunity_type || opportunity?.funding_type) && (
+
+                                                <div className="program-card-meta student-card-meta">
+
+                                                    {countryName && (
+
+                                                        <span className="student-card-meta-item is-primary">
+                                                            {countryName}
+                                                        </span>
+
+                                                    )}
+
+                                                    {opportunity?.opportunity_type && (
+
+                                                        <span className="student-card-meta-item">
+                                                            {opportunity.opportunity_type?.name ?? opportunity.opportunity_type}
+                                                        </span>
+
+                                                    )}
+
+                                                    {opportunity?.funding_type && (
+
+                                                        <span className="student-card-meta-item">
+                                                            {opportunity.funding_type?.name ?? opportunity.funding_type}
+                                                        </span>
+
+                                                    )}
+
+                                                </div>
+
+                                            )}
+
+
                                             {opportunityId && (
 
-                                                <Link
-                                                    to={
-                                                        `/student/opportunities/${opportunityId}`
-                                                    }
-                                                    className="ai-result-link"
-                                                >
+                                                <div className="program-card-footer student-card-footer">
 
-                                                    View opportunity
+                                                    <div className="program-card-deadline">
 
-                                                    <ArrowRight
-                                                        size={14}
-                                                    />
+                                                        <span>
+                                                            AI match
+                                                        </span>
 
-                                                </Link>
+                                                        <strong>
+                                                            Recommended for you
+                                                        </strong>
+
+                                                    </div>
+
+
+                                                    <Link
+                                                        to={
+                                                            `/student/opportunities/${opportunityId}`
+                                                        }
+                                                        className="program-card-arrow student-card-action"
+                                                        aria-label={`View opportunity ${opportunityId}`}
+                                                    >
+
+                                                        <ArrowRight
+                                                            size={18}
+                                                        />
+
+                                                    </Link>
+                                                </div>
 
                                             )}
 

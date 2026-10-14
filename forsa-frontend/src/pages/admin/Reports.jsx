@@ -31,11 +31,11 @@ function AdminReports() {
     }, []);
 
     if (loading) {
-        return <div className="mx-auto w-full max-w-7xl space-y-4 px-4 py-6 sm:px-6 lg:px-8">{[1, 2, 3].map((item) => <div className="h-28 animate-pulse rounded-xl bg-muted" key={item} />)}</div>;
+        return <div className="admin-content-width space-y-4">{[1, 2, 3].map((item) => <div className="h-28 animate-pulse rounded-xl bg-muted" key={item} />)}</div>;
     }
 
     if (error) {
-        return <div className="mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 lg:px-8"><div className="flex items-start gap-3 rounded-xl border border-destructive/30 bg-destructive/5 px-4 py-3 text-sm text-destructive"><XCircle className="mt-0.5 size-4 shrink-0" /><p>{error}</p></div></div>;
+        return <div className="admin-content-width"><div className="flex items-start gap-3 rounded-xl border border-destructive/30 bg-destructive/5 px-4 py-3 text-sm text-destructive"><XCircle className="mt-0.5 size-4 shrink-0" /><p>{error}</p></div></div>;
     }
 
     const metrics = dashboard?.metrics || {};
@@ -52,7 +52,7 @@ function AdminReports() {
 
     return (
         <div className="w-full">
-            <div className="mx-auto w-full max-w-7xl space-y-6 px-4 py-6 sm:px-6 lg:px-8">
+            <div className="admin-content-width space-y-6">
                 <section><Badge variant="secondary" className="mb-2">Analytics</Badge><h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">Reports</h1><p className="mt-2 text-sm text-muted-foreground sm:text-base">Monitor students, opportunities, applications, and outcomes.</p></section>
 
                 <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">{cards.map(([Icon, title, value]) => <Card key={title}><CardContent className="flex items-center gap-3 pt-5"><Icon className="size-5 text-primary" /><div><p className="text-xs text-muted-foreground">{title}</p><p className="text-2xl font-semibold">{number(value)}</p></div></CardContent></Card>)}</section>

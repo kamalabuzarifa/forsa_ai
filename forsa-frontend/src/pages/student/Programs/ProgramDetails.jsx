@@ -4,7 +4,6 @@ import {
     Bookmark,
     BookmarkCheck,
     Check,
-    ChevronRight,
     Globe2,
     GraduationCap,
     MapPin,
@@ -37,6 +36,7 @@ import {
 } from "../../../api/programs";
 
 import "./ProgramDetails.css";
+import "../../../components/student/StudentDetail.css";
 import LoadingScreen from "../../../components/LoadingScreen";
 
 
@@ -295,6 +295,15 @@ function ProgramDetails() {
 
             fundingType,
 
+            annualTuition:
+                program.annual_tuition ?? null,
+
+            currency:
+                program.currency || "",
+
+            studyMode:
+                program.study_mode || "",
+
 
             fields,
 
@@ -448,282 +457,263 @@ function ProgramDetails() {
 
 
             {/* =====================================================
-                Breadcrumb
-            ===================================================== */}
-
-            <div className="program-breadcrumb">
-
-                <Link to="/student/programs">
-
-                    <ArrowLeft size={14} />
-
-                    <span>
-                        Programs
-                    </span>
-
-                </Link>
-
-                <ChevronRight size={13} />
-
-                <span>
-                    {currentProgram.title}
-                </span>
-
-            </div>
-
-
-            {/* =====================================================
                 Hero
             ===================================================== */}
 
             <section className="program-details-hero">
 
-                <div className="program-details-main">
+                <div className="program-details-hero-overlay" />
+
+                <div className="program-details-hero-inner">
+
+                    <div className="program-details-main">
 
 
-                    {/* University */}
+                        {/* University */}
 
-                    {currentProgram.university?.name && (
+                        {currentProgram.university?.name && (
 
-                        <div className="program-university">
+                            <div className="program-university">
 
-                            <div className="university-logo">
+                                <div className="university-logo">
 
-                                <GraduationCap size={25} />
+                                    <GraduationCap size={25} />
+
+                                </div>
+
+                                <div>
+
+                                    <span>
+                                        University
+                                    </span>
+
+                                    <strong>
+                                        {currentProgram.university.name}
+                                    </strong>
+
+                                </div>
 
                             </div>
 
-                            <div>
+                        )}
+
+
+                        {/* Title */}
+
+                        {currentProgram.title && (
+
+                            <h1>
+                                {currentProgram.title}
+                            </h1>
+
+                        )}
+
+
+                        {/* Location / Degree / Field */}
+
+                        <div className="program-location">
+
+
+                            {currentProgram.country?.name && (
 
                                 <span>
-                                    University
+
+                                    <MapPin size={14} />
+
+                                    {currentProgram.country.name}
+
                                 </span>
 
-                                <strong>
-                                    {currentProgram.university.name}
-                                </strong>
+                            )}
 
-                            </div>
+
+                            {currentProgram.degrees.length > 0 && (
+
+                                <span>
+
+                                    <GraduationCap size={14} />
+
+                                    {currentProgram.degrees
+                                        .map(degree => degree.name)
+                                        .filter(Boolean)
+                                        .join(", ")}
+
+                                </span>
+
+                            )}
+
+
+                            {currentProgram.fields.length > 0 && (
+
+                                <span>
+
+                                    <Sparkles size={14} />
+
+                                    {currentProgram.fields
+                                        .map(field => field.name)
+                                        .filter(Boolean)
+                                        .join(", ")}
+
+                                </span>
+
+                            )}
 
                         </div>
 
-                    )}
 
+                        {/* Description */}
 
-                    {/* Title */}
+                        {currentProgram.description && (
 
-                    {currentProgram.title && (
+                            <p className="program-hero-description">
 
-                        <h1>
-                            {currentProgram.title}
-                        </h1>
+                                {currentProgram.description}
 
-                    )}
-
-
-                    {/* Location / Degree / Field */}
-
-                    <div className="program-location">
-
-
-                        {currentProgram.country?.name && (
-
-                            <span>
-
-                                <MapPin size={14} />
-
-                                {currentProgram.country.name}
-
-                            </span>
+                            </p>
 
                         )}
 
 
-                        {currentProgram.degrees.length > 0 && (
+                        {/* Actions */}
 
-                            <span>
-
-                                <GraduationCap size={14} />
-
-                                {currentProgram.degrees
-                                    .map(degree => degree.name)
-                                    .filter(Boolean)
-                                    .join(", ")}
-
-                            </span>
-
-                        )}
+                        <div className="program-actions">
 
 
-                        {currentProgram.fields.length > 0 && (
+                            {currentProgram.applicationUrl && (
 
-                            <span>
+                                <a
+                                    href={currentProgram.applicationUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="program-apply-button"
+                                >
 
-                                <Sparkles size={14} />
+                                    Apply Now
 
-                                {currentProgram.fields
-                                    .map(field => field.name)
-                                    .filter(Boolean)
-                                    .join(", ")}
+                                    <ExternalLink size={15} />
 
-                            </span>
+                                </a>
 
-                        )}
-
-                    </div>
-
-
-                    {/* Description */}
-
-                    {currentProgram.description && (
-
-                        <p className="program-hero-description">
-
-                            {currentProgram.description}
-
-                        </p>
-
-                    )}
-
-
-                    {/* Actions */}
-
-                    <div className="program-actions">
-
-
-                        {currentProgram.applicationUrl && (
-
-                            <a
-                                href={currentProgram.applicationUrl}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="program-apply-button"
-                            >
-
-                                Apply Now
-
-                                <ExternalLink size={15} />
-
-                            </a>
-
-                        )}
-
-
-                        <button
-                            type="button"
-                            className="program-save-button"
-                            onClick={handleSave}
-                        >
-
-                            {saved ? (
-                                <BookmarkCheck size={15} />
-                            ) : (
-                                <Bookmark size={15} />
                             )}
 
-                            {saved
-                                ? "Saved"
-                                : "Save"}
 
-                        </button>
+                            <button
+                                type="button"
+                                className="program-save-button"
+                                onClick={handleSave}
+                            >
+
+                                {saved ? (
+                                    <BookmarkCheck size={15} />
+                                ) : (
+                                    <Bookmark size={15} />
+                                )}
+
+                                {saved
+                                    ? "Saved"
+                                    : "Save"}
+
+                            </button>
 
 
-                        <Link
-                            to={`/student/compare?program=${currentProgram.id}`}
-                            className="program-compare-button"
-                        >
+                            <Link
+                                to={`/student/compare?program=${currentProgram.id}`}
+                                className="program-compare-button"
+                            >
 
-                            <Scale size={15} />
+                                <Scale size={15} />
 
-                            Compare
+                                Compare
 
-                        </Link>
+                            </Link>
+
+                        </div>
 
                     </div>
 
-                </div>
 
-
-                {/* =================================================
+                    {/* =================================================
                     Real EduMatch Match Card
                 ================================================= */}
 
-                {(matchLoading || matchScore !== null) && (
+                    {(matchLoading || matchScore !== null) && (
 
-                    <aside className="program-match-card">
+                        <aside className="program-match-card">
 
-                        <div className="match-card-top">
+                            <div className="match-card-top">
 
-                            <div className="match-icon">
+                                <div className="match-icon">
 
-                                <Sparkles size={18} />
-
-                            </div>
-
-                            <span>
-                                EduMatch Score
-                            </span>
-
-                        </div>
-
-
-                        {matchLoading ? (
-
-                            <div className="match-loading">
-
-                                Calculating your match...
-
-                            </div>
-
-                        ) : (
-
-                            <>
-                                <div className="match-score">
-
-                                    <strong>
-                                        {matchScore}%
-                                    </strong>
-
-                                    <span>
-                                        Match
-                                    </span>
+                                    <Sparkles size={18} />
 
                                 </div>
 
+                                <span>
+                                    EduMatch Score
+                                </span>
 
-                                <div className="match-progress">
+                            </div>
 
-                                    <span
-                                        style={{
-                                            width: `${matchScore}%`,
-                                        }}
-                                    />
+
+                            {matchLoading ? (
+
+                                <div className="match-loading">
+
+                                    Calculating your match...
 
                                 </div>
 
+                            ) : (
 
-                                <p>
-                                    This score is calculated from
-                                    your available profile data
-                                    and this programme's matching
-                                    criteria.
-                                </p>
+                                <>
+                                    <div className="match-score">
+
+                                        <strong>
+                                            {matchScore}%
+                                        </strong>
+
+                                        <span>
+                                            Match
+                                        </span>
+
+                                    </div>
 
 
-                                <Link to="/student/ai-advisor">
+                                    <div className="match-progress">
 
-                                    Why is this a good match?
+                                        <span
+                                            style={{
+                                                width: `${matchScore}%`,
+                                            }}
+                                        />
 
-                                    <ArrowRight size={13} />
+                                    </div>
 
-                                </Link>
-                            </>
 
-                        )}
+                                    <p>
+                                        This score is calculated from
+                                        your available profile data
+                                        and this programme's matching
+                                        criteria.
+                                    </p>
 
-                    </aside>
 
-                )}
+                                    <Link to="/student/ai-advisor">
+
+                                        Why is this a good match?
+
+                                        <ArrowRight size={13} />
+
+                                    </Link>
+                                </>
+
+                            )}
+
+                        </aside>
+
+                    )}
+
+                </div>
 
             </section>
 
@@ -772,6 +762,59 @@ function ProgramDetails() {
 
                             <strong>
                                 {currentProgram.fundingType.name}
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+                )}
+
+
+                {currentProgram.annualTuition !== null && (
+
+                    <div className="program-fact">
+
+                        <Award size={18} />
+
+                        <div>
+
+                            <span>
+                                Annual Tuition
+                            </span>
+
+                            <strong>
+                                {currentProgram.annualTuition}
+                                {currentProgram.currency
+                                    ? ` ${currentProgram.currency}`
+                                    : ""}
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+                )}
+
+
+                {currentProgram.studyMode && (
+
+                    <div className="program-fact">
+
+                        <GraduationCap size={18} />
+
+                        <div>
+
+                            <span>
+                                Study Mode
+                            </span>
+
+                            <strong>
+                                {currentProgram.studyMode
+                                    .replace(/_/g, " ")
+                                    .replace(/\b\w/g, (letter) =>
+                                        letter.toUpperCase()
+                                    )}
                             </strong>
 
                         </div>

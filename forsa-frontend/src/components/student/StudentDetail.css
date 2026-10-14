@@ -1,0 +1,304 @@
+/* Shared visual language for student detail pages. */
+
+.opportunity-details-page,
+.application-details-page,
+.university-details-page,
+.program-details-page {
+    --student-detail-max-width: 1180px;
+    --student-detail-surface: #ffffff;
+    --student-detail-border: #e2e8f0;
+    --student-detail-text: #26302e;
+    --student-detail-muted: #64748b;
+    --student-detail-radius: 16px;
+    --student-detail-shadow:
+        0 8px 28px rgba(15, 23, 42, 0.045);
+
+    color: var(--student-detail-text);
+    background: #f7faf9;
+}
+
+.opportunity-details-container,
+.application-details-container,
+.university-details-hero-inner,
+.university-details-stats-inner {
+    width: min(var(--student-detail-max-width), calc(100% - 48px));
+    max-width: var(--student-detail-max-width);
+}
+
+.opportunity-details-container,
+.application-details-container,
+.university-details-container {
+    padding-top: 32px;
+    padding-bottom: 72px;
+}
+
+.opportunity-details-card,
+.application-details-card,
+.program-content-section,
+.sidebar-card {
+    border-color: var(--student-detail-border);
+    border-radius: var(--student-detail-radius);
+    box-shadow: var(--student-detail-shadow);
+}
+
+.opportunity-details-card-header,
+.application-details-card>header {
+    border-bottom-color: #edf1ef;
+}
+
+.opportunity-details-card-header h2,
+.application-details-card h2,
+.program-section-heading h2 {
+    color: var(--student-detail-text);
+    line-height: 1.3;
+}
+
+.opportunity-details-card-header p,
+.application-details-card p,
+.program-content-section>p {
+    color: var(--student-detail-muted);
+}
+
+.opportunity-details-two-column,
+.application-details-layout,
+.program-content-layout,
+.university-details-layout {
+    gap: 24px;
+}
+
+.program-details-page {
+    width: 100%;
+    margin: 0;
+    padding: 0 0 72px;
+    box-sizing: border-box;
+}
+
+.program-details-hero {
+    width: 100%;
+    border-radius: 0;
+    box-shadow: none;
+}
+
+.program-details-hero-inner {
+    width: 100%;
+}
+
+.program-facts,
+.program-content-layout {
+    width: min(var(--student-detail-max-width), calc(100% - 48px));
+    max-width: var(--student-detail-max-width);
+    margin-right: auto;
+    margin-left: auto;
+}
+
+.program-details-hero {
+    border-color: var(--student-detail-border);
+}
+
+.program-content-section,
+.sidebar-card {
+    background: var(--student-detail-surface);
+}
+
+/* Keep detail-page copy readable next to the student dashboard UI. */
+.opportunity-details-page,
+.application-details-page,
+.university-details-page,
+.program-details-page {
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.opportunity-details-badge,
+.application-details-breadcrumb,
+.application-details-breadcrumb a {
+    font-size: 13px;
+}
+
+.opportunity-details-card-header h2,
+.application-details-card h2,
+.program-section-heading h2 {
+    font-size: 21px;
+}
+
+.program-fact span,
+.sidebar-details span,
+.university-rating,
+.university-students span {
+    font-size: 13px;
+}
+
+.program-fact strong,
+.sidebar-details strong,
+.university-sidebar strong,
+.university-students strong {
+    font-size: 15px;
+}
+
+.program-feature,
+.requirement-item,
+.program-insight p,
+.sidebar-ai-card p {
+    font-size: 14px;
+    line-height: 1.65;
+}
+
+.sidebar-card h3,
+.sidebar-ai-card h3,
+.program-insight strong {
+    font-size: 16px;
+}
+
+.sidebar-ai-card a {
+    font-size: 13px;
+}
+
+.opportunity-details-card-header p,
+.application-details-card p,
+.program-content-section>p {
+    font-size: 14px;
+    line-height: 1.75;
+}
+
+.application-eyebrow {
+    font-size: 12px;
+}
+
+.application-header-content h1 {
+    font-size: 36px;
+}
+
+.application-header-meta span {
+    font-size: 14px;
+}
+
+.program-breadcrumb,
+.program-breadcrumb a,
+.program-location span,
+.program-match-card a {
+    font-size: 13px;
+}
+
+.program-university span {
+    font-size: 11px;
+}
+
+.program-university strong,
+.program-fact strong {
+    font-size: 14px;
+}
+
+.program-details-main h1 {
+    font-size: clamp(36px, 4vw, 46px);
+}
+
+.program-hero-description {
+    font-size: 15px;
+}
+
+.program-apply-button,
+.program-save-button,
+.program-compare-button {
+    font-size: 12px;
+}
+
+.match-card-top,
+.program-fact span,
+.program-section-heading span,
+.sidebar-details span,
+.sidebar-details strong,
+.university-sidebar strong,
+.university-sidebar span,
+.university-rating,
+.university-students span,
+.sidebar-ai-card a {
+    font-size: 12px;
+}
+
+.match-score span,
+.program-feature,
+.requirement-item,
+.program-insight p,
+.sidebar-ai-card p {
+    font-size: 13px;
+}
+
+.program-section-heading h2 {
+    font-size: 24px;
+}
+
+.program-insight strong,
+.sidebar-card h3 {
+    font-size: 15px;
+}
+
+.university-details-eyebrow,
+.university-details-location,
+.university-hero-meta-item,
+.university-hero-website {
+    font-size: 15px;
+}
+
+.university-stat span,
+.university-stat strong {
+    font-size: 14px;
+}
+
+@media (max-width: 900px) {
+
+    .opportunity-details-container,
+    .application-details-container,
+    .university-details-hero-inner,
+    .university-details-stats-inner,
+    .program-details-page,
+    .program-facts,
+    .program-content-layout {
+        width: calc(100% - 40px);
+    }
+
+    .program-details-page {
+        width: 100%;
+    }
+}
+
+@media (max-width: 650px) {
+
+    .opportunity-details-container,
+    .application-details-container,
+    .university-details-hero-inner,
+    .university-details-stats-inner,
+    .program-details-page,
+    .program-facts,
+    .program-content-layout {
+        width: calc(100% - 40px);
+    }
+
+    .program-details-page {
+        width: 100%;
+    }
+
+    .opportunity-details-container,
+    .application-details-container,
+    .university-details-container,
+    .program-details-page {
+        padding-top: 24px;
+        padding-bottom: 56px;
+    }
+}
+
+@media (max-width: 420px) {
+
+    .opportunity-details-container,
+    .application-details-container,
+    .university-details-hero-inner,
+    .university-details-stats-inner,
+    .program-details-page,
+    .program-facts,
+    .program-content-layout {
+        width: calc(100% - 20px);
+    }
+
+    .program-details-page {
+        width: 100%;
+    }
+}

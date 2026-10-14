@@ -25,6 +25,7 @@ import {
 } from "../../../api/universities";
 
 import "./Universities.css";
+import "../../../components/student/StudentCard.css";
 import LoadingScreen from "../../../components/LoadingScreen";
 
 
@@ -678,13 +679,13 @@ function Universities() {
 
                                             return (
                                                 <article
-                                                    className="university-card"
+                                                    className="university-card student-reference-card"
                                                     key={id}
                                                 >
 
                                                     {/* Card Top */}
 
-                                                    <div className="university-card-top">
+                                                    <div className="university-card-top student-card-top">
 
                                                         <div className="university-card-top-main">
 
@@ -744,7 +745,7 @@ function Universities() {
 
                                                     {/* Card Body */}
 
-                                                    <div className="university-card-body">
+                                                    <div className="university-card-body student-card-body">
 
                                                         {description && (
                                                             <p className="university-card-description">
@@ -757,9 +758,9 @@ function Universities() {
 
                                                     {/* Meta */}
 
-                                                    <div className="university-card-meta">
+                                                    <div className="university-card-meta student-card-meta">
 
-                                                        <span>
+                                                        <span className="student-card-meta-item is-primary">
 
                                                             <GraduationCap size={14} />
 
@@ -778,7 +779,7 @@ function Universities() {
 
                                                     {/* Footer */}
 
-                                                    <div className="university-card-footer">
+                                                    <div className="university-card-footer student-card-footer">
 
                                                         <Link
                                                             to={`/student/universities/${id}`}

@@ -3,6 +3,7 @@ import { Outlet } from "react-router-dom";
 
 import AdminSidebar from "./AdminSidebar";
 import AdminTopbar from "./AdminTopbar";
+import "./AdminShell.css";
 
 function AdminLayout() {
     const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -20,7 +21,7 @@ function AdminLayout() {
                         onMenuClick={() => setSidebarOpen(true)}
                     />
 
-                    <main className="min-w-0 flex-1 bg-[#f7fcfa]">
+                    <main className="admin-main min-w-0 flex-1">
                         <Outlet />
                     </main>
                 </div>
