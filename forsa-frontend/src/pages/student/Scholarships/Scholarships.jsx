@@ -27,6 +27,10 @@ import {
     checkScholarshipMatch,
 } from "../../../api/scholarships";
 
+import {
+    getAIAdvisorOptions,
+} from "../../../api/aiAdvisor";
+
 import "./Scholarships.css";
 import "../../../components/student/StudentCard.css";
 import LoadingScreen from "../../../components/LoadingScreen";
@@ -46,44 +50,6 @@ const INITIAL_FILTERS = {
 /* =========================================================
    HELPERS
    ========================================================= */
-
-const normalizeValue = (
-    value
-) => {
-
-    if (
-        value === null ||
-        value === undefined
-    ) {
-        return "";
-    }
-
-    if (
-        typeof value === "string" ||
-        typeof value === "number"
-    ) {
-        return String(value);
-    }
-
-    if (
-        typeof value === "object"
-    ) {
-
-        return (
-            value.name ??
-            value.title ??
-            value.label ??
-            value.value ??
-            value.code ??
-            value.id ??
-            ""
-        ).toString();
-
-    }
-
-    return "";
-};
-
 
 const getDisplayValue = (
     value
@@ -749,38 +715,14 @@ const buildFundingOptions = (
 
 
 /* =========================================================
-   MATCH SELECTED ITEM
-   ========================================================= */
-
-const matchesSelectedItem = (
-    value,
-    selectedValue
-) => {
-
-    if (!selectedValue) {
-        return true;
-    }
-
-    const objectId =
-        getObjectId(
-            value
-        );
-
-    const displayValue =
-        getDisplayValue(
-            value
-        );
-
-    return (
-        objectId === selectedValue ||
-        displayValue === selectedValue
-    );
-};
-
-
-/* =========================================================
    COMPONENT
    ========================================================= */
+
+const DEFAULT_FUNDING_OPTIONS = [
+    { id: "Fully Funded", name: "Fully Funded" },
+    { id: "Partially Funded", name: "Partially Funded" },
+    { id: "Self-Funded", name: "Self-Funded" },
+];
 
 export default function Scholarships() {
 
@@ -789,24 +731,30 @@ export default function Scholarships() {
         setScholarships,
     ] = useState([]);
 
-
     const [
         loading,
         setLoading,
-    ] = useState(true);
+    ] = useState(false);
 
+    const [
+        initialLoading,
+        setInitialLoading,
+    ] = useState(true);
 
     const [
         error,
         setError,
     ] = useState("");
 
-
     const [
         search,
         setSearch,
     ] = useState("");
 
+    const [
+        debouncedSearch,
+        setDebouncedSearch,
+    ] = useState("");
 
     const [
         filters,
@@ -815,12 +763,10 @@ export default function Scholarships() {
         INITIAL_FILTERS
     );
 
-
     const [
         showFilters,
         setShowFilters,
     ] = useState(false);
-
 
     const [
         sortBy,
@@ -829,380 +775,322 @@ export default function Scholarships() {
         "recommended"
     );
 
+    const [
+        page,
+        setPage,
+    ] = useState(1);
+
+    const [
+        pagination,
+        setPagination,
+    ] = useState({
+        current_page: 1,
+        last_page: 1,
+        total: 0,
+        per_page: 12,
+    });
+
+    const [
+        lookupCountries,
+        setLookupCountries,
+    ] = useState([]);
+
+    const [
+        lookupDegrees,
+        setLookupDegrees,
+    ] = useState([]);
+
+    /* =====================================================
+       LOAD TAXONOMY LOOKUPS
+    ===================================================== */
+
+    useEffect(() => {
+        let isMounted = true;
+
+        getAIAdvisorOptions()
+            .then((data) => {
+                if (!isMounted || !data) return;
+
+                if (Array.isArray(data.countries)) {
+                    setLookupCountries(
+                        data.countries.map((c) => ({
+                            id: String(c.id),
+                            name: c.name,
+                        }))
+                    );
+                }
+
+                if (Array.isArray(data.degrees)) {
+                    setLookupDegrees(
+                        data.degrees.map((d) => ({
+                            id: String(d.id),
+                            name: d.name,
+                        }))
+                    );
+                }
+            })
+            .catch((err) => {
+                console.warn(
+                    "Could not load advisor lookups for scholarship filters:",
+                    err
+                );
+            });
+
+        return () => {
+            isMounted = false;
+        };
+    }, []);
+
+    /* =====================================================
+       DEBOUNCE SEARCH
+    ===================================================== */
+
+    useEffect(() => {
+        const handler = setTimeout(() => {
+            setDebouncedSearch(search);
+        }, 350);
+
+        return () => clearTimeout(handler);
+    }, [search]);
 
     /* =====================================================
        LOAD SCHOLARSHIPS
     ===================================================== */
 
-    useEffect(() => {
+    const loadScholarships = async (pageToLoad = page) => {
 
-        let mounted = true;
+        try {
 
+            setLoading(true);
+            setError("");
 
-        const loadScholarships =
-            async () => {
-
-                try {
-
-                    setLoading(true);
-                    setError("");
-
-
-                    const response =
-                        await getScholarships();
-
-
-                    if (!mounted) {
-                        return;
-                    }
-
-
-                    const rawScholarships =
-                        normalizeResponse(
-                            response
-                        );
-
-
-                    const scholarshipOnly =
-                        rawScholarships.filter(
-                            (item) => {
-
-                                const type =
-                                    getDisplayValue(
-                                        item?.opportunity_type
-                                    );
-
-                                if (!type) {
-                                    return true;
-                                }
-
-                                return (
-                                    type.toLowerCase() ===
-                                    "scholarship"
-                                );
-                            }
-                        );
-
-
-                    const normalized =
-                        scholarshipOnly.map(
-                            normalizeScholarship
-                        );
-
-
-                    const valid =
-                        normalized.filter(
-                            (item) =>
-                                item.id !== ""
-                        );
-
-
-                    const unique =
-                        uniqueById(
-                            valid
-                        );
-
-
-                    const scholarshipsWithMatch =
-                        await Promise.all(
-                            unique.map(
-                                async (
-                                    scholarship
-                                ) => {
-
-                                    try {
-
-                                        const matchResponse =
-                                            await checkScholarshipMatch(
-                                                scholarship.id
-                                            );
-
-
-                                        const matchScore =
-                                            getMatchScoreFromResponse(
-                                                matchResponse
-                                            );
-
-
-                                        return {
-                                            ...scholarship,
-
-                                            matchScore,
-                                        };
-
-                                    } catch (
-                                    matchError
-                                    ) {
-
-                                        console.error(
-                                            `Failed to load match for scholarship ${scholarship.id}:`,
-                                            matchError
-                                        );
-
-
-                                        return {
-                                            ...scholarship,
-
-                                            matchScore:
-                                                null,
-                                        };
-                                    }
-
-                                }
-                            )
-                        );
-
-
-                    if (!mounted) {
-                        return;
-                    }
-
-
-                    setScholarships(
-                        scholarshipsWithMatch
-                    );
-
-                } catch (
-                requestError
-                ) {
-
-                    if (!mounted) {
-                        return;
-                    }
-
-
-                    console.error(
-                        "Failed to load scholarships:",
-                        requestError
-                    );
-
-
-                    setError(
-                        "Unable to load scholarships. Please try again."
-                    );
-
-
-                    setScholarships([]);
-
-                } finally {
-
-                    if (mounted) {
-                        setLoading(false);
-                    }
-
-                }
-
+            const sortMap = {
+                recommended: "latest",
+                title_az: "title_asc",
+                deadline_soon: "deadline_asc",
             };
 
+            const params = {
+                page: pageToLoad,
+                per_page: 12,
+                sort_by: sortMap[sortBy] || "latest",
+            };
 
-        loadScholarships();
+            if (debouncedSearch.trim()) {
+                params.search = debouncedSearch.trim();
+            }
 
+            if (filters.country) {
+                params.country = filters.country;
+            }
 
-        return () => {
-            mounted = false;
-        };
+            if (filters.degree) {
+                params.degree = filters.degree;
+            }
 
-    }, []);
+            if (filters.funding) {
+                params.funding = filters.funding;
+            }
 
+            const response =
+                await getScholarships(params);
+
+            const rawScholarships =
+                normalizeResponse(
+                    response
+                );
+
+            const scholarshipOnly =
+                rawScholarships.filter(
+                    (item) => {
+
+                        const type =
+                            getDisplayValue(
+                                item?.opportunity_type
+                            );
+
+                        if (!type) {
+                            return true;
+                        }
+
+                        return (
+                            type.toLowerCase() ===
+                            "scholarship"
+                        );
+                    }
+                );
+
+            const normalized =
+                scholarshipOnly.map(
+                    normalizeScholarship
+                );
+
+            const valid =
+                normalized.filter(
+                    (item) =>
+                        item.id !== ""
+                );
+
+            const unique =
+                uniqueById(
+                    valid
+                );
+
+            if (response?.meta) {
+                setPagination({
+                    current_page: response.meta.current_page ?? pageToLoad,
+                    last_page: response.meta.last_page ?? 1,
+                    total: response.meta.total ?? unique.length,
+                    per_page: response.meta.per_page ?? 12,
+                });
+            } else {
+                setPagination({
+                    current_page: pageToLoad,
+                    last_page: 1,
+                    total: unique.length,
+                    per_page: 12,
+                });
+            }
+
+            const scholarshipsWithMatch =
+                await Promise.all(
+                    unique.map(
+                        async (
+                            scholarship
+                        ) => {
+
+                            try {
+
+                                const matchResponse =
+                                    await checkScholarshipMatch(
+                                        scholarship.id
+                                    );
+
+                                const matchScore =
+                                    getMatchScoreFromResponse(
+                                        matchResponse
+                                    );
+
+                                return {
+                                    ...scholarship,
+                                    matchScore,
+                                };
+
+                            } catch (
+                                matchError
+                            ) {
+
+                                console.error(
+                                    `Failed to load match for scholarship ${scholarship.id}:`,
+                                    matchError
+                                );
+
+                                return {
+                                    ...scholarship,
+                                    matchScore: null,
+                                };
+                            }
+
+                        }
+                    )
+                );
+
+            setScholarships(
+                scholarshipsWithMatch
+            );
+
+        } catch (
+            requestError
+        ) {
+
+            console.error(
+                "Failed to load scholarships:",
+                requestError
+            );
+
+            setError(
+                "Unable to load scholarships. Please try again."
+            );
+
+            setScholarships([]);
+
+        } finally {
+
+            setLoading(false);
+            setInitialLoading(false);
+
+        }
+
+    };
+
+    useEffect(() => {
+
+        loadScholarships(page);
+
+    }, [page, debouncedSearch, filters, sortBy]);
 
     /* =====================================================
        FILTER OPTIONS
     ===================================================== */
 
     const countries =
-        useMemo(
-            () =>
-                buildCountryOptions(
-                    scholarships
-                ),
-            [
-                scholarships,
-            ]
-        );
-
-
-    const degrees =
-        useMemo(
-            () =>
-                buildDegreeOptions(
-                    scholarships
-                ),
-            [
-                scholarships,
-            ]
-        );
-
-
-    const fundingOptions =
-        useMemo(
-            () =>
-                buildFundingOptions(
-                    scholarships
-                ),
-            [
-                scholarships,
-            ]
-        );
-
-
-    /* =====================================================
-       FILTERED SCHOLARSHIPS
-    ===================================================== */
-
-    const filteredScholarships =
         useMemo(() => {
 
-            const query =
-                search
-                    .trim()
-                    .toLowerCase();
-
-
-            const filtered =
-                scholarships.filter(
-                    (scholarship) => {
-
-                        if (query) {
-
-                            const searchableText =
-                                [
-                                    scholarship.title,
-                                    scholarship.university,
-                                    scholarship.country,
-                                    scholarship.degree,
-                                    scholarship.funding,
-                                    scholarship.description,
-                                ]
-                                    .filter(Boolean)
-                                    .join(" ")
-                                    .toLowerCase();
-
-
-                            if (
-                                !searchableText.includes(
-                                    query
-                                )
-                            ) {
-                                return false;
-                            }
-
-                        }
-
-
-                        if (
-                            filters.country &&
-                            !matchesSelectedItem(
-                                getScholarshipCountry(
-                                    scholarship
-                                ),
-                                filters.country
-                            )
-                        ) {
-                            return false;
-                        }
-
-
-                        if (
-                            filters.degree
-                        ) {
-
-                            const degreeMatches =
-                                getScholarshipDegrees(
-                                    scholarship
-                                ).some(
-                                    (degree) =>
-                                        matchesSelectedItem(
-                                            degree,
-                                            filters.degree
-                                        )
-                                );
-
-
-                            if (
-                                !degreeMatches
-                            ) {
-                                return false;
-                            }
-
-                        }
-
-
-                        if (
-                            filters.funding &&
-                            !matchesSelectedItem(
-                                getScholarshipFunding(
-                                    scholarship
-                                ),
-                                filters.funding
-                            )
-                        ) {
-                            return false;
-                        }
-
-
-                        return true;
-
-                    }
+            const dynamic =
+                buildCountryOptions(
+                    scholarships
                 );
 
+            return sortByName(
+                uniqueById([
+                    ...lookupCountries,
+                    ...dynamic,
+                ])
+            );
 
-            return [
-                ...filtered,
-            ].sort(
-                (a, b) => {
+        }, [
+            lookupCountries,
+            scholarships,
+        ]);
 
-                    if (
-                        sortBy === "title_az"
-                    ) {
+    const degrees =
+        useMemo(() => {
 
-                        return a.title.localeCompare(
-                            b.title,
-                            undefined,
-                            {
-                                sensitivity: "base",
-                            }
-                        );
+            const dynamic =
+                buildDegreeOptions(
+                    scholarships
+                );
 
-                    }
+            return sortByName(
+                uniqueById([
+                    ...lookupDegrees,
+                    ...dynamic,
+                ])
+            );
 
+        }, [
+            lookupDegrees,
+            scholarships,
+        ]);
 
-                    if (
-                        sortBy === "deadline_soon"
-                    ) {
+    const fundingOptions =
+        useMemo(() => {
 
-                        const aDate =
-                            a.deadline
-                                ? new Date(
-                                    a.deadline
-                                ).getTime()
-                                : Infinity;
+            const dynamic =
+                buildFundingOptions(
+                    scholarships
+                );
 
-
-                        const bDate =
-                            b.deadline
-                                ? new Date(
-                                    b.deadline
-                                ).getTime()
-                                : Infinity;
-
-
-                        return aDate - bDate;
-
-                    }
-
-
-                    return 0;
-
-                }
+            return sortByName(
+                uniqueById([
+                    ...DEFAULT_FUNDING_OPTIONS,
+                    ...dynamic,
+                ])
             );
 
         }, [
             scholarships,
-            search,
-            filters,
-            sortBy,
         ]);
-
 
     /* =====================================================
        FILTER HANDLERS
@@ -1217,7 +1105,6 @@ export default function Scholarships() {
             value,
         } = event.target;
 
-
         setFilters(
             (previous) => ({
                 ...previous,
@@ -1225,8 +1112,9 @@ export default function Scholarships() {
             })
         );
 
-    };
+        setPage(1);
 
+    };
 
     const resetFilters = () => {
 
@@ -1240,8 +1128,9 @@ export default function Scholarships() {
             "recommended"
         );
 
-    };
+        setPage(1);
 
+    };
 
     const hasFilters =
         Boolean(
@@ -1251,7 +1140,7 @@ export default function Scholarships() {
             search.trim()
         );
 
-    if (loading) {
+    if (initialLoading) {
         return <LoadingScreen />;
     }
 
@@ -1321,11 +1210,12 @@ export default function Scholarships() {
                             <input
                                 type="text"
                                 value={search}
-                                onChange={(event) =>
+                                onChange={(event) => {
                                     setSearch(
                                         event.target.value
-                                    )
-                                }
+                                    );
+                                    setPage(1);
+                                }}
                                 placeholder="Search scholarships, universities..."
                                 aria-label="Search scholarships"
                             />
@@ -1336,9 +1226,10 @@ export default function Scholarships() {
                                 <button
                                     type="button"
                                     className="scholarships-search-clear"
-                                    onClick={() =>
-                                        setSearch("")
-                                    }
+                                    onClick={() => {
+                                        setSearch("");
+                                        setPage(1);
+                                    }}
                                     aria-label="Clear search"
                                 >
 
@@ -1629,14 +1520,14 @@ export default function Scholarships() {
 
                                 <strong>
                                     {
-                                        filteredScholarships.length
+                                        pagination.total
                                     }
                                 </strong>
 
                                 {" "}
 
                                 {
-                                    filteredScholarships.length === 1
+                                    pagination.total === 1
                                         ? "scholarship"
                                         : "scholarships"
                                 }
@@ -1644,6 +1535,28 @@ export default function Scholarships() {
                             </p>
 
                         )}
+
+                        <select
+                            value={sortBy}
+                            onChange={(event) => {
+                                setSortBy(
+                                    event.target.value
+                                );
+                                setPage(1);
+                            }}
+                            aria-label="Sort scholarships"
+                        >
+                            <option value="recommended">
+                                Recommended
+                            </option>
+                            <option value="title_az">
+                                Title (A-Z)
+                            </option>
+                            <option value="deadline_soon">
+                                Deadline (Soonest)
+                            </option>
+                        </select>
+
                     </div>
 
                 </div>
@@ -1778,7 +1691,7 @@ export default function Scholarships() {
 
                 {!loading &&
                     !error &&
-                    filteredScholarships.length === 0 && (
+                    scholarships.length === 0 && (
 
                         <div className="scholarships-empty">
 
@@ -1833,11 +1746,11 @@ export default function Scholarships() {
 
                 {!loading &&
                     !error &&
-                    filteredScholarships.length > 0 && (
+                    scholarships.length > 0 && (
 
                         <div className="scholarships-grid">
 
-                            {filteredScholarships.map(
+                            {scholarships.map(
                                 (scholarship) => (
 
                                     <article
@@ -2045,6 +1958,64 @@ export default function Scholarships() {
                             )}
 
                         </div>
+
+                    )}
+
+
+                {/* =================================================
+                    PAGINATION
+                ================================================= */}
+
+                {!loading &&
+                    !error &&
+                    pagination.last_page > 1 && (
+
+                        <nav
+                            className="scholarships-pagination"
+                            aria-label="Scholarships pagination"
+                        >
+
+                            <button
+                                type="button"
+                                className="scholarships-page-button"
+                                onClick={() =>
+                                    setPage((p) =>
+                                        Math.max(1, p - 1)
+                                    )
+                                }
+                                disabled={
+                                    pagination.current_page <= 1 ||
+                                    loading
+                                }
+                            >
+                                Previous
+                            </button>
+
+                            <span className="scholarships-page-info">
+                                Page {pagination.current_page} of {pagination.last_page}
+                            </span>
+
+                            <button
+                                type="button"
+                                className="scholarships-page-button"
+                                onClick={() =>
+                                    setPage((p) =>
+                                        Math.min(
+                                            pagination.last_page,
+                                            p + 1
+                                        )
+                                    )
+                                }
+                                disabled={
+                                    pagination.current_page >=
+                                    pagination.last_page ||
+                                    loading
+                                }
+                            >
+                                Next
+                            </button>
+
+                        </nav>
 
                     )}
 

@@ -770,7 +770,8 @@ class StudentProfileController extends Controller
 
     private function calculateProfileCompletion($user): int
     {
-        $user->loadMissing([
+        $user->unsetRelation('profile');
+        $user->load([
             'profile',
             'academicRecords',
             'languages',
@@ -828,7 +829,7 @@ class StudentProfileController extends Controller
         */
 
         if ($user->academicRecords->count() > 0) {
-            $score += 10;
+            $score += 15;
         }
 
         /*
@@ -838,7 +839,7 @@ class StudentProfileController extends Controller
         */
 
         if ($user->languages->count() > 0) {
-            $score += 10;
+            $score += 15;
         }
 
         /*
@@ -853,7 +854,7 @@ class StudentProfileController extends Controller
 
         /*
         |--------------------------------------------------------------------------
-        | Work Experience
+        | Work Experience (Optional / Additive towards completion)
         |--------------------------------------------------------------------------
         */
 

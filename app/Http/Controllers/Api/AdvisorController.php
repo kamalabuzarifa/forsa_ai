@@ -3,12 +3,65 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Country;
+use App\Models\Degree;
+use App\Models\Field;
 use App\Models\Opportunity;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class AdvisorController extends Controller
 {
+    /*
+    |--------------------------------------------------------------------------
+    | Advisor Lookups
+    |--------------------------------------------------------------------------
+    */
+
+    public function lookups(): JsonResponse
+    {
+        return response()->json([
+            'fields' => Field::query()
+                ->orderBy('name')
+                ->get([
+                    'id',
+                    'name',
+                ]),
+
+            'degrees' => Degree::query()
+                ->orderBy('name')
+                ->get([
+                    'id',
+                    'name',
+                    'code',
+                ]),
+
+            'countries' => Country::query()
+                ->orderBy('name')
+                ->get([
+                    'id',
+                    'name',
+                    'code',
+                    'iso_code',
+                ]),
+
+            'study_modes' => [
+                [
+                    'value' => 'on_campus',
+                    'label' => 'On Campus',
+                ],
+                [
+                    'value' => 'online',
+                    'label' => 'Online',
+                ],
+                [
+                    'value' => 'hybrid',
+                    'label' => 'Hybrid',
+                ],
+            ],
+        ]);
+    }
+
     /*
     |--------------------------------------------------------------------------
     | Recommend Opportunities

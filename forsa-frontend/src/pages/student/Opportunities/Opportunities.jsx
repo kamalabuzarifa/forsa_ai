@@ -18,8 +18,6 @@ import {
     RefreshCw,
     Sparkles,
     ArrowRight,
-    Building2,
-    X,
 } from "lucide-react";
 
 import {
@@ -269,6 +267,12 @@ const getDeadlineDate = (date) => {
    COMPONENT
 ========================================================= */
 
+const DEFAULT_FUNDING_OPTIONS = [
+    "Fully Funded",
+    "Partially Funded",
+    "Self-Funded",
+];
+
 function Opportunities() {
 
     const [
@@ -276,54 +280,117 @@ function Opportunities() {
         setOpportunities,
     ] = useState([]);
 
-
     const [
         loading,
         setLoading,
-    ] = useState(true);
+    ] = useState(false);
 
+    const [
+        initialLoading,
+        setInitialLoading,
+    ] = useState(true);
 
     const [
         error,
         setError,
     ] = useState("");
 
-
     const [
         search,
         setSearch,
     ] = useState("");
 
+    const [
+        debouncedSearch,
+        setDebouncedSearch] = useState("");
 
     const [
         fundingFilter,
         setFundingFilter,
     ] = useState("all");
 
-
     const [
         verifiedOnly,
         setVerifiedOnly,
     ] = useState(false);
 
+    const [
+        page,
+        setPage,
+    ] = useState(1);
+
+    const [
+        pagination,
+        setPagination,
+    ] = useState({
+        current_page: 1,
+        last_page: 1,
+        total: 0,
+        per_page: 12,
+    });
+
+    /* =====================================================
+       DEBOUNCE SEARCH
+    ===================================================== */
+
+    useEffect(() => {
+        const handler = setTimeout(() => {
+            setDebouncedSearch(search);
+        }, 350);
+
+        return () => clearTimeout(handler);
+    }, [search]);
 
     /* =====================================================
        LOAD
     ===================================================== */
 
-    const loadOpportunities = async () => {
+    const loadOpportunities = async (pageToLoad = page) => {
 
         try {
 
             setLoading(true);
             setError("");
 
-            const response =
-                await getOpportunities();
+            const params = {
+                page: pageToLoad,
+                per_page: 12,
+            };
 
-            setOpportunities(
-                getOpportunityList(response)
-            );
+            if (debouncedSearch.trim()) {
+                params.search = debouncedSearch.trim();
+            }
+
+            if (fundingFilter !== "all") {
+                params.funding = fundingFilter;
+            }
+
+            if (verifiedOnly) {
+                params.is_verified = 1;
+            }
+
+            const response =
+                await getOpportunities(params);
+
+            const list = getOpportunityList(response);
+
+            setOpportunities(list);
+
+            if (response?.meta) {
+                setPagination({
+                    current_page: response.meta.current_page ?? pageToLoad,
+                    last_page: response.meta.last_page ?? 1,
+                    total: response.meta.total ?? list.length,
+                    per_page: response.meta.per_page ?? 12,
+                });
+            } else {
+                setPagination({
+                    current_page: pageToLoad,
+                    last_page: 1,
+                    total: list.length,
+                    per_page: 12,
+                });
+            }
 
         } catch (err) {
 
@@ -340,6 +407,7 @@ function Opportunities() {
         } finally {
 
             setLoading(false);
+            setInitialLoading(false);
 
         }
     };
@@ -347,9 +415,9 @@ function Opportunities() {
 
     useEffect(() => {
 
-        loadOpportunities();
+        loadOpportunities(page);
 
-    }, []);
+    }, [page, debouncedSearch, fundingFilter, verifiedOnly]);
 
 
     /* =====================================================
@@ -359,7 +427,7 @@ function Opportunities() {
     const fundingOptions =
         useMemo(() => {
 
-            const values =
+            const dynamic =
                 opportunities
                     .map(
                         (opportunity) =>
@@ -373,127 +441,13 @@ function Opportunities() {
                             value !== "N/A"
                     );
 
-            return [
-                ...new Set(values),
-            ];
+            return Array.from(new Set([
+                ...DEFAULT_FUNDING_OPTIONS,
+                ...dynamic,
+            ]));
 
         }, [
             opportunities,
-        ]);
-
-
-    /* =====================================================
-       FILTER
-    ===================================================== */
-
-    const filteredOpportunities =
-        useMemo(() => {
-
-            const normalizedSearch =
-                search
-                    .trim()
-                    .toLowerCase();
-
-
-            return opportunities.filter(
-                (opportunity) => {
-
-                    const title =
-                        String(
-                            opportunity?.title ||
-                            opportunity?.name ||
-                            ""
-                        ).toLowerCase();
-
-
-                    const description =
-                        String(
-                            opportunity?.description ||
-                            ""
-                        ).toLowerCase();
-
-
-                    const university =
-                        getUniversityName(
-                            opportunity
-                        ).toLowerCase();
-
-
-                    const country =
-                        getCountryName(
-                            opportunity
-                        ).toLowerCase();
-
-
-                    const funding =
-                        getFundingName(
-                            opportunity
-                        ).toLowerCase();
-
-
-                    const type =
-                        getTypeName(
-                            opportunity
-                        ).toLowerCase();
-
-
-                    const degree =
-                        getDegreeName(
-                            opportunity
-                        ).toLowerCase();
-
-
-                    const matchesSearch =
-                        !normalizedSearch ||
-                        title.includes(
-                            normalizedSearch
-                        ) ||
-                        description.includes(
-                            normalizedSearch
-                        ) ||
-                        university.includes(
-                            normalizedSearch
-                        ) ||
-                        country.includes(
-                            normalizedSearch
-                        ) ||
-                        funding.includes(
-                            normalizedSearch
-                        ) ||
-                        type.includes(
-                            normalizedSearch
-                        ) ||
-                        degree.includes(
-                            normalizedSearch
-                        );
-
-
-                    const matchesFunding =
-                        fundingFilter === "all" ||
-                        getFundingName(
-                            opportunity
-                        ) === fundingFilter;
-
-
-                    const matchesVerified =
-                        !verifiedOnly ||
-                        opportunity?.is_verified === true;
-
-
-                    return (
-                        matchesSearch &&
-                        matchesFunding &&
-                        matchesVerified
-                    );
-
-                }
-            );
-
-        }, [
-            opportunities,
-            search,
-            fundingFilter,
-            verifiedOnly,
         ]);
 
 
@@ -506,10 +460,11 @@ function Opportunities() {
         setSearch("");
         setFundingFilter("all");
         setVerifiedOnly(false);
+        setPage(1);
 
     };
 
-    if (loading) {
+    if (initialLoading) {
         return <LoadingScreen />;
     }
 
@@ -597,11 +552,12 @@ function Opportunities() {
                         <input
                             type="search"
                             value={search}
-                            onChange={(event) =>
+                            onChange={(event) => {
                                 setSearch(
                                     event.target.value
-                                )
-                            }
+                                );
+                                setPage(1);
+                            }}
                             placeholder="Search by title, university, country, funding..."
                             aria-label="Search opportunities"
                         />
@@ -615,11 +571,12 @@ function Opportunities() {
 
                         <select
                             value={fundingFilter}
-                            onChange={(event) =>
+                            onChange={(event) => {
                                 setFundingFilter(
                                     event.target.value
-                                )
-                            }
+                                );
+                                setPage(1);
+                            }}
                             aria-label="Filter by funding"
                         >
 
@@ -653,12 +610,13 @@ function Opportunities() {
                                 : ""
                             }`
                         }
-                        onClick={() =>
+                        onClick={() => {
                             setVerifiedOnly(
                                 (value) =>
                                     !value
-                            )
-                        }
+                            );
+                            setPage(1);
+                        }}
                     >
 
                         <CheckCircle2 size={16} />
@@ -708,10 +666,10 @@ function Opportunities() {
 
                     <strong>
 
-                        {filteredOpportunities.length}
+                        {pagination.total}
 
                         <span>
-                            {" "}results
+                            {" "}{pagination.total === 1 ? "result" : "results"}
                         </span>
 
                     </strong>
@@ -826,7 +784,7 @@ function Opportunities() {
 
                 {!loading &&
                     !error &&
-                    filteredOpportunities.length === 0 && (
+                    opportunities.length === 0 && (
 
                         <div className="opportunities-state">
 
@@ -871,11 +829,11 @@ function Opportunities() {
 
                 {!loading &&
                     !error &&
-                    filteredOpportunities.length > 0 && (
+                    opportunities.length > 0 && (
 
                         <section className="opportunities-grid">
 
-                            {filteredOpportunities.map(
+                            {opportunities.map(
                                 (opportunity) => {
 
                                     const opportunityId =
@@ -1129,6 +1087,64 @@ function Opportunities() {
                             )}
 
                         </section>
+
+                    )}
+
+
+                {/* =================================================
+                   PAGINATION
+                ================================================= */}
+
+                {!loading &&
+                    !error &&
+                    pagination.last_page > 1 && (
+
+                        <nav
+                            className="opportunities-pagination"
+                            aria-label="Opportunities pagination"
+                        >
+
+                            <button
+                                type="button"
+                                className="opportunities-page-button"
+                                onClick={() =>
+                                    setPage((p) =>
+                                        Math.max(1, p - 1)
+                                    )
+                                }
+                                disabled={
+                                    pagination.current_page <= 1 ||
+                                    loading
+                                }
+                            >
+                                Previous
+                            </button>
+
+                            <span className="opportunities-page-info">
+                                Page {pagination.current_page} of {pagination.last_page}
+                            </span>
+
+                            <button
+                                type="button"
+                                className="opportunities-page-button"
+                                onClick={() =>
+                                    setPage((p) =>
+                                        Math.min(
+                                            pagination.last_page,
+                                            p + 1
+                                        )
+                                    )
+                                }
+                                disabled={
+                                    pagination.current_page >=
+                                    pagination.last_page ||
+                                    loading
+                                }
+                            >
+                                Next
+                            </button>
+
+                        </nav>
 
                     )}
 

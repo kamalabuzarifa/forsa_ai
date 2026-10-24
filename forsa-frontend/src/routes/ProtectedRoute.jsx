@@ -87,14 +87,26 @@ function ProtectedRoute({
                     const response =
                         await getStudentProfile();
 
+                    const profileData =
+                        response?.profile;
+
                     const completion =
                         Number(
-                            response?.profile
-                                ?.profile_completion
+                            profileData?.profile_completion
                         ) || 0;
 
+                    // Students without work experience can reach full onboarding with core personal/academic info
+                    const isCompleted =
+                        completion >= 100 || (
+                            completion >= 70 &&
+                            Boolean(
+                                profileData?.nationality_id &&
+                                profileData?.country_of_residence_id
+                            )
+                        );
+
                     setProfileComplete(
-                        completion >= 100
+                        isCompleted
                     );
 
                 } catch (error) {

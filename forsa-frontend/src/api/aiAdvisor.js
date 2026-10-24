@@ -4,7 +4,7 @@ import api from "./axios";
 export const getAIAdvisorOptions = async () => {
 
     const response = await api.get(
-        "/profile/lookups"
+        "/advisor/lookups"
     );
 
     return response.data;

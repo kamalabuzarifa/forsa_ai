@@ -1604,6 +1604,61 @@
 
 
 /* =========================================================
+   PAGINATION
+   ========================================================= */
+
+.scholarships-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    margin: 40px auto 0;
+    padding: 12px 20px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    width: fit-content;
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.04);
+}
+
+.scholarships-page-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 38px;
+    padding: 0 18px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #0f172a;
+    background: #f8fafc;
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.scholarships-page-button:hover:not(:disabled) {
+    background: #0f9f8f;
+    color: #ffffff;
+    border-color: #0f9f8f;
+}
+
+.scholarships-page-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: #f1f5f9;
+    border-color: #e2e8f0;
+    color: #94a3b8;
+}
+
+.scholarships-page-info {
+    font-size: 13px;
+    font-weight: 600;
+    color: #475569;
+}
+
+
+/* =========================================================
    RESPONSIVE — 420px
    ========================================================= */
 

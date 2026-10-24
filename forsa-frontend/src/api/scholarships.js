@@ -13,7 +13,10 @@ export const getScholarships = async (
         await api.get(
             "/opportunities",
             {
-                params,
+                params: {
+                    opportunity_type: "scholarship",
+                    ...params,
+                },
             }
         );
 
